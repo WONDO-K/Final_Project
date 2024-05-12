@@ -6,7 +6,6 @@
   <div>
     <header>
       <nav class="bg-warning">
-          <!-- a 태그로 변경 가능 -->
           <router-link to=""><img src="" alt="">로고</router-link>
           <router-link to="">예금</router-link>
           <router-link to="">적금</router-link>
