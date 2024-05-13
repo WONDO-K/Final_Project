@@ -13,7 +13,7 @@ from rest_framework.views import APIView
 # 회원가입
 class RegisterView(APIView):
     
-    @swagger_auto_schema(tags=['accounts'], request_body=RegisterSerializer)
+    @swagger_auto_schema(tags=['accounts'], request_body=RegisterSerializer) # swagger와 연동
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
