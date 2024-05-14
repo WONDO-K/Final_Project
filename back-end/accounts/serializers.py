@@ -4,11 +4,12 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password # Django의 기본 pw 검증 도구
 from rest_framework.validators import UniqueValidator # 이메일 중복 방지를 위한 검증 도구
 from datetime import date
+from django.contrib.auth import authenticate
 
 
 User = get_user_model()
 
-class RegisterSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
         required=True,
         validators=[UniqueValidator(queryset=User.objects.all())], # 이메일에 대한 중복 검증
@@ -66,3 +67,22 @@ class RegisterSerializer(serializers.ModelSerializer):
         # user.set_password(password)
         # user.save()
         # return user
+
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField(write_only=True)
+
+    def validate(self, data):
+        username = data.get('username')
+        password = data.get('password')
+        if username and password:
+            user = authenticate(username=username, password=password)
+            if not user:
+                raise serializers.ValidationError("사용자 정보가 올바르지 않습니다.")
+        else:
+            raise serializers.ValidationError("아이디와 비밀번호를 입력해주세요.")
+        return {
+            'user': user,
+            'username': user.username,
+            'user_id': user.pk,
+        }
