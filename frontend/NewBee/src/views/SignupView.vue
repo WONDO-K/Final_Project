@@ -93,7 +93,7 @@ const signUp = function () {
         gender: gender.value,
         wealth: wealth.value
     }
-    store.signup(payload)
+    store.signUp(payload)
 }
 </script>
 

@@ -1,11 +1,12 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
+import axios from 'axios'
 
 export const useCounterStore = defineStore('counter', () => {
   const token = ref(null)
   
   const signUp = function(info) {
-    axios.post('http://127.0.0.1:8000/', info)
+    axios.post('http://127.0.0.1:8000/accounts/register/', info)
       .then(res => {
         console.log(res)
         console.log('회원가입이 완료되었습니다.')
@@ -18,7 +19,7 @@ export const useCounterStore = defineStore('counter', () => {
     }
 
   const logIn = function(info) {
-    axios.post('http://127.0.0.1:8000/', info)
+    axios.post('http://127.0.0.1:8000/accounts/auth/', info)
       .then(res => {
         console.log(res)
         console.log('로그인이 완료되었습니다.')
