@@ -14,7 +14,6 @@
         <router-link :to="{ name : 'signup' }">회원가입</router-link>
         <!-- 로그인 했을 경우 -->
         <router-link to="">로그아웃</router-link>
-        <router-link :to="{ name : 'signup' }">회원가입</router-link>
       </nav>
     </header>
   </div>
