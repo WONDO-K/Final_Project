@@ -9,10 +9,13 @@
         <router-link to="">연금</router-link>
         <router-link to="">대출</router-link>
         <router-link to="">근처 은행 찾기</router-link>
+        <p>|</p>
         <!-- 로그인 안했을 경우 -->
         <router-link :to="{ name : 'login' }">로그인</router-link>
         <router-link :to="{ name : 'signup' }">회원가입</router-link>
+        <p>|</p>
         <!-- 로그인 했을 경우 -->
+        <RouterLink to="/">닉네임</RouterLink>
         <router-link to="">로그아웃</router-link>
       </nav>
     </header>
@@ -20,6 +23,8 @@
 </template>
 
 <script setup>
+import { RouterLink } from 'vue-router';
+
 </script>
 
 <style scoped>

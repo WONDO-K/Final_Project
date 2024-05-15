@@ -2,6 +2,7 @@
   <div>
     <!-- 로고 글씨 대신 로고 이미지 삽입 예정 -->
     <RouterLink to="/">로고</RouterLink>
+    <h1>SIGNUP</h1>
     <form @submit.prevent="signUp">
       <!-- label에 작은 image 삽입 가능 혹은 label 삭제 가능 -->
       <!-- label 글자로 유지할 시, placeholder 삭제 -->        
@@ -14,6 +15,7 @@
       <br>
       <label for="passwordCheck">비밀번호 확인: </label>
       <input type="password" id="passwordCheck" placeholder="비밀번호 확인" v-model="passwordCheck">
+      <small v-show="!isPasswordMatch">비밀번호가 일치하지 않습니다.</small>
       <br>
       <label for="nickname">닉네임: </label>
       <input type="text" id="nickname" placeholder="닉네임" v-model="nickname">
@@ -28,73 +30,117 @@
           <option value="여자">여자</option>
       </select>
       <br>
-      <!-- <label for="age">나이: </label>
-      <input type="number" id="age" placeholder="나이" v-model="age">
-      <br> -->
       <label for="birth">생년월일: </label>
       <input type="date" id="birth" placeholder="생년월일" v-model="birth">
       <br>
-      <!-- <label for="phone">전화번호: </label>
-      <input type="tel" id="phone" placeholder="전화번호" v-model="phoneNumber">
-      <br> -->
       <label for="email">이메일: </label>
       <input type="email" id="email" placeholder="이메일" v-model="email">
+      <button type="button" @click="checkEmail">중복 체크</button>
       <br>
       <!-- 단위: 만원 -->
       <label for="salary">연봉: </label>
       <input type="number" id="salary" placeholder="연봉" v-model="salary">
       <span>만원</span>
       <br>
-      <!-- 단위: 만원 -->
       <label for="wealth">자산: </label>
       <input type="number" id="wealth" placeholder="자산" v-model="wealth">
       <span>만원</span>
       <br>
-      <!-- <label for="is_staff">관리자 여부: </label>
-      <input type="checkbox" id="is_staff" v-model="isStaff">
-      <br> -->
       <button type="submit" @click="signUp">회원가입</button>
     </form>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useCounterStore } from '@/stores/counter'
+import axios from 'axios'
 
 const store = useCounterStore()
-
 const userId = ref('')
 const password = ref('')
 const passwordCheck = ref('')
-const nickname = ref('')
+const nickName = ref('')
 const userName = ref('')
 const gender = ref('')
 const birth = ref('')
 const email = ref('')
 const salary = ref(0)
 const wealth = ref(0)
+const isPasswordMatch = computed(() => password.value === passwordCheck.value? true : false)
 
-const checkId = function(){}
-const checkNickname = function(){}
-const checkPassword = function(){}
-
+// 회원가입 버튼 클릭 시, 회원가입 함수 실행
 const signUp = function () {
-    const payload = {
-        username: userId.value,
-        password: password.value,
-        password2: passwordCheck.value,
-        nickname: nickname.value,
-        realname: userName.value,
-        nickname: nickname.value,
-        email: email.value,
-        birth: birth.value,
-        salary: salary.value,
-        gender: gender.value,
-        wealth: wealth.value
-    }
-    store.signUp(payload)
+  const payload = {
+      username: userId.value,
+      password: password.value,
+      password2: passwordCheck.value,
+      nickname: nickName.value,
+      realname: userName.value,
+      email: email.value,
+      birth: birth.value,
+      salary: salary.value,
+      gender: gender.value,
+      wealth: wealth.value
+  }
+  store.signUp(payload)
+  store.goLogin()
 }
+
+// 아이디 중복 체크 함수
+const checkId = function(){
+  axios.get('http://127.0.0.1:8000/', { username: userId.value })
+    .then((res) => {
+      console.log(res)
+      if (res.data === 'true') {
+        console.log('사용 가능한 아이디입니다.')
+        alert('사용 가능한 아이디입니다.')
+      } else {
+        console.log('이미 존재하는 아이디입니다.')
+        alert('이미 존재하는 아이디입니다.')
+      }
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+}
+
+// 닉네임 중복 체크 함수
+const checkNickname = function(){
+  axios.get('http://127.0.0.1:8000/', { nickname: nickName.value })
+    .then((res) => {
+      console.log(res)
+      if (res.data === 'true') {
+        console.log('사용 가능한 닉네임입니다.')
+        alert('사용 가능한 닉네임입니다.')
+      } else {
+        console.log('이미 존재하는 닉네임입니다.')
+        alert('이미 존재하는 닉네임입니다.')
+      }
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+}
+
+// 이메일 중복 체크 함수
+const checkEmail = function(){
+  axios.get('http://127.0.0.1:8000/', { email: email.value })
+    .then((res) => {
+      console.log(res)
+      if (res.data === 'true') {
+        console.log('사용 가능한 이메일입니다.')
+        alert('사용 가능한 이메일입니다.')
+      } else {
+        console.log('이미 존재하는 이메일입니다.')
+        alert('이미 존재하는 이메일입니다.')
+      }
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+}
+
 </script>
 
 <style scoped>
