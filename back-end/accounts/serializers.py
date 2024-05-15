@@ -9,6 +9,7 @@ from django.contrib.auth import authenticate
 
 User = get_user_model()
 
+# 회원가입
 class UserSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
         required=True,
@@ -27,6 +28,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username', 'realname', 'password', 'password2', 'nickname', 'email', 'birth', 'salary', 'gender', 'wealth', 'is_staff', 'my_product']   
+
     def validate(self, data): # password과 password2의 일치 여부 확인
         if data['password'] != data['password2']:
             raise serializers.ValidationError(
@@ -68,7 +70,8 @@ class UserSerializer(serializers.ModelSerializer):
         # user.save()
         # return user
 
-class LoginSerializer(serializers.Serializer):
+# 로그인
+class LoginSerializer(serializers.Serializer): # 로그인은 DB와 관련이 없기 때문에 ModelSerializer가 아닌 Serializer를 사용한다.
     username = serializers.CharField()
     password = serializers.CharField(write_only=True)
 
@@ -86,3 +89,56 @@ class LoginSerializer(serializers.Serializer):
             'username': user.username,
             'user_id': user.pk,
         }
+
+# 회원 정보 수정
+class UserUpdateSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = User
+        fields = ['nickname', 'email', 'salary', 'gender', 'wealth'] # 수정 가능한 필드만 넣어준다.
+        read_only_fields = ['username', 'email','access_token','refresh_token',]
+    
+    def update(self, instance, validated_data):
+        password = validated_data.pop('password', None) # 보안상 passwrod는 setattr로 변경하면 안되기 때문에 일단 빼놓는다.
+        for (key, value) in validated_data.items():
+            setattr(instance, key, value)
+        if password is not None:
+            instance.set_password(password) # 빼놓은 password를 여기서 변경한다.
+        instance.save()
+        return instance
+
+# 비밀번호 변경
+class ChangePasswordSerializer(serializers.ModelSerializer):
+    # write_only=True : 사용자에게 입력받아 서버에서만 사용할 수 있도록 하는 옵션
+    # 직렬화된 출력에서 제외하고 싶은 필드에는 write_only=True를 사용한다.
+    # 클라이언트에게 비밀번호가 노출되지 않도록 하기 위함
+    # required=True : 필수 입력값
+    old_password = serializers.CharField(write_only=True, required=True) # 기존 비밀번호
+    new_password = serializers.CharField(write_only=True, required=True) # 새로운 비밀번호
+    new_password2 = serializers.CharField(write_only=True, required=True) # 새로운 비밀번호 확인
+
+    class Meta:
+        model = User
+        fields = ['old_password', 'new_password', 'new_password2']
+
+    def validate(self, data):
+        user = self.context['request'].user # 현재 로그인한 유저
+        old_password = data.get('old_password')
+        new_password = data.get('new_password')
+        new_password2 = data.get('new_password2')
+
+        # 기존 비밀번호가 올바른지 확인
+        if not authenticate(username=user.username, password=old_password):
+            raise serializers.ValidationError("기존 비밀번호가 올바르지 않습니다.")
+        # 새로운 비밀번호와 기존 비밀번호가 일치하는지 확인
+        if old_password == new_password:
+            raise serializers.ValidationError("새로운 비밀번호는 기존 비밀번호와 다르게 설정해야 합니다.")
+        # 새로운 비밀번호와 비밀번호 확인이 일치하는지 확인
+        if new_password != new_password2:
+            raise serializers.ValidationError("새로운 비밀번호가 일치하지 않습니다.")
+        return data
+
+    def save(self, user):
+        user.set_password(self.validated_data['new_password'])
+        user.save()
+        return user

@@ -4,12 +4,15 @@ from django.http import JsonResponse
 from django.contrib.auth import authenticate
 from django.shortcuts import get_object_or_404, render
 from .serializers import *
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
+from rest_framework_simplejwt.serializers import *
 from rest_framework.response import Response
 from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.generics import RetrieveUpdateAPIView
+from rest_framework.renderers import JSONRenderer
+#from rest_framework.parsers import JSONParser
 
 
 from rest_framework.views import APIView 
@@ -41,10 +44,10 @@ class RegisterAPIView(APIView):
             return res
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+# 로그인 및 인증
 class AuthAPIView(APIView):
     # 유저 정보 가져오기
     @swagger_auto_schema(tags=['로그인 및 인증'])
-
     def get(self, request):
         try:
             # access token을 decode 해서 유저 id 추출 => 유저 식별
@@ -113,9 +116,33 @@ class AuthAPIView(APIView):
         res.delete_cookie("refresh")
         return res
     
-# # jwt 토큰 인증 확인용 뷰셋
-# # Header - Authorization : Bearer <발급 받은 토큰>
-# class UserViewSet(viewsets.ModelViewSet):
-#     permission_classes = [IsAuthenticated]
-#     queryset = User.objects.all()
-#     serializer_class = UserSerializer
+# 회원정보 수정
+@swagger_auto_schema(tags=['회원정보 수정'], request_body=UserUpdateSerializer)
+class UserRetrieveUpdateAPIView(RetrieveUpdateAPIView): # RetrieveUpdateAPIView는 create를 제외한 Retrieve, Update 기능을 제공한다.
+    permission_classes = [IsAuthenticated]
+    renderer_classes = (JSONRenderer,)
+    serializer_class = UserUpdateSerializer
+    def get_object(self):
+        return self.request.user # 현재 로그인한 유저의 정보를 실제 객체로 가져온다.
+    def patch(self, request, *args, **kwargs):
+        serializer = UserUpdateSerializer(instance=request.user, data=request.data, partial=True)
+
+        if serializer.is_valid(raise_exception=True): # 유효성 검사를 한다
+            serializer.save() # 저장한다.
+            return Response(serializer.data, status=status.HTTP_200_OK) # 저장한 데이터를 반환한다.
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) # 유효성 검사에 실패하면 에러를 반환한다.
+
+# 비밀번호 변경
+class ChangePasswordAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+    renderer_classes = (JSONRenderer,)
+    serializer_class = ChangePasswordSerializer
+    
+    @swagger_auto_schema(tags=['비밀번호 변경'], request_body=ChangePasswordSerializer)
+    def post(self, request,*args, **kwargs):
+        serializer = ChangePasswordSerializer(data=request.data,context={'request': request}) # request를 context로 넘겨주는 이유는 현재 로그인한 유저의 정보를 전달하기 위함이다.
+        if serializer.is_valid():
+            serializer.save(user=request.user)
+            return Response(status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
