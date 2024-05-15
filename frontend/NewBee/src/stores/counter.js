@@ -6,6 +6,16 @@ import router from '@/router'
 export const useCounterStore = defineStore('counter', () => {
   const token = ref(null)
   const userInfo = ref(null)
+  
+  // 메인 페이지로 이동
+  const goHome = function() {
+    router.push('/')
+  }
+  // 로그인 페이지로 이동
+  const goLogin = function() {
+    router.push('/login')
+  }
+  
   // 회원가입
   const signUp = function(info) {
     axios.post('http://127.0.0.1:8000/accounts/register/', info)
@@ -22,11 +32,11 @@ export const useCounterStore = defineStore('counter', () => {
     }
   // 로그인
   const logIn = function(info) {
-    axios.post('http://127.0.0.1:8000/accounts/auth/', info)
+    axios.delete('http://127.0.0.1:8000/accounts/auth/', info)
       .then(res => {
         console.log(res)
         console.log('로그인이 완료되었습니다.')
-        // 유저 정보 및 토큰 저장 
+        // 유저 정보?? 저장 필요한가? 및 토큰 저장??
         token.value = res.data.token
         userInfo.value = res.data
         // 로그인 완료 -> 메인 페이지로 이동
@@ -35,15 +45,32 @@ export const useCounterStore = defineStore('counter', () => {
       .catch(err => {
         console.log(err)
       })
-    }
-  // 메인 페이지로 이동
-  const goHome = function() {
-    router.push('/')
   }
-  // 로그인 페이지로 이동
-  const goLogin = function() {
-    router.push('/login')
+  // 로그아웃 // 토큰 같은거 보내줘야하나?
+  const logOut = function() {
+    axios.post('http://127.0.0.1:8000/accounts/auth/')
+      .then(res => {
+        console.log(res)
+        console.log('로그아웃이 완료되었습니다.')
+        token.value = null
+        userInfo.value = null
+        goHome()
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+  // 유저 정보 가져오기 // 토큰 같은거 보내줘야하나?
+  const getUser = function() {
+    axios.get('http://127.0.0.1:8000/accounts/auth/')
+      .then(res => {
+        console.log(res)
+        userInfo.value = res.data
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 
-  return { signUp, logIn, goHome, goLogin }
+  return { signUp, logIn, logOut, goHome, goLogin }
 })

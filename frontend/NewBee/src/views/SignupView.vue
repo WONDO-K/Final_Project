@@ -1,7 +1,6 @@
 <template>
   <div>
-    <!-- 로고 글씨 대신 로고 이미지 삽입 예정 -->
-    <RouterLink to="/">로고</RouterLink>
+    <Logo />
     <h1>SIGNUP</h1>
     <form @submit.prevent="signUp">
       <!-- label에 작은 image 삽입 가능 혹은 label 삭제 가능 -->
@@ -18,7 +17,7 @@
       <small v-show="!isPasswordMatch">비밀번호가 일치하지 않습니다.</small>
       <br>
       <label for="nickname">닉네임: </label>
-      <input type="text" id="nickname" placeholder="닉네임" v-model="nickname">
+      <input type="text" id="nickname" placeholder="닉네임" v-model="nickName">
       <button type="button" @click="checkNickname">중복 체크</button>
       <br>
       <label for="userName">이름: </label>
@@ -55,6 +54,7 @@
 import { ref, computed } from 'vue'
 import { useCounterStore } from '@/stores/counter'
 import axios from 'axios'
+import Logo from '@/components/Logo.vue'
 
 const store = useCounterStore()
 const userId = ref('')

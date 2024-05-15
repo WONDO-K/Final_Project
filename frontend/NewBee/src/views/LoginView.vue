@@ -1,6 +1,6 @@
 <template>
   <div>
-    <RouterLink to="/">로고</RouterLink>
+    <Logo />
     <h1>LOGIN</h1>
     <form @submit.prevent="logIn">
       <label for="userId">아이디: </label>
@@ -17,6 +17,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useCounterStore } from '@/stores/counter'
+import Logo from '@/components/Logo.vue'
 
 const store = useCounterStore()
 const userId = ref('')

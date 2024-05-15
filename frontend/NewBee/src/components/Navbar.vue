@@ -2,21 +2,20 @@
   <div>
     <header>
       <nav class="bg-warning">
-        <!-- 로고 글씨 대신 로고 이미지 삽입 예정 -->
-        <router-link :to="{ name : 'home' }">로고</router-link>
+        <Logo />
         <router-link to="">예금</router-link>
         <router-link to="">적금</router-link>
         <router-link to="">연금</router-link>
         <router-link to="">대출</router-link>
-        <router-link to="">근처 은행 찾기</router-link>
+        <router-link :to="{ name : 'bank'}">근처 은행 찾기</router-link>
         <p>|</p>
         <!-- 로그인 안했을 경우 -->
         <router-link :to="{ name : 'login' }">로그인</router-link>
         <router-link :to="{ name : 'signup' }">회원가입</router-link>
         <p>|</p>
         <!-- 로그인 했을 경우 -->
-        <RouterLink to="/">닉네임</RouterLink>
-        <router-link to="">로그아웃</router-link>
+        <router-link :to="{ name : 'mypage' }">마이페이지</router-link>
+        <button @click="store.logOut">로그아웃</button>
       </nav>
     </header>
   </div>
@@ -24,6 +23,10 @@
 
 <script setup>
 import { RouterLink } from 'vue-router';
+import { useCounterStore } from '@/stores/counter'
+import Logo from './Logo.vue'
+
+const store = useCounterStore()
 
 </script>
 
