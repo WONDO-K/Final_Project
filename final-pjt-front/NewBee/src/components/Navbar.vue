@@ -12,9 +12,9 @@
         <!-- 로그인 안했을 경우 -->
         <router-link :to="{ name : 'login' }">로그인</router-link>
         <router-link :to="{ name : 'signup' }">회원가입</router-link>
-        <p>|</p>
         <!-- 로그인 했을 경우 -->
-        <router-link :to="{ name : 'mypage' }" @click="store.getUser">마이페이지</router-link>
+        <p>|</p>
+        <router-link :to="{ name : 'mypage' }" @click="getUser">마이페이지</router-link>
         <button @click="store.logOut">로그아웃</button>
       </nav>
     </header>
@@ -27,7 +27,8 @@ import { useCounterStore } from '@/stores/counter'
 import Logo from './Logo.vue'
 
 const store = useCounterStore()
-
+const isLogin = store.isLogin
+const getUser = store.getUser
 </script>
 
 <style scoped>
