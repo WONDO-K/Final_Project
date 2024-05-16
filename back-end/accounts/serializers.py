@@ -5,21 +5,36 @@ from django.contrib.auth.password_validation import validate_password # Django�
 from rest_framework.validators import UniqueValidator # 이메일 중복 방지를 위한 검증 도구
 from datetime import date
 from django.contrib.auth import authenticate
-
+from django.core.validators import RegexValidator
+from rest_framework.validators import UniqueValidator
+from django.core.exceptions import ValidationError
+import re
 
 User = get_user_model()
 
-# 회원가입
+
 class UserSerializer(serializers.ModelSerializer):
-    email = serializers.EmailField(
+
+    username = serializers.CharField(
+        required=True,
+        validators = [
+            UniqueValidator(queryset=User.objects.all()), # 아이디에 대한 중복 검증
+            RegexValidator(
+                regex=r'^[a-z0-9]{3,30}$',
+                message='아이디는 3~30자의 영문 소문자, 숫자로 이루어져야 합니다.',
+            )
+        ]
+    )
+
+    email = serializers.EmailField( # 이메일은 EmailField가 자동으로 정규식을 검증한다.
         required=True,
         validators=[UniqueValidator(queryset=User.objects.all())], # 이메일에 대한 중복 검증
     )
-    password = serializers.CharField(
+    password = serializers.CharField( # 비밀번호에 대한 검증
         write_only=True,
         required=True,
-        validators=[validate_password], # 비밀번호에 대한 검증
     )
+    
     password2 = serializers.CharField( # 비밀번호 확인을 위한 필드
         write_only=True,
         required=True,
@@ -32,7 +47,15 @@ class UserSerializer(serializers.ModelSerializer):
     def validate(self, data): # password과 password2의 일치 여부 확인
         if data['password'] != data['password2']:
             raise serializers.ValidationError(
-                {"password": "Password fields didn't match."})
+                {"password": "비밀번호가 확인용 비밀번호와 일치하지 않습니다."})
+        
+        # 비밀번호 유효성 검사 추가
+        password = data['password']
+        print(f'password: {password}')
+        print(f'password2 : {data["password2"]}')
+        password_regex = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()-_=+])[a-zA-Z\d!@#$%^&*()-_=+]{8,}$'  # 최소 8자, 하나 이상의 소문자, 대문자, 숫자 포함
+        if not re.match(password_regex, password):
+            raise serializers.ValidationError("비밀번호는 8자 이상이어야 하며, 최소 1개의 숫자, 대문자, 소문자, 특수문자를 포함해야 합니다.")
         
         return data
 
@@ -122,7 +145,7 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
         fields = ['old_password', 'new_password', 'new_password2']
 
     def validate(self, data):
-        user = self.context['request'].user # 현재 로그인한 유저
+        user = self.context['request'].user
         old_password = data.get('old_password')
         new_password = data.get('new_password')
         new_password2 = data.get('new_password2')
@@ -136,6 +159,12 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
         # 새로운 비밀번호와 비밀번호 확인이 일치하는지 확인
         if new_password != new_password2:
             raise serializers.ValidationError("새로운 비밀번호가 일치하지 않습니다.")
+
+        # 새로운 비밀번호의 정규식 유효성 검사 추가
+        password_regex = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()-_=+])[a-zA-Z\d!@#$%^&*()-_=+]{8,}$'  # 최소 8자, 하나 이상의 소문자, 대문자, 숫자, 특수문자 포함
+        if not re.match(password_regex, new_password):
+            raise serializers.ValidationError("비밀번호는 8자 이상이어야 하며, 최소 1개의 숫자, 대문자, 소문자, 특수문자를 포함해야 합니다.")
+
         return data
 
     def save(self, user):
