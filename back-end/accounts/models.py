@@ -46,9 +46,8 @@ class User(AbstractUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now_add=True)
     my_product = models.JSONField(null=True, blank=True)
-
     objects = UserManager()
-
+    
     USERNAME_FIELD = 'username' # email로 로그인하는 것이 아닌 user_id로 로그인하기 위함
     REQUIRED_FIELDS = ['email'] # 사용자가 회원가입 시에 필수로 입력해야 하는 필드
 

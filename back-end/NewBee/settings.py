@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'accounts',
+    'articles',
     'drf_yasg',
     'corsheaders',
     'rest_framework',
