@@ -13,6 +13,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.renderers import JSONRenderer
 #from rest_framework.parsers import JSONParser
+from django.utils.translation import gettext as _
+from rest_framework.exceptions import ValidationError
 
 
 from rest_framework.views import APIView 
@@ -43,6 +45,65 @@ class RegisterAPIView(APIView):
             res.set_cookie("refresh", refresh_token, httponly=True)
             return res
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# 유저 ID 중복 확인
+class UsernameCheckAPIView(APIView):
+    @swagger_auto_schema(tags=['회원가입'], manual_parameters=[
+        # openapi.Parameter를 사용하는 의미는 swagger에서 해당 파라미터를 보여주기 위함이다. -> 즉, Swagger에서만 사용되는 값이다.
+        # 프론트에서는 값을 입력하고 중복확인 버튼을 누르면 검증이 이루어지기 때문에 프론트에서는 필요없는 값이다.
+        # type=openapi.TYPE_STRING는 해당 파라미터의 타입을 지정해주는 것이다.
+        openapi.Parameter('username', openapi.IN_QUERY, description="아이디 중복을 체크합니다.", type=openapi.TYPE_STRING)
+    ])
+    def get(self, request):
+        username = request.query_params.get('username', None) # None은 username이 없을 경우 None을 반환한다.
+        if username:
+            # 아이디 형식을 검증하는 정규식
+            username_regex = r'^[a-z0-9]{3,30}$'
+            username_validator = RegexValidator(
+                regex=username_regex,
+                message=_("아이디는 3~30자의 영문 소문자, 숫자로 이루어져야 합니다.") # _는 Django의 내장 함수인 gettext()의 축약형으로 유효성 검사 오류 메시지를 번역하기 위해 사용한다.
+            )
+
+            try:
+                username_validator(username)
+            except ValidationError  as e: # ValidationError가 발생하면 ValidationError 메시지를 반환한다.
+                return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST) 
+            
+            if User.objects.filter(username=username).exists(): # username이 이미 존재하는지 확인 후 exists()로 존재하면 True, 존재하지 않으면 False를 반환한다.
+                return Response({"message": "해당 아이디가 이미 존재합니다."}, status=status.HTTP_400_BAD_REQUEST)
+            
+            return Response({"message": "사용 가능한 아이디입니다."}, status=status.HTTP_200_OK)
+        
+        return Response({"message": "username을 제공해야 합니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+    
+# 이메일 중복 확인
+class EmailCheckAPIView(APIView):
+    @swagger_auto_schema(tags=['회원가입'], manual_parameters=[
+        openapi.Parameter('email', openapi.IN_QUERY, description="이메일 중복을 체크합니다.", type=openapi.TYPE_STRING)
+    ])
+    def get(self, request):
+        email = request.query_params.get('email', None)
+        if email:
+            # 이메일 형식을 검증하는 정규식
+            email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+            email_validator = RegexValidator(
+                regex=email_regex,
+                message=_("유효한 이메일 주소 형식이 아닙니다.")
+            )
+
+            try:
+                email_validator(email)
+            except ValidationError  as e: # ValidationError가 발생하면 ValidationError 메시지를 반환한다.
+                return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+            if User.objects.filter(email=email).exists():
+                return Response({"message": "해당 이메일이 이미 존재합니다."}, status=status.HTTP_400_BAD_REQUEST)
+            
+            return Response({"message": "사용 가능한 이메일입니다."}, status=status.HTTP_200_OK)
+        
+        return Response({"message": "email을 제공해야 합니다."}, status=status.HTTP_400_BAD_REQUEST)
+
 
 # 로그인 및 인증
 class AuthAPIView(APIView):
