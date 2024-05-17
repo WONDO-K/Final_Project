@@ -69,6 +69,14 @@ class BankDetailAPIView(APIView):
         }
         return JsonResponse(data)
     
+class BanksProductsAPIView(APIView):
+    def get(self, request, bank_pk):
+        bank = get_object_or_404(Bank, pk=bank_pk) # Bank 객체를 가져옴
+        products = DepositProduct.objects.filter(fin_co_no=bank) # 해당 은행의 상품들을 가져옴
+        product_serializer = DepositProductSerializer(products, many=True)
+        return JsonResponse(product_serializer.data, safe=False) # safe=False로 설정하는 이유는 QuerySet이 직렬화되지 않기 때문
+        # QuerySet이 직렬화되지 않는 이유는 QuerySet은 리스트와 비슷한 객체이지만 직렬화할 수 없는 객체이기 때문입니다.
+    
 
 # 정기예금 --------------------------------------------------------
 class DepositProductRegisterAPIView(APIView):
