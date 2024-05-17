@@ -111,11 +111,13 @@ class AuthAPIView(APIView):
     @swagger_auto_schema(tags=['로그인 및 인증'])
     def get(self, request):
         try:
-            # access token을 decode 해서 유저 id 추출 => 유저 식별
-            access = request.COOKIES.get('access')
-            if not access:
-                return Response({"detail": "엑세스 토큰을 찾을 수 없습니다."}, status=status.HTTP_401_UNAUTHORIZED)
-            
+            # Authorization 헤더에서 액세스 토큰 추출
+            authorization_header = request.headers.get('Authorization')
+            if not authorization_header or not authorization_header.startswith('Bearer '):
+                return Response({"detail": "액세스 토큰을 찾을 수 없습니다."}, status=status.HTTP_401_UNAUTHORIZED)
+
+            access = authorization_header.split('Bearer ')[1]
+
             payload = jwt.decode(access, settings.SECRET_KEY, algorithms=['HS256'])
             pk = payload.get('user_id')
             user = get_object_or_404(User, pk=pk)
@@ -152,9 +154,9 @@ class AuthAPIView(APIView):
                     samesite='None'  # Cross-site 쿠키를 사용하기 위해 설정
                 )
                 return res
-            return Response({"detail": "Invalid refresh token"}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({"detail": "잘못된 리프래쉬 토큰입니다."}, status=status.HTTP_401_UNAUTHORIZED)
         except (jwt.exceptions.InvalidTokenError):
-            return Response({"detail": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": "잘못된 토큰입니다."}, status=status.HTTP_400_BAD_REQUEST)
     # 로그인
     @swagger_auto_schema(tags=['로그인 및 인증'], request_body=LoginSerializer) # swagger와 연동
     def post(self,request):
