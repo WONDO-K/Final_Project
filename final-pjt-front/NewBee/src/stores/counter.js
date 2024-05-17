@@ -38,8 +38,6 @@ export const useCounterStore = defineStore('counter', () => {
         // 로컬 스토리지에 토큰 저장
         localStorage.setItem('access', res.data.token.access)
         localStorage.setItem('refresh', res.data.token.refresh)
-        // 임시로 로그인 상태 변경
-        isLogin.value = true
         // 로그인 완료 -> 메인 페이지로 이동
         goHome()
       })
@@ -67,11 +65,12 @@ export const useCounterStore = defineStore('counter', () => {
       })
   }
   // 유저 정보 가져오기
-  const getUser = function() {
+  const getUser = function () {
     axios.get('http://127.0.0.1:8000/accounts/auth/', {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('access')}`
-      }})
+      },
+    })
       .then(res => {
         console.log(res)
         console.log('유저 정보를 가져왔습니다.')
@@ -90,12 +89,12 @@ export const useCounterStore = defineStore('counter', () => {
           console.log(err.message);
         }
         console.log(err.config);  // 요청 설정
-      })
+      });
   }
+
 
   return {
     signUp, logIn, logOut, getUser,
     goHome, goLogin,
-    isLogin
    }
 })
