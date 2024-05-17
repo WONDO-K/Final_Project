@@ -133,7 +133,7 @@ class DepositProductRegisterAPIView(APIView):
     def get(self, request):
         response = requests.get(self.url).json()
         product_list = response.get('result', {}).get('baseList', [])
-        option_list = response.get('result', {}).get('options', [])
+        option_list = response.get('result', {}).get('optionList', [])
 
         for product_data in product_list:
             self.save_depoist_product_to_db(product_data, option_list)

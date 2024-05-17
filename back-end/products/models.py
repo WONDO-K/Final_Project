@@ -19,7 +19,7 @@ class BankOption(models.Model):
         return f"{self.area_nm} - {self.fin_co_no}"
     
 class DepositProductOption(models.Model):
-    depoist_product = models.ForeignKey('DepositProduct', on_delete=models.CASCADE)
+    deposit_product = models.ForeignKey('DepositProduct', on_delete=models.CASCADE)
     intr_rate_type = models.CharField(max_length=20)
     intr_rate_type_nm = models.CharField(max_length=100)
     save_trm = models.IntegerField()
@@ -27,7 +27,7 @@ class DepositProductOption(models.Model):
     intr_rate2 = models.DecimalField(max_digits=5, decimal_places=2)
 
     def __str__(self):
-        return f"{self.product.fin_prdt_nm} - {self.intr_rate_type_nm}"
+        return f"{self.deposit_product .fin_prdt_nm} - {self.intr_rate_type_nm}"
 
 class DepositProduct(models.Model):
     fin_prdt_cd = models.CharField(max_length=20, unique=True)  # 금융상품 코드

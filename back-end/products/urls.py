@@ -7,5 +7,5 @@ urlpatterns = [
     path('banks/', BankRegisterAPIView.as_view(), name='bank-register'),
     path('banks/<int:bank_pk>/', BankDetailAPIView.as_view(), name='bank-detail'),
     path('deposit/register/', DepositProductRegisterAPIView.as_view(), name='product-register'),
-    path('deposit/', DepositProductDetailAPIView.as_view(), name='product-detail'),
+    path('deposit/<int:product_pk>/', DepositProductDetailAPIView.as_view(), name='product-detail'),
 ]
