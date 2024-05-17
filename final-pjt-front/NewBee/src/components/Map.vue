@@ -55,7 +55,6 @@ const getCurrentPos = function () {
   navigator.geolocation.getCurrentPosition(function (pos) {
     curLat.value = pos.coords.latitude;
     curLng.value = pos.coords.longitude;
-    alert(`현재 위치는 위도: ${curLat.value}, 경도: ${curLng.value} 입니다.`)
 
     // 지도 중심 이동
     panTo(curLat.value, curLng.value);

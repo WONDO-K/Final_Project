@@ -7,7 +7,8 @@
         <router-link to="">적금</router-link>
         <router-link to="">연금</router-link>
         <router-link to="">대출</router-link>
-        <router-link :to="{ name : 'bank'}">근처 은행 찾기</router-link>
+        <router-link :to="{ name : 'banksearch'}">근처 은행 찾기</router-link>
+        <router-link :to="{ name: 'freeboard' }">자유게시판</router-link>
         <p>|</p>
         <!-- 로그인 안했을 경우 -->
         <router-link :to="{ name : 'login' }">로그인</router-link>
@@ -15,7 +16,7 @@
         <!-- 로그인 했을 경우 -->
         <p>|</p>
         <router-link :to="{ name : 'mypage' }" @click="getUser">마이페이지</router-link>
-        <button @click="store.logOut">로그아웃</button>
+        <button @click="logOut">로그아웃</button>
       </nav>
     </header>
   </div>
@@ -27,8 +28,9 @@ import { useCounterStore } from '@/stores/counter'
 import Logo from './Logo.vue'
 
 const store = useCounterStore()
-const isLogin = store.isLogin
+const logOut = store.logOut
 const getUser = store.getUser
+const isLogin = store.isLogin
 </script>
 
 <style scoped>

@@ -1,11 +1,10 @@
 import { ref, computed } from 'vue'
-import { watch } from 'vue'
 import { defineStore } from 'pinia'
 import axios from 'axios'
 import router from '@/router'
 
 export const useCounterStore = defineStore('counter', () => {
-  const userInfo = ref(null)
+  const userInfo = ref({})
 
   // 메인 페이지로 이동
   const goHome = function() {
@@ -18,7 +17,11 @@ export const useCounterStore = defineStore('counter', () => {
   
   // 회원가입
   const signUp = function(info) {
-    axios.post('http://127.0.0.1:8000/accounts/register/', info)
+    axios.post('http://127.0.0.1:8000/accounts/register/', info, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+      })
       .then(res => {
         console.log('회원가입이 완료되었습니다.')
         goLogin()
@@ -32,7 +35,11 @@ export const useCounterStore = defineStore('counter', () => {
   // 로그인
   // access 토큰 만료 시 refresh 토큰으로 재발급 logic 추가 필요
   const logIn = function(info) {
-    axios.post('http://127.0.0.1:8000/accounts/auth/', info)
+    axios.post('http://127.0.0.1:8000/accounts/auth/', info, {
+      headers: {
+        'Content-Type': 'application/json'
+        }
+      })
       .then(res => {
         console.log('로그인이 완료되었습니다.')
         // 로컬 스토리지에 토큰 저장
@@ -50,7 +57,8 @@ export const useCounterStore = defineStore('counter', () => {
   const logOut = function() {
     axios.delete('http://127.0.0.1:8000/accounts/auth/', {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('access')}`
+        'Authorization': `Bearer ${localStorage.getItem('access')}`,
+        'Content-Type': 'application/json'
       }
     })
       .then(res => {
@@ -65,36 +73,51 @@ export const useCounterStore = defineStore('counter', () => {
       })
   }
   // 유저 정보 가져오기
-  const getUser = function () {
+  const getUser = function() {
     axios.get('http://127.0.0.1:8000/accounts/auth/', {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('access')}`
+        'Authorization': `Bearer ${localStorage.getItem('access')}`,
+        'Content-Type': 'application/json'
       },
+      withCredentials: true // 쿠키를 요청에 포함시키는 옵션 추가
     })
       .then(res => {
-        console.log(res)
         console.log('유저 정보를 가져왔습니다.')
+        console.log(res.data)
+        userInfo.value.userId = res.data.username
+        userInfo.value.email = res.data.email
+        userInfo.value.nickName = res.data.nickname
+        userInfo.value.userName = res.data.realname
+        userInfo.value.birth = res.data.birth
+        userInfo.value.salary = res.data.salary
+        userInfo.value.wealth = res.data.wealth
+        userInfo.value.gender = res.data.gender
       })
       .catch(err => {
-        if (err.response) {
-          // 서버로부터 응답을 받았지만 에러가 발생한 경우
-          console.log(err.response.data);  // 에러 데이터
-          console.log(err.response.status);  // 에러 코드
-          console.log(err.response.headers);  // 응답 헤더
-        } else if (err.request) {
-          // 요청을 보내는 과정에서 에러가 발생한 경우
-          console.log(err.request);  // 요청 정보
-        } else {
-          // 기타 에러
-          console.log(err.message);
-        }
-        console.log(err.config);  // 요청 설정
-      });
+        console.log(err)
+      })
+    }
+  // 유저 정보 수정
+  const modifyUser = function(info) {
+    axios.patch('http://127.0.0.1:8000/accounts/update/', info, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('access')}`,
+        'Content-Type': 'application/json'
+      },
+      withCredentials: true // 쿠키를 요청에 포함시키는 옵션 추가
+    })
+      .then(res => {
+        console.log('유저 정보가 수정되었습니다.')
+        goHome()
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 
-
   return {
-    signUp, logIn, logOut, getUser,
+    signUp, logIn, logOut, getUser, modifyUser,
     goHome, goLogin,
+    userInfo,
    }
 })

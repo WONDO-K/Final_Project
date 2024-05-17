@@ -18,7 +18,6 @@
       <br>
       <label for="nickname">닉네임: </label>
       <input type="text" id="nickname" placeholder="닉네임" v-model="nickName">
-      <button type="button" @click="checkNickname">중복 체크</button>
       <br>
       <label for="userName">이름: </label>
       <input type="text" id="userName" placeholder="이름" v-model="userName">
@@ -70,7 +69,7 @@ const wealth = ref(0)
 const isPasswordMatch = computed(() => password.value === passwordCheck.value? true : false)
 
 // 회원가입 버튼 클릭 시, 회원가입 함수 실행
-const signUp = function () {
+const signUp = function() {
   const payload = {
       username: userId.value,
       password: password.value,
@@ -84,60 +83,50 @@ const signUp = function () {
       wealth: wealth.value
   }
   store.signUp(payload)
-  store.goLogin()
 }
 
 // 아이디 중복 체크 함수
 const checkId = function(){
-  axios.get('http://127.0.0.1:8000/', { username: userId.value })
+  axios.get('http://127.0.0.1:8000/accounts/register/check-username/', {
+    params: {
+      username: userId.value
+    }
+  })
     .then((res) => {
       console.log(res)
-      if (res.data === 'true') {
-        console.log('사용 가능한 아이디입니다.')
-        alert('사용 가능한 아이디입니다.')
-      } else {
-        console.log('이미 존재하는 아이디입니다.')
-        alert('이미 존재하는 아이디입니다.')
-      }
+      console.log('사용 가능한 아이디입니다.')
+      alert('사용 가능한 아이디입니다.')
     })
     .catch((err) => {
-      console.log(err)
-    })
-}
-
-// 닉네임 중복 체크 함수
-const checkNickname = function(){
-  axios.get('http://127.0.0.1:8000/', { nickname: nickName.value })
-    .then((res) => {
-      console.log(res)
-      if (res.data === 'true') {
-        console.log('사용 가능한 닉네임입니다.')
-        alert('사용 가능한 닉네임입니다.')
+      if (err.response.status === 500) {
+        console.log('아이디 형식이 올바르지 않습니다.')
+        alert('아이디 형식이 올바르지 않습니다.')
       } else {
-        console.log('이미 존재하는 닉네임입니다.')
-        alert('이미 존재하는 닉네임입니다.')
+        alert(err.response.data.message)
       }
-    })
-    .catch((err) => {
-      console.log(err)
     })
 }
 
 // 이메일 중복 체크 함수
 const checkEmail = function(){
-  axios.get('http://127.0.0.1:8000/', { email: email.value })
+  axios.get('http://127.0.0.1:8000/accounts/register/check-email/', {
+    params: {
+      email: email.value
+    }
+  })
     .then((res) => {
       console.log(res)
-      if (res.data === 'true') {
-        console.log('사용 가능한 이메일입니다.')
-        alert('사용 가능한 이메일입니다.')
-      } else {
-        console.log('이미 존재하는 이메일입니다.')
-        alert('이미 존재하는 이메일입니다.')
-      }
+      console.log('사용 가능한 이메일입니다.')
+      alert('사용 가능한 이메일입니다.')
     })
     .catch((err) => {
       console.log(err)
+      if (err.response.status === 500){
+        console.log('이메일 형식이 올바르지 않습니다.')
+        alert('이메일 형식이 올바르지 않습니다.')
+      } else {
+        alert(err.response.data.message)
+      }
     })
 }
 

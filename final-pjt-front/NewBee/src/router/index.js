@@ -4,6 +4,7 @@ import SignupView from '@/views/SignupView.vue'
 import LoginView from '@/views/LoginView.vue'
 import MyPageView from '@/views/MyPageView.vue'
 import BankSearchView from '@/views/BankSearchView.vue'
+import FreeBoardView from '@/views/FreeBoardView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -29,9 +30,14 @@ const router = createRouter({
       component: MyPageView,
     },
     {
-      path: '/bank',
-      name: 'bank',
+      path: '/banksearch',
+      name: 'banksearch',
       component: BankSearchView,
+    },
+    {
+      path: '/freeboard',
+      name: 'freeboard',
+      component: FreeBoardView,
     }
   ]
 })
