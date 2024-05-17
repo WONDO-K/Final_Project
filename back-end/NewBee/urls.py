@@ -43,4 +43,6 @@ urlpatterns = [
     # 이 아랫 부분은 우리가 사용하는 app들의 URL들을 넣습니다.
     path('accounts/', include('accounts.urls')),
     path('articles/', include('articles.urls')),
+    path('rates/', include('rates.urls')),
+    path('products/', include('products.urls')),
 ]
