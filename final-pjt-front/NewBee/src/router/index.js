@@ -5,6 +5,7 @@ import LoginView from '@/views/LoginView.vue'
 import MyPageView from '@/views/MyPageView.vue'
 import BankSearchView from '@/views/BankSearchView.vue'
 import FreeBoardView from '@/views/FreeBoardView.vue'
+import ArticleCreateView from '@/views/ArticleCreateView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -38,6 +39,11 @@ const router = createRouter({
       path: '/freeboard',
       name: 'freeboard',
       component: FreeBoardView,
+    },
+    {
+      path: '/createarticle',
+      name: 'createarticle',
+      component: ArticleCreateView,
     }
   ]
 })

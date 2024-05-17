@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <router-link :to="{ name : 'home' }"><img src="@/assets/images/logo.png" alt="logo"></router-link>
+  <div class="rounded-3">
+    <router-link :to="{ name : 'home' }"><img src="@/assets/images/logo.png" class="rounded-3" alt="logo"></router-link>
   </div>
 </template>
 
@@ -12,7 +12,5 @@
 img {
   width: 100px;
   height: 100px;
-  margin-left: 1rem;
-  margin-right: 1rem;
 }
 </style>

@@ -1,17 +1,21 @@
 <template>
-  <div>
-    <Logo />
-    <h1>LOGIN</h1>
-    <form @submit.prevent="logIn">
-      <label for="userId">아이디: </label>
-      <input type="text" id="userId" placeholder="아이디" v-model="userId">   
-      <br>
-      <label for="password">비밀번호: </label>
-      <input type="password" id="password" placeholder="비밀번호" v-model="password">
-      <br>
-      <button type="submit">로그인</button>
-    </form>
+  <div class="text-center">
+    <Logo class="mb-3" />
+    <h1 class="mb-4">로그인</h1>
+    <div class="container">
+      <form @submit.prevent="logIn">
+        <div class="mb-3 form-floating">
+          <input type="text" id="userId" class="form-control" placeholder="아이디" v-model="userId">   
+          <label for="userId" class="form-label">아이디</label>
+        </div>
+        <div class="mb-4 form-floating">
+          <input type="password" id="password" class="form-control" placeholder="비밀번호" v-model="password">
+          <label for="password">비밀번호</label>
+        </div>
+        <button type="submit" class="btn btn-primary text-white">로그인</button>
+      </form>
     </div>
+  </div>
 </template>
 
 <script setup>

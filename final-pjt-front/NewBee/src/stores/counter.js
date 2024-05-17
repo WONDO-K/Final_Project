@@ -114,9 +114,40 @@ export const useCounterStore = defineStore('counter', () => {
         console.log(err)
       })
   }
+  // 게시글 가져오기 
+  const getArticles = function() {
+    axios.get('http://127.0.0.1:8000/articles/', {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(res => {
+        console.log('게시글을 가져왔습니다.')
+        console.log(res.data)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+  const createArticle = function(info) {
+    axios.post('http://127.0.0.1:8000/articles/', info, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('access')}`,
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(res => {
+        console.log('게시글이 작성되었습니다.')
+        goHome()
+      })
+      .catch(err => {
+        console.log(err)
+      })
+    }
 
   return {
     signUp, logIn, logOut, getUser, modifyUser,
+    getArticles, createArticle,
     goHome, goLogin,
     userInfo,
    }
