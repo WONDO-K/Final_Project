@@ -19,11 +19,11 @@ class RatesListAPIView(APIView):
     url = "https://www.koreaexim.go.kr/site/program/financial/exchangeJSON"
     
     def save_currency_to_db(self, currency_data):
-        cur_nm = currency_data.get('cur_nm')
-        cur_unit = currency_data.get('cur_unit')
-        deal_bas_r = currency_data.get('deal_bas_r')
+        cur_nm = currency_data.get('cur_nm') # 통화명
+        cur_unit = currency_data.get('cur_unit')# 통화단위
+        deal_bas_r = currency_data.get('deal_bas_r')# 매매기준율
         # 기존 데이터를 업데이트하거나 새 데이터를 생성
-        CurrencyRate.objects.update_or_create(
+        CurrencyRate.objects.update_or_create( # update_or_create 메서드를 사용하여 기존 데이터를 업데이트하거나 새 데이터를 생성
             cur_unit=cur_unit,
             defaults={'cur_nm': cur_nm, 'deal_bas_r': deal_bas_r}
         )
@@ -31,7 +31,7 @@ class RatesListAPIView(APIView):
     @swagger_auto_schema(
         operation_summary="현재 환율 정보를 조회 및 DB에 저장합니다.",
         responses={200: "Success"},
-        tags=['현재 환율']
+        tags=['환율']
     )
     def get(self, request):
         try:
@@ -55,7 +55,7 @@ class RatesListAPIView(APIView):
                 # 데이터베이스에 저장
                 self.save_currency_to_db(currency_data)
             
-            return Response({'currency_rates': currency_rates}, status=status.HTTP_200_OK)
+            return Response({'currency_rates': currency_rates}, status=status.HTTP_200_OK) 
         
         except requests.exceptions.RequestException as e:
             # API 요청 중 에러 발생 시
@@ -77,7 +77,7 @@ class ExchangeMoneyAPIView(APIView):
         responses={
             200: openapi.Response(
                 description='Conversion result',
-                examples={
+                examples={ # 응답 예시
                     'application/json': {
                         'result': 1234.56
                     }
@@ -86,23 +86,23 @@ class ExchangeMoneyAPIView(APIView):
             404: openapi.Response(description='환율 정보를 찾을 수 없음'),
             500: openapi.Response(description='서버 내부 오류')
         },
-        tags=['환율 변환']
+        tags=['환율']
     )
     def post(self, request):
         try:
             # 사용자가 입력한 환율 정보를 가져옴
             data = request.data
-            amount = data.get('amount')
-            from_currency = data.get('from_currency')
-            to_currency = data.get('to_currency')
+            amount = data.get('amount') # 변환할 금액
+            from_currency = data.get('from_currency') # 변환할 통화
+            to_currency = data.get('to_currency') # 변환하고 싶은 통화
             
             # 데이터베이스에서 해당 환율 정보를 가져옴
             from_currency_rate = CurrencyRate.objects.get(cur_unit=from_currency)
             to_currency_rate = CurrencyRate.objects.get(cur_unit=to_currency)
             
             # 환율 계산 (기준이 되는 통화를 원화로 가정하고 계산)
-            deal_bas_r_from = float(from_currency_rate.deal_bas_r.replace(',', ''))
-            deal_bas_r_to = float(to_currency_rate.deal_bas_r.replace(',', ''))
+            deal_bas_r_from = float(from_currency_rate.deal_bas_r.replace(',', '')) # 문자열에서 콤마를 제거하고 실수로 변환
+            deal_bas_r_to = float(to_currency_rate.deal_bas_r.replace(',', '')) 
 
             # 1 from_currency 단위를 원화로 변환한 후, 원하는 to_currency 단위로 변환
             result = (amount * deal_bas_r_from) / deal_bas_r_to
