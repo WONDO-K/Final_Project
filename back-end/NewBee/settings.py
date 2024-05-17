@@ -13,15 +13,24 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from datetime import timedelta
 from pathlib import Path
 
+import os
+import environ
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+env = environ.Env(
+    DEBUG=(bool, False)
+)
+
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+
+RATE_API_KEY = env('RATE_API_KEY')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-tm-o1$kg0^)l(urlzd!@(nb@d^8+qk&b#=r_p5j@3mb1k5w6op'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -34,6 +43,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'accounts',
     'articles',
+    'rates',
     'drf_yasg',
     'corsheaders',
     'rest_framework',
