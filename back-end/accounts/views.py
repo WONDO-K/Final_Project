@@ -113,11 +113,15 @@ class AuthAPIView(APIView):
         try:
             # access token을 decode 해서 유저 id 추출 => 유저 식별
             access = request.COOKIES.get('access')
+            if not access:
+                return Response({"detail": "엑세스 토큰을 찾을 수 없습니다."}, status=status.HTTP_401_UNAUTHORIZED)
+            
             payload = jwt.decode(access, settings.SECRET_KEY, algorithms=['HS256'])
             pk = payload.get('user_id')
             user = get_object_or_404(User, pk=pk)
             serializer = UserSerializer(instance=user)
             return Response(serializer.data, status=status.HTTP_200_OK)
+        
         except (jwt.exceptions.ExpiredSignatureError):
             # 토큰 만료시 토큰 갱신
             data = {'refresh' : request.COOKIES.get('refresh',None)}
@@ -125,17 +129,32 @@ class AuthAPIView(APIView):
             if serializer.is_valid(raise_exception=True):
                 access = serializer.data.get('access',None)
                 refresh = serializer.data.get('refresh',None)
+
                 payload = jwt.decode(access, settings.SECRET_KEY, algorithms=['HS256']) # access token을 HS256로 decode하여 payload를 가져온다. 여기서 payload란 토큰에 담긴 정보를 말한다.
                 pk = payload.get('user_id')
                 user = get_object_or_404(User, pk=pk)
-                serializer = UserSerializer(instance=user)
-                res = Response(serializer.data, status=status.HTTP_200_OK)
-                res.set_cookie("access", access)
-                res.set_cookie("refresh", refresh)
+                user_serializer = UserSerializer(instance=user)
+
+                # 새로 발급된 Access 토큰과 Refresh 토큰을 쿠키에 설정
+                res = Response(user_serializer.data, status=status.HTTP_200_OK)
+                res.set_cookie(
+                    key='access',
+                    value=access,
+                    httponly=True,
+                    secure=False,  # HTTPS를 사용하는 경우
+                    samesite='None'  # Cross-site 쿠키를 사용하기 위해 설정
+                )
+                res.set_cookie(
+                    key='refresh',
+                    value=refresh,
+                    httponly=True,
+                    secure=False,  # HTTPS를 사용하는 경우
+                    samesite='None'  # Cross-site 쿠키를 사용하기 위해 설정
+                )
                 return res
-            raise jwt.exceptions.InvalidTokenError
+            return Response({"detail": "Invalid refresh token"}, status=status.HTTP_401_UNAUTHORIZED)
         except (jwt.exceptions.InvalidTokenError):
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST)
     # 로그인
     @swagger_auto_schema(tags=['로그인 및 인증'], request_body=LoginSerializer) # swagger와 연동
     def post(self,request):
@@ -162,7 +181,7 @@ class AuthAPIView(APIView):
                 status = status.HTTP_200_OK,
             )
             # jwt 토큰 쿠키에 넣어주기
-            res.set_cookie("access", access_token, httponly=True)
+            res.set_cookie("access", access_token, httponly=True) # httponly=True는 자바스크립트에서 쿠키에 접근하지 못하도록 하는 옵션이다.
             res.set_cookie("refresh", refresh_token, httponly=True)
             return res
         else:
