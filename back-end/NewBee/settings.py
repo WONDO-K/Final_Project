@@ -25,12 +25,14 @@ env = environ.Env(
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 RATE_API_KEY = env('RATE_API_KEY')
+PRODUCT_API_KEY = env('PRODUCT_API_KEY')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY')
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -44,6 +46,7 @@ INSTALLED_APPS = [
     'accounts',
     'articles',
     'rates',
+    'products',
     'drf_yasg',
     'corsheaders',
     'rest_framework',
