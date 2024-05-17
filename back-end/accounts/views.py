@@ -74,7 +74,7 @@ class UsernameCheckAPIView(APIView):
             
             return Response({"message": "사용 가능한 아이디입니다."}, status=status.HTTP_200_OK)
         
-        return Response({"message": "username을 제공해야 합니다."}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"message": "아이디를 입력하세요."}, status=status.HTTP_400_BAD_REQUEST)
 
     
 # 이메일 중복 확인
@@ -102,7 +102,7 @@ class EmailCheckAPIView(APIView):
             
             return Response({"message": "사용 가능한 이메일입니다."}, status=status.HTTP_200_OK)
         
-        return Response({"message": "email을 제공해야 합니다."}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"message": "email을 입력하세요."}, status=status.HTTP_400_BAD_REQUEST)
 
 
 # 로그인 및 인증
