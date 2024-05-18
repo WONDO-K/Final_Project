@@ -7,6 +7,7 @@ import BankSearchView from '@/views/BankSearchView.vue'
 import FreeBoardView from '@/views/FreeBoardView.vue'
 import ArticleCreateView from '@/views/ArticleCreateView.vue'
 import ArticleDetailView from '@/views/ArticleDetailView.vue'
+import ArticleUpdateView from '@/views/ArticleUpdateView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -50,6 +51,11 @@ const router = createRouter({
       path: '/article/:id',
       name: 'articleDetail',
       component: ArticleDetailView,
+    },
+    {
+      path: '/article/:id/update',
+      name: 'articleUpdate',
+      component: ArticleUpdateView,
     }
   ]
 })

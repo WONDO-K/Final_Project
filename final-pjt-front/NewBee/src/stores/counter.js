@@ -2,6 +2,8 @@ import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import axios from 'axios'
 import router from '@/router'
+import { useRoute } from 'vue-router'
+
 
 export const useCounterStore = defineStore('counter', () => {
   // 로그인 여부
@@ -9,6 +11,7 @@ export const useCounterStore = defineStore('counter', () => {
   
   const userInfo = ref({})
   const articles = ref([])
+  const article = ref(null)
 
   // 메인 페이지로 이동
   const goHome = function() {
@@ -20,7 +23,7 @@ export const useCounterStore = defineStore('counter', () => {
   }
 
   // 회원가입
-  const signUp = function(info) {
+  const signUp = function(info){
     axios.post('http://127.0.0.1:8000/accounts/register/', info, {
       headers: {
         'Content-Type': 'application/json'
@@ -48,6 +51,7 @@ export const useCounterStore = defineStore('counter', () => {
         localStorage.setItem('access', res.data.token.access)
         localStorage.setItem('refresh', res.data.token.refresh)
         // 로그인 완료 -> 메인 페이지로 이동
+        isLogin.value = true
         goHome()
       })
       .catch(err => {
@@ -69,6 +73,7 @@ export const useCounterStore = defineStore('counter', () => {
         console.log(isLogin.value)
         localStorage.removeItem('access')
         localStorage.removeItem('refresh')
+        isLogin.value = false
         goHome()
       })
       .catch(err => {
@@ -119,13 +124,7 @@ export const useCounterStore = defineStore('counter', () => {
   }
   // 게시글 목록 가져오기
   const getArticles = function() {
-    axios.get('http://127.0.0.1:8000/articles/articles/', {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('access')}`,
-        'Content-Type': 'application/json'
-      },
-      withCredentials: true // 쿠키를 요청에 포함시키는 옵션 추가
-    })
+    axios.get('http://127.0.0.1:8000/articles/articles/')
       .then(res => {
         console.log('게시글을 가져왔습니다.')
         console.log(res.data)
@@ -150,14 +149,60 @@ export const useCounterStore = defineStore('counter', () => {
       })
       .catch(err => {
         console.log(err)
+      })    
+  }
+  // 게시글 상세정보 가져오기
+  const getArticle = function(id) {
+    axios.get(`http://127.0.0.1:8000/articles/articles/${ id }/`)
+      .then(res => {
+        console.log('게시글 상세정보를 가져왔습니다.')
+        console.log(res.data)
+        article.value = res.data
       })
+      .catch(err => {
+        console.log(err)
+      })
+    }
+  // 게시글 삭제하기
+  const deleteArticle = function(id) {
+    axios.delete(`http://127.0.0.1:8000/articles/articles/${id}/`, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('access')}`,
+        'Content-Type': 'application/json'
+      },
+      withCredentials: true // 쿠키를 요청에 포함시키는 옵션 추가
+    })
+      .then(res => {
+        console.log('게시글이 삭제되었습니다.')
+        router.push('/freeboard')
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+  // 게시글 수정하기
+  const updateArticle = function(id, info) {
+    axios.put(`http://127.0.0.1:8000/articles/articles/${id}/`, info, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('access')}`,
+        'Content-Type': 'application/json'
+      },
+      withCredentials: true // 쿠키를 요청에 포함시키는 옵션 추가
+    })
+    .then(res => {
+      console.log('게시글이 수정되었습니다.')
+      router.push('/article/:id', { id: id })
+    })
+    .catch(err => {
+      console.log(err)
+    })
   }
 
   return {
     signUp, logIn, logOut, getUser, modifyUser,
-    getArticles, createArticle,
+    getArticles, createArticle, getArticle, deleteArticle, updateArticle,
     goHome, goLogin,
-    userInfo, articles,
+    userInfo, articles, article,
     isLogin
    }
 }, { persist: true })

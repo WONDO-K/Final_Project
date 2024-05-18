@@ -18,7 +18,7 @@
           <td>{{ cutContent(article.title) }}</td>
           <td>{{ cutContent(article.content) }}</td>
           <td>{{ article.comments.length }}</td>
-          <td>{{ article.user }}</td>        
+          <td>{{ article.user.username }}</td>
         </tr>
       </tbody>
     </table>
@@ -29,9 +29,11 @@
 import { useCounterStore } from '@/stores/counter'
 import { RouterLink } from 'vue-router';
 import { useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 
 const store = useCounterStore()
 const router = useRouter()
+const route = useRoute()
 
 const cutContent = (content) => {
   return content.length > 10 ? content.slice(0, 10) + '...' : content;
@@ -39,6 +41,7 @@ const cutContent = (content) => {
 
 const goDetail = (article) => {
   router.push({ name: 'articleDetail', params: { id: article.id }})
+  store.getArticle(article.id)
 }
 </script>
 

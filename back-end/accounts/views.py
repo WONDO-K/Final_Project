@@ -113,6 +113,7 @@ class AuthAPIView(APIView):
         try:
             # Authorization 헤더에서 액세스 토큰 추출
             authorization_header = request.headers.get('Authorization')
+            print(f'authorization_header: {authorization_header}')
             if not authorization_header or not authorization_header.startswith('Bearer '):
                 return Response({"detail": "액세스 토큰을 찾을 수 없습니다."}, status=status.HTTP_401_UNAUTHORIZED)
 

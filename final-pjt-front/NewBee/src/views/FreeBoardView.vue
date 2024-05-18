@@ -4,7 +4,7 @@
     <div class="container">
       <ArticleList />
     </div>
-    <router-link :to="{name: 'createarticle'}">글쓰기</router-link>
+    <router-link :to="{name: 'createarticle'}" v-show="isLogin">글쓰기</router-link>
   </div>
 </template>
 
@@ -14,10 +14,15 @@ import { useCounterStore } from '@/stores/counter'
 import ArticleList from '@/components/ArticleList.vue'
 import { RouterLink } from 'vue-router'
 
+const store = useCounterStore()
+
 onMounted(() => {
-  const store = useCounterStore()
   store.getArticles()
 })
+
+const isLogin = store.isLogin
+
+
 
 </script>
 
