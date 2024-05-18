@@ -25,4 +25,17 @@ class DepositProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = DepositProduct
-        fields = ['fin_prdt_cd', 'fin_co_no', 'fin_prdt_nm', 'join_way', 'mtrt_int', 'spcl_cnd', 'join_deny', 'join_member', 'etc_note', 'max_limit', 'dcls_strt_day', 'dcls_end_day', 'dcls_month', 'fin_co_subm_day', 'deposit_options']
+        fields = ['fin_prdt_cd','kor_co_nm', 'fin_co_no', 'fin_prdt_nm', 'join_way', 'mtrt_int', 'spcl_cnd', 'join_deny', 'join_member', 'etc_note', 'max_limit', 'dcls_strt_day', 'dcls_end_day', 'dcls_month', 'fin_co_subm_day', 'deposit_options']
+        
+class SavingProductOptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SavingProductOption
+        fields = ['intr_rate_type','intr_rate_type_nm','rsrv_type','rsrv_type_nm','save_trm','intr_rate','intr_rate2']
+
+class SavingProductSerializer(serializers.ModelSerializer):
+
+    saving_options = SavingProductOptionSerializer(many=True)  # SavingProductOptionSerializer 포함(역참조, 여러 개의 SavingProductOption 객체를 시리얼라이즈)
+
+    class Meta:
+        model = SavingProduct
+        fields = ['fin_prdt_cd', 'kor_co_nm', 'fin_co_no', 'fin_prdt_nm', 'join_way', 'mtrt_int', 'spcl_cnd', 'join_deny', 'join_member', 'etc_note', 'max_limit', 'dcls_strt_day', 'dcls_end_day', 'dcls_month', 'fin_co_subm_day']

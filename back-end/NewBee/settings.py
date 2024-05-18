@@ -165,6 +165,21 @@ REST_FRAMEWORK = {
     ),
 }
 
+SWAGGER_SETTINGS = {
+    'USE_SESSION_AUTH': False,
+    'SECURITY_DEFINITIONS': {
+        'BearerAuth': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header',
+            'description': "JWT Token"
+        }
+    },
+    'SECURITY_REQUIREMENTS': [{
+        'BearerAuth': []
+    }]
+}
+
 # jwt settings
 SIMPLE_JWT = {
 # Access Token의 수명 (30분)
