@@ -16,7 +16,9 @@ class BankSerializer(serializers.ModelSerializer):
 class DepositProductOptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = DepositProductOption
-        fields = ['intr_rate_type', 'intr_rate_type_nm', 'save_trm', 'intr_rate', 'intr_rate2']
+        fields = [
+            'intr_rate_type', 'intr_rate_type_nm', 
+            'save_trm', 'intr_rate', 'intr_rate2']
 
 class DepositProductSerializer(serializers.ModelSerializer): 
 
@@ -25,12 +27,18 @@ class DepositProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = DepositProduct
-        fields = ['fin_prdt_cd','kor_co_nm', 'fin_co_no', 'fin_prdt_nm', 'join_way', 'mtrt_int', 'spcl_cnd', 'join_deny', 'join_member', 'etc_note', 'max_limit', 'dcls_strt_day', 'dcls_end_day', 'dcls_month', 'fin_co_subm_day', 'deposit_options']
+        fields = [
+            'fin_prdt_cd','kor_co_nm', 'fin_co_no', 'fin_prdt_nm', 
+            'join_way', 'mtrt_int', 'spcl_cnd', 'join_deny', 'join_member', 
+            'etc_note', 'max_limit', 'dcls_strt_day', 'dcls_end_day', 'dcls_month', 
+            'fin_co_subm_day', 'deposit_options']
         
 class SavingProductOptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = SavingProductOption
-        fields = ['intr_rate_type','intr_rate_type_nm','rsrv_type','rsrv_type_nm','save_trm','intr_rate','intr_rate2']
+        fields = [
+            'intr_rate_type','intr_rate_type_nm','rsrv_type','rsrv_type_nm',
+            'save_trm','intr_rate','intr_rate2']
 
 class SavingProductSerializer(serializers.ModelSerializer):
 
@@ -38,4 +46,33 @@ class SavingProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SavingProduct
-        fields = ['fin_prdt_cd', 'kor_co_nm', 'fin_co_no', 'fin_prdt_nm', 'join_way', 'mtrt_int', 'spcl_cnd', 'join_deny', 'join_member', 'etc_note', 'max_limit', 'dcls_strt_day', 'dcls_end_day', 'dcls_month', 'fin_co_subm_day']
+        fields = [
+            'fin_prdt_cd', 'kor_co_nm', 'fin_co_no', 'fin_prdt_nm', 
+            'join_way', 'mtrt_int', 'spcl_cnd', 'join_deny', 'join_member', 
+            'etc_note', 'max_limit', 'dcls_strt_day', 'dcls_end_day', 'dcls_month', 
+            'fin_co_subm_day','saving_options']
+
+class PensionProductOptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PensionProductOption
+        fields = [
+            'dcls_month', 'fin_co_no', 'fin_prdt_cd', 'pnsn_recp_trm',
+            'pnsn_recp_trm_nm', 'pnsn_entr_age', 'pnsn_entr_age_nm',
+            'mon_paym_atm', 'mon_paym_atm_nm', 'paym_prd', 'paym_prd_nm',
+            'pnsn_strt_age', 'pnsn_strt_age_nm', 'pnsn_recp_amt'
+        ]
+        
+class PensionProductSerializer(serializers.ModelSerializer):
+
+    pension_options = PensionProductOptionSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = PensionProduct
+        fields = [
+            'dcls_month', 'fin_co_no', 'kor_co_nm', 'fin_prdt_cd', 
+            'fin_prdt_nm', 'join_way', 'pnsn_kind', 'pnsn_kind_nm', 
+            'sale_strt_day', 'mntn_cnt', 'prdt_type', 'prdt_type_nm', 
+            'dcls_rate', 'guar_rate', 'btrm_prft_rate_1', 'btrm_prft_rate_2', 
+            'btrm_prft_rate_3', 'etc', 'sale_co', 'dcls_strt_day', 
+            'dcls_end_day', 'fin_co_subm_day', 'pension_options'
+        ]
