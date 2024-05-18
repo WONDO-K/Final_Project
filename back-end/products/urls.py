@@ -9,4 +9,6 @@ urlpatterns = [
     path('banks/products/<int:bank_pk>/', BanksProductsAPIView.as_view(), name='bank-product-list'),
     path('deposit/register/', DepositProductRegisterAPIView.as_view(), name='product-register'),
     path('deposit/<int:product_pk>/', DepositProductDetailAPIView.as_view(), name='product-detail'),
+    path('saving/register/', SavingProductRegisterAPIView.as_view(), name='saving-register'),
+    
 ]

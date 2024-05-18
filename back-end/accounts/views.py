@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate
 from django.shortcuts import get_object_or_404, render
 from .serializers import *
 from rest_framework_simplejwt.serializers import *
+from .serializers import *
 from rest_framework.response import Response
 from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
@@ -185,6 +186,8 @@ class AuthAPIView(APIView):
             # jwt 토큰 쿠키에 넣어주기
             res.set_cookie("access", access_token, httponly=True) # httponly=True는 자바스크립트에서 쿠키에 접근하지 못하도록 하는 옵션이다.
             res.set_cookie("refresh", refresh_token, httponly=True)
+
+            print(f'res: {res.cookies}')
             return res
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
