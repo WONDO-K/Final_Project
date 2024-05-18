@@ -44,3 +44,14 @@ class ArticleSerializer(serializers.ModelSerializer):
             }
             for comment in comments
         ]
+    
+class ArticleListSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()  # UserSerializer 대신 SerializerMethodField 사용
+
+    class Meta:
+        model = Article
+        fields = ['id', 'title', 'content', 'user', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'user']
+
+    def get_user(self, obj):
+        return obj.user.username  # 게시글 작성자의 username 반환

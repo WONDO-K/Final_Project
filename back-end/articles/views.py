@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from drf_yasg.utils import swagger_auto_schema
 from .models import Article, Comment
-from .serializers import ArticleSerializer, CommentSerializer
+from .serializers import ArticleSerializer, CommentSerializer, ArticleListSerializer
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.renderers import JSONRenderer
@@ -36,7 +36,7 @@ class ArticleListCreateAPIView(GenericAPIView):  # GenericAPIView는 APIView와 
     @permission_classes([AllowAny])
     def get(self, request, *args, **kwargs):
         articles = Article.objects.all()
-        serializer = ArticleSerializer(articles, many=True)
+        serializer = ArticleListSerializer(articles, many=True)
         return Response(serializer.data)
 
 # @method_decorator(csrf_exempt, name='dispatch')
@@ -83,7 +83,7 @@ class ArticleRetrieveAPIView(RetrieveUpdateDestroyAPIView):
     # 게시글 조회
     @swagger_auto_schema(tags=['게시판'])
     @permission_classes([AllowAny])
-    def get(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs): 
         return super().get(request, *args, **kwargs)
 
     # 게시글 수정
