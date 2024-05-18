@@ -13,8 +13,7 @@ class Article(models.Model):
 
 class Like(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='likes') # 좋아요를 누른 게시글
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='liked_articles') # 좋아요를 누른 유저
-
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='likes') # 좋아요를 누른 유저
 
 class Comment(models.Model):
     content = models.TextField(max_length=200) # 댓글 내용

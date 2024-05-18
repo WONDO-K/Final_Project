@@ -43,7 +43,8 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username', 'realname', 'password', 'password2', 'nickname', 'email', 'birth', 'salary', 'gender', 'wealth', 'is_staff', 'my_product']   
-
+        #ref_name = 'UserSerializer'  # ref_name 추가
+        
     def validate(self, data): # password과 password2의 일치 여부 확인
         if data['password'] != data['password2']:
             raise serializers.ValidationError(

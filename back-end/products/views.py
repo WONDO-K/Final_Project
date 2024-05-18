@@ -40,7 +40,7 @@ class BankRegisterAPIView(APIView):
     @swagger_auto_schema(
         operation_summary="외부 API에서 은행 목록을 가져와 데이터베이스에 저장합니다.",
         responses={200: "성공"},
-        tags=['은행']
+        tags=['금융']
     )
     def get(self, request):
         response = requests.get(self.url).json()
@@ -56,7 +56,8 @@ class BankRegisterAPIView(APIView):
 
 @swagger_auto_schema(
     operation_summary="은행의 상세 정보를 가져옵니다.",
-    tags=['은행'])
+    tags=['금융']
+    )
 class BankDetailAPIView(APIView):
     def get(self, request, bank_pk):
         bank = get_object_or_404(Bank, pk=bank_pk)
@@ -68,7 +69,11 @@ class BankDetailAPIView(APIView):
             'options': options_serializer.data
         }
         return JsonResponse(data)
-    
+
+@swagger_auto_schema(
+    operation_summary="은행의 금융 상품 리스트를 가져옵니다.",
+    tags=['조회']
+    )   
 class BanksProductsAPIView(APIView):
     def get(self, request, bank_pk):
         bank = get_object_or_404(Bank, pk=bank_pk) # Bank 객체를 가져옴
@@ -137,7 +142,8 @@ class DepositProductRegisterAPIView(APIView):
 
     @swagger_auto_schema(
     operation_summary="외부 API에서 정기예금 상품 정보를 가져와 데이터베이스에 저장합니다.",
-    tags=['정기예금'])        
+    tags=['금융']
+    )        
     def get(self, request):
         response = requests.get(self.url).json()
         product_list = response.get('result', {}).get('baseList', []) # baseList에 상품 정보가 들어있음
@@ -150,10 +156,219 @@ class DepositProductRegisterAPIView(APIView):
     
 @swagger_auto_schema(
     operation_summary="정기예금의 상세 정보를 가져옵니다.",
-    tags=['정기예금']
+    tags=['조회']
 )
 class DepositProductDetailAPIView(APIView):
     def get(self, request, product_pk):
         product = get_object_or_404(DepositProduct, pk=product_pk)
         product_serializer = DepositProductSerializer(product)
+        return JsonResponse(product_serializer.data)
+    
+# 적금 --------------------------------------------------------
+
+class SavingProductRegisterAPIView(APIView):
+    url = f'http://finlife.fss.or.kr/finlifeapi/savingProductsSearch.json?auth={API_KEY}&topFinGrpNo=020000&pageNo=1'
+  
+    def save_depoist_product_to_db(self, product_data, option_list):
+        fin_prdt_cd = product_data.get('fin_prdt_cd') # 상품 코드
+        fin_co_no = product_data.get('fin_co_no') # 금융회사 코드
+        kor_co_nm = product_data.get('kor_co_nm') # 금융회사명
+        fin_co_instance = Bank.objects.get(fin_co_no=fin_co_no) # Bank 객체를 가져와서 넣어줘야 함
+        fin_prdt_nm = product_data.get('fin_prdt_nm') # 상품명
+        join_way = product_data.get('join_way') # 가입 방법
+        mtrt_int = product_data.get('mtrt_int') # 만기 후 이자율     
+        spcl_cnd = product_data.get('spcl_cnd') # 우대조건
+        join_deny = product_data.get('join_deny') # 가입제한
+        join_member = product_data.get('join_member') # 가입대상
+        etc_note = product_data.get('etc_note') # 기타 유의사항
+        max_limit = product_data.get('max_limit') # 최고한도
+        dcls_strt_day = product_data.get('dcls_strt_day') # 공시 시작일
+        dcls_end_day = product_data.get('dcls_end_day') # 공시 종료일
+        dcls_month = product_data.get('dcls_month') # 공시 제출월
+        fin_co_subm_day = product_data.get('fin_co_subm_day') # 금융회사 제출일
+
+        # Product 객체 생성 또는 업데이트
+        product, created = SavingProduct.objects.update_or_create( 
+            fin_prdt_cd=fin_prdt_cd, # 상품 코드로 조회
+            defaults={ # 업데이트할 필드들
+                'fin_prdt_nm': fin_prdt_nm,
+                'fin_co_no' :  fin_co_instance, # Bank 객체를 넣어줘야 함
+                'kor_co_nm': kor_co_nm, # 금융회사명 추가
+                'join_way': join_way,
+                'mtrt_int': mtrt_int,
+                'spcl_cnd': spcl_cnd,
+                'join_deny': join_deny,
+                'join_member': join_member,
+                'etc_note': etc_note,
+                'max_limit': max_limit,
+                'dcls_strt_day': dcls_strt_day,
+                'dcls_end_day': dcls_end_day,
+                'dcls_month': dcls_month,
+                'fin_co_subm_day': fin_co_subm_day
+            }
+        )
+
+        # ProductOption 객체 생성
+        for option_data in option_list:
+            intr_rate_type = option_data.get('intr_rate_type')
+            intr_rate_type_nm = option_data.get('intr_rate_type_nm')
+            intr_rate = option_data.get('intr_rate')
+            intr_rate2 = option_data.get('intr_rate2')
+            rsrv_type = option_data.get('rsrv_type')
+            rsrv_type_nm = option_data.get('rsrv_type_nm')
+            save_trm = option_data.get('save_trm')
+        
+            SavingProductOption.objects.create(
+                saving_product=product,
+                intr_rate_type=intr_rate_type,
+                intr_rate_type_nm=intr_rate_type_nm,
+                intr_rate=intr_rate,
+                intr_rate2=intr_rate2,
+                rsrv_type=rsrv_type,
+                rsrv_type_nm=rsrv_type_nm,
+                save_trm=save_trm
+            )
+    @swagger_auto_schema(
+    operation_summary="외부 API에서 적금 상품 정보를 가져와 데이터베이스에 저장합니다.",
+    tags=['금융']
+    )
+    def get(self, request):
+        response = requests.get(self.url).json()
+        product_list = response.get('result', {}).get('baseList', [])
+        option_list = response.get('result', {}).get('optionList', [])
+
+        for product_data in product_list:
+            self.save_depoist_product_to_db(product_data, option_list)
+
+        return JsonResponse({"message": "적금 상품 정보가 성공적으로 저장되었습니다."},status=201)
+
+@swagger_auto_schema(
+    operation_summary="적금 상품의 상세 정보를 가져옵니다.",
+    tags=['조회']
+)
+class SavingProductDetailAPIView(APIView):
+    def get(self, request, product_pk):
+        product = get_object_or_404(SavingProduct, pk=product_pk)
+        product_serializer = SavingProductSerializer(product)
+        return JsonResponse(product_serializer.data)
+
+
+# 연금 --------------------------------------------------------
+from rest_framework.views import APIView
+from django.http import JsonResponse
+from drf_yasg.utils import swagger_auto_schema
+import requests
+
+class PensionProductRegisterAPIView(APIView):
+    url = f'http://finlife.fss.or.kr/finlifeapi/annuitySavingProductsSearch.json?auth={API_KEY}&topFinGrpNo=060000&pageNo=1'
+
+    def save_pension_product_to_db(self, product_data, option_list):
+        fin_prdt_cd = product_data.get('fin_prdt_cd')
+        fin_co_no = product_data.get('fin_co_no')
+        kor_co_nm = product_data.get('kor_co_nm')
+        fin_prdt_nm = product_data.get('fin_prdt_nm')
+        join_way = product_data.get('join_way')
+        pnsn_kind = product_data.get('pnsn_kind')
+        pnsn_kind_nm = product_data.get('pnsn_kind_nm')
+        sale_strt_day = product_data.get('sale_strt_day')
+        mntn_cnt = product_data.get('mntn_cnt')
+        prdt_type = product_data.get('prdt_type')
+        prdt_type_nm = product_data.get('prdt_type_nm')
+        dcls_rate = product_data.get('dcls_rate')
+        guar_rate = product_data.get('guar_rate')
+        btrm_prft_rate_1 = product_data.get('btrm_prft_rate_1')
+        btrm_prft_rate_2 = product_data.get('btrm_prft_rate_2')
+        btrm_prft_rate_3 = product_data.get('btrm_prft_rate_3')
+        etc = product_data.get('etc')
+        sale_co = product_data.get('sale_co')
+        dcls_strt_day = product_data.get('dcls_strt_day')
+        dcls_end_day = product_data.get('dcls_end_day')
+        fin_co_subm_day = product_data.get('fin_co_subm_day')
+
+        # PensionProduct 객체 생성 또는 업데이트
+        pension_product, created = PensionProduct.objects.update_or_create(
+            fin_prdt_cd=fin_prdt_cd,
+            defaults={
+                'fin_co_no': fin_co_no,
+                'kor_co_nm': kor_co_nm,
+                'fin_prdt_nm': fin_prdt_nm,
+                'join_way': join_way,
+                'pnsn_kind': pnsn_kind,
+                'pnsn_kind_nm': pnsn_kind_nm,
+                'sale_strt_day': sale_strt_day,
+                'mntn_cnt': mntn_cnt,
+                'prdt_type': prdt_type,
+                'prdt_type_nm': prdt_type_nm,
+                'dcls_rate': dcls_rate,
+                'guar_rate': guar_rate,
+                'btrm_prft_rate_1': btrm_prft_rate_1,
+                'btrm_prft_rate_2': btrm_prft_rate_2,
+                'btrm_prft_rate_3': btrm_prft_rate_3,
+                'etc': etc,
+                'sale_co': sale_co,
+                'dcls_strt_day': dcls_strt_day,
+                'dcls_end_day': dcls_end_day,
+                'fin_co_subm_day': fin_co_subm_day
+            }
+        )
+
+        # PensionProductOption 객체 생성
+        for option_data in option_list:
+            if option_data.get('fin_prdt_cd') == fin_prdt_cd:
+                dcls_month = option_data.get('dcls_month')
+                fin_co_no = option_data.get('fin_co_no')
+                fin_prdt_cd = option_data.get('fin_prdt_cd')
+                pnsn_recp_trm = option_data.get('pnsn_recp_trm')
+                pnsn_recp_trm_nm = option_data.get('pnsn_recp_trm_nm')
+                pnsn_entr_age = option_data.get('pnsn_entr_age')
+                pnsn_entr_age_nm = option_data.get('pnsn_entr_age_nm')
+                mon_paym_atm = option_data.get('mon_paym_atm')
+                mon_paym_atm_nm = option_data.get('mon_paym_atm_nm')
+                paym_prd = option_data.get('paym_prd')
+                paym_prd_nm = option_data.get('paym_prd_nm')
+                pnsn_strt_age = option_data.get('pnsn_strt_age')
+                pnsn_strt_age_nm = option_data.get('pnsn_strt_age_nm')
+                pnsn_recp_amt = option_data.get('pnsn_recp_amt')
+
+                PensionProductOption.objects.create(
+                    pension=pension_product,
+                    dcls_month=dcls_month,
+                    fin_co_no=fin_co_no,
+                    fin_prdt_cd=fin_prdt_cd,
+                    pnsn_recp_trm=pnsn_recp_trm,
+                    pnsn_recp_trm_nm=pnsn_recp_trm_nm,
+                    pnsn_entr_age=pnsn_entr_age,
+                    pnsn_entr_age_nm=pnsn_entr_age_nm,
+                    mon_paym_atm=mon_paym_atm,
+                    mon_paym_atm_nm=mon_paym_atm_nm,
+                    paym_prd=paym_prd,
+                    paym_prd_nm=paym_prd_nm,
+                    pnsn_strt_age=pnsn_strt_age,
+                    pnsn_strt_age_nm=pnsn_strt_age_nm,
+                    pnsn_recp_amt=pnsn_recp_amt
+                )
+
+    @swagger_auto_schema(
+        operation_summary="외부 API에서 연금 상품 정보를 가져와 데이터베이스에 저장합니다.",
+        tags=['금융']
+    )
+    def get(self, request):
+        response = requests.get(self.url).json()
+        product_list = response.get('result', {}).get('baseList', [])
+        option_list = response.get('result', {}).get('optionList', [])
+
+        for product_data in product_list:
+            self.save_pension_product_to_db(product_data, option_list)
+
+        return JsonResponse({"message": "연금 상품 정보가 성공적으로 저장되었습니다."}, status=201)
+
+
+@swagger_auto_schema(
+    operation_summary="연금 상품의 상세 정보를 가져옵니다.",
+    tags=['조회']
+)
+class PensionProductDetailAPIView(APIView):
+    def get(self, request, product_pk):
+        product = get_object_or_404(PensionProduct, pk=product_pk)
+        product_serializer = PensionProductSerializer(product)
         return JsonResponse(product_serializer.data)
