@@ -4,7 +4,11 @@ import axios from 'axios'
 import router from '@/router'
 
 export const useCounterStore = defineStore('counter', () => {
+  // 로그인 여부
+  const isLogin = localStorage.getItem('access')? ref(true) : ref(false)
+  
   const userInfo = ref({})
+  const articles = ref([])
 
   // 메인 페이지로 이동
   const goHome = function() {
@@ -14,7 +18,7 @@ export const useCounterStore = defineStore('counter', () => {
   const goLogin = function() {
     router.push('/login')
   }
-  
+
   // 회원가입
   const signUp = function(info) {
     axios.post('http://127.0.0.1:8000/accounts/register/', info, {
@@ -28,8 +32,6 @@ export const useCounterStore = defineStore('counter', () => {
       })
       .catch(err => {
         console.log(err)
-        // 에러 종류별 메시지 출력
-        alert('회원가입에 실패하였습니다.')
       })
     }
   // 로그인
@@ -64,6 +66,7 @@ export const useCounterStore = defineStore('counter', () => {
       .then(res => {
         console.log('로그아웃이 완료되었습니다.')
         // 로컬 스토리지에서 토큰 삭제
+        console.log(isLogin.value)
         localStorage.removeItem('access')
         localStorage.removeItem('refresh')
         goHome()
@@ -96,13 +99,13 @@ export const useCounterStore = defineStore('counter', () => {
       .catch(err => {
         console.log(err)
       })
-    }
+  }
   // 유저 정보 수정
   const modifyUser = function(info) {
     axios.patch('http://127.0.0.1:8000/accounts/update/', info, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('access')}`,
-        'Content-Type': 'application/json'
+        // 'Content-Type': 'application/json'
       },
       withCredentials: true // 쿠키를 요청에 포함시키는 옵션 추가
     })
@@ -114,41 +117,47 @@ export const useCounterStore = defineStore('counter', () => {
         console.log(err)
       })
   }
-  // 게시글 가져오기 
+  // 게시글 목록 가져오기
   const getArticles = function() {
-    axios.get('http://127.0.0.1:8000/articles/', {
+    axios.get('http://127.0.0.1:8000/articles/articles/', {
       headers: {
+        'Authorization': `Bearer ${localStorage.getItem('access')}`,
         'Content-Type': 'application/json'
-      }
+      },
+      withCredentials: true // 쿠키를 요청에 포함시키는 옵션 추가
     })
       .then(res => {
         console.log('게시글을 가져왔습니다.')
         console.log(res.data)
+        articles.value = res.data
       })
       .catch(err => {
         console.log(err)
       })
   }
+  // 게시글 작성하기
   const createArticle = function(info) {
-    axios.post('http://127.0.0.1:8000/articles/', info, {
+    axios.post('http://127.0.0.1:8000/articles/articles/', info, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('access')}`,
         'Content-Type': 'application/json'
-      }
+      },
+      withCredentials: true // 쿠키를 요청에 포함시키는 옵션 추가
     })
       .then(res => {
         console.log('게시글이 작성되었습니다.')
-        goHome()
+        router.push('/freeboard')
       })
       .catch(err => {
         console.log(err)
       })
-    }
+  }
 
   return {
     signUp, logIn, logOut, getUser, modifyUser,
     getArticles, createArticle,
     goHome, goLogin,
-    userInfo,
+    userInfo, articles,
+    isLogin
    }
-})
+}, { persist: true })

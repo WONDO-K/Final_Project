@@ -13,28 +13,30 @@
         <input type="text" id="userName" class="form-control" :value="userInfo.userName" disabled>
         <label for="userName" class="form-label">이름</label>
       </div>
-      <div>
-        <label for="gender" class="form-label visually-hidden">성별</label>
+      <div class="mb-3 form-floating">
         <select id="gender" class="form-select" v-model="userInfo.gender">
-            <option value="남자">남자</option>
-            <option value="여자">여자</option>
+          <option value="남자">남자</option>
+          <option value="여자">여자</option>
         </select>
+        <label for="gender" class="form-label">성별</label>
       </div>
-      <label for="birth">생년월일: </label>
-      <input type="text" id="birth" :value="userInfo.birth" disabled>
-      <br>
-      <label for="email">이메일: </label>
-      <input type="email" id="email" :value="userInfo.email" disabled>
-      <br>
-      <!-- 단위: 만원 -->
-      <label for="salary">연봉: </label>
-      <input type="number" id="salary" v-model="userInfo.salary">
-      <span>만원</span>
-      <div>
+      <div class="mb-3 form-floating">
+        <input type="text" id="birth" class="form-control" :value="userInfo.birth" disabled>
+        <label for="birth" class="form-label">생년월일</label>
+      </div>
+      <div class="mb-3 form-floating">
+        <input type="email" id="email" class="form-control" :value="userInfo.email" disabled>
+        <label for="email" class="form-label">이메일</label>
+      </div>
+      <div class="mb-3 form-floating">
+        <input type="number" id="salary" class="form-control" v-model="userInfo.salary">
+        <label for="salary" class="form-label">연봉(단위: 만원)</label>
+      </div>
+      <div class="mb-4 form-floating">
+        <input type="number" id="wealth" class="form-control" v-model="userInfo.wealth">
         <label for="wealth">자산(단위: 만원)</label>
-        <input type="number" id="wealth" v-model="userInfo.wealth">
       </div>
-      <button type="submit" @click="modifyUser">수정</button>
+      <button type="submit" class="btn btn-primary text-white" @click="modifyUser">수정</button>
     </form>
   </div>
 </template>

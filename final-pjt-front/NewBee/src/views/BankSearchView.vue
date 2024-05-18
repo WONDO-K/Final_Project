@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <h1>근처 은행 찾기</h1>
+  <div class="text-center">
+    <h1 class="mb-4">근처 은행 찾기</h1>
     <Map />
   </div>
 </template>

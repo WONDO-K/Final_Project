@@ -8,11 +8,11 @@ const route = useRoute()
 </script>
 
 <template>
-  <div>
+  <div class="d-flex flex-column min-vh-100">
     <!-- LoginView, SignupView Navbar 렌더링 X -->
     <Navbar v-if="route.name !== 'login' && route.name !== 'signup'" />
     <router-view />
-    <Footer />
+    <Footer class="mt-auto"/>
   </div>
 </template>
 

@@ -1,5 +1,5 @@
 <template>
-  <KakaoMap :lat="curLat" :lng="curLng" :width="'50rem'" @onLoadKakaoMap="onLoadKakaoMap">
+  <KakaoMap :lat="curLat" :lng="curLng" :width="'60rem'" class="mb-4" @onLoadKakaoMap="onLoadKakaoMap">
     <KakaoMapMarker :lat="curLat" :lng="curLng">
       <template v-slot:infoWindow>
         <div style="padding: 10px">현재 위치</div>
@@ -9,8 +9,7 @@
       :lat="marker.lat" :lng="marker.lng" :infoWindow="marker.infoWindow" :clickable="true"
       @onClickKakaoMapMarker="onClickMapMarker(marker)" />
   </KakaoMap>
-  <button @click="getCurrentPos">현재 위치</button>
-  <button @click="consolog">중심 좌표</button>
+  <button class="btn btn-primary text-white" @click="getCurrentPos">현재 위치</button>
 </template>
 
 <script setup>
@@ -45,10 +44,6 @@ const watchCenterChange = () => {
       });
     })
   } else { console.error('지도 객체가 초기화되지 않았습니다.')}}
-
-const consolog = function () {
-  console.log(map.value.getCenter())
-}
 
 // 현재 위치 근처 은행 검색
 const getCurrentPos = function () {
