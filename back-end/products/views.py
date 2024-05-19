@@ -331,7 +331,7 @@ class PensionProductRegisterAPIView(APIView):
                 pnsn_recp_amt = option_data.get('pnsn_recp_amt')
 
                 PensionProductOption.objects.create(
-                    pension=pension_product,
+                    pension_product=pension_product,
                     dcls_month=dcls_month,
                     fin_co_no=fin_co_no,
                     fin_prdt_cd=fin_prdt_cd,

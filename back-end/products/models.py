@@ -88,7 +88,6 @@ class SavingProductOption(models.Model): # 적금 상품 옵션
         return f'{self.intr_rate_type_nm} - {self.rsrv_type_nm}'
 
 # 연금 상품 ---------------------------------------------------------------------
-
 class PensionProduct(models.Model):
     dcls_month = models.CharField(max_length=6)  # 공시 제출월 [YYYYMM]
     fin_co_no = models.CharField(max_length=20)  # 금융회사 코드
@@ -140,7 +139,6 @@ class PensionProductOption(models.Model):
 
     def __str__(self): # 연금 상품 옵션명
         return f'{self.pension_product.fin_prdt_nm} - {self.pnsn_recp_trm_nm}' # 연금 상품명 - 연금수령기간명
-
 # 전세대출 상품 ---------------------------------------------------------------------
 class RentLoanProduct(models.Model):
     dcls_month = models.CharField(max_length=6, verbose_name='공시 제출월 [YYYYMM]')
