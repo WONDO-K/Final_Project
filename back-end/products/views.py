@@ -526,7 +526,7 @@ class JoinProductAPIView(APIView):
             if product_type == '정기예금':
                 user_product_serializer = UserDepositProductSerializer(data={
                     'user': request.user.pk,
-                    'product_type': '정기예금',
+                    'product_type': product_type,
                     'selected_option': option.pk,
                     'deposit_product': product.pk,
                     'join_date': timezone.now().date()
@@ -534,7 +534,7 @@ class JoinProductAPIView(APIView):
             elif product_type == '적금':
                 user_product_serializer = UserSavingProductSerializer(data={
                     'user': request.user.pk,
-                    'product_type': '적금',
+                    'product_type': product_type,
                     'selected_option': option.pk,
                     'saving_product': product.pk,
                     'join_date': timezone.now().date()
@@ -542,7 +542,7 @@ class JoinProductAPIView(APIView):
             elif product_type == '연금':
                 user_product_serializer = UserPensionProductSerializer(data={
                     'user': request.user.pk,
-                    'product_type': '연금',
+                    'product_type': product_type,
                     'selected_option': option.pk,
                     'pension_product': product.pk,
                     'join_date': timezone.now().date()
@@ -550,7 +550,7 @@ class JoinProductAPIView(APIView):
             elif product_type == '전세대출':
                 user_product_serializer = UserRentLoanProductSerializer(data={
                     'user': request.user,
-                    'product_type': '전세대출',
+                    'product_type': product_type,
                     'selected_option': option.pk,
                     'rent_loan_product': product.pk,
                     'join_date': timezone.now().date()
