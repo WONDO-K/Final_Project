@@ -5,8 +5,8 @@ from rest_framework.views import APIView
 from django.http import JsonResponse 
 from drf_yasg.utils import swagger_auto_schema
 from .serializers import *
+from .models import Bank, BankOption, DepositProduct, DepositProductOption, SavingProduct, SavingProductOption, PensionProduct, PensionProductOption, RentLoanProduct, RentLoanProductOption
 
-from .models import *
 
 API_KEY = os.environ['PRODUCT_API_KEY']
 
@@ -254,10 +254,7 @@ class SavingProductDetailAPIView(APIView):
 
 
 # 연금 --------------------------------------------------------
-from rest_framework.views import APIView
-from django.http import JsonResponse
-from drf_yasg.utils import swagger_auto_schema
-import requests
+
 
 class PensionProductRegisterAPIView(APIView):
     url = f'http://finlife.fss.or.kr/finlifeapi/annuitySavingProductsSearch.json?auth={API_KEY}&topFinGrpNo=060000&pageNo=1'

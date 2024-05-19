@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import *
+from .models import Bank, BankOption, DepositProduct, DepositProductOption, SavingProduct, SavingProductOption, PensionProduct, PensionProductOption, RentLoanProduct, RentLoanProductOption
+
 
 class BankOptionSerializer(serializers.ModelSerializer):
     class Meta:
