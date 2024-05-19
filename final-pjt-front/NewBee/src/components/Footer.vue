@@ -1,7 +1,7 @@
 <template>
     <div>
-        <footer class="bg-primary mt-5">
-            <p class="mb-0">© 2021 NewBee. All rights reserved.</p>
+        <footer class="rounded-3 bg-primary mt-5">
+            <p class="mb-0">[NewBee] by 최동호, 윤대영</p>
         </footer>
     </div>
 </template>

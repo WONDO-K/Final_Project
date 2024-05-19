@@ -12,6 +12,7 @@ export const useCounterStore = defineStore('counter', () => {
   const userInfo = ref({})
   const articles = ref([])
   const article = ref(null)
+  const comments = ref(null)
 
   // 메인 페이지로 이동
   const goHome = function() {
@@ -151,21 +152,23 @@ export const useCounterStore = defineStore('counter', () => {
         console.log(err)
       })    
   }
-  // 게시글 상세정보 가져오기
-  const getArticle = function(id) {
-    axios.get(`http://127.0.0.1:8000/articles/articles/${ id }/`)
+  // 게시글 상세정보 가져오기&댓글 가져오기
+  const getArticle = function (id) {
+    return axios.get(`http://127.0.0.1:8000/articles/articles/${id}/`)
       .then(res => {
         console.log('게시글 상세정보를 가져왔습니다.')
         console.log(res.data)
         article.value = res.data
+        comments.value = res.data.comments
       })
       .catch(err => {
         console.log(err)
       })
-    }
+  }
+
   // 게시글 삭제하기
-  const deleteArticle = function(id) {
-    axios.delete(`http://127.0.0.1:8000/articles/articles/${id}/`, {
+  const deleteArticle = function(ArticleId) {
+    axios.delete(`http://127.0.0.1:8000/articles/articles/${ArticleId}/`, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('access')}`,
         'Content-Type': 'application/json'
@@ -180,8 +183,9 @@ export const useCounterStore = defineStore('counter', () => {
         console.log(err)
       })
   }
+
   // 게시글 수정하기
-  const updateArticle = function(id, info) {
+  const updateArticle = function (id, info) {
     axios.put(`http://127.0.0.1:8000/articles/articles/${id}/`, info, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('access')}`,
@@ -189,9 +193,70 @@ export const useCounterStore = defineStore('counter', () => {
       },
       withCredentials: true // 쿠키를 요청에 포함시키는 옵션 추가
     })
+      .then(res => {
+        console.log('게시글이 수정되었습니다.')
+        return getArticle(id)
+      })
+      .then(() => {
+        router.push('/article/:id', { id: id })
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+  
+  // 댓글 작성하기
+  const createComment = function (articleId, content) {
+    axios.post(`http://127.0.0.1:8000/articles/articles/${articleId}/comments/`, content, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('access')}`,
+        'Content-Type': 'application/json'
+      },
+      withCredentials: true // 쿠키를 요청에 포함시키는 옵션 추가
+    })
+      .then(res => {
+        console.log('댓글이 작성되었습니다.')
+        return getArticle(articleId)
+      })
+      .then(() => {
+        router.push('/article/:id', { id: articleId })
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+  // 댓글 수정하기
+  const updateComment = function(articleId, commentId, content) {
+    axios.put(`http://127.0.0.1:8000/articles/articles/${articleId}/comments/${commentId}/`, content, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('access')}`,
+        'Content-Type': 'application/json'
+      },
+      withCredentials: true // 쿠키를 요청에 포함시키는 옵션 추가
+    })
     .then(res => {
-      console.log('게시글이 수정되었습니다.')
-      router.push('/article/:id', { id: id })
+      console.log('댓글이 수정되었습니다.')
+      getArticle(articleId)
+      // router.push('/article/:id', { id: articleId })
+    })
+    .catch(err => {
+      console.log(err)
+    })
+  }
+
+  // 댓글 삭제하기 
+  const deleteComment = function(articleId, commentId) {
+    axios.delete(`http://127.0.0.1:8000/articles/articles/${articleId}/comments/${commentId}/`,{
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('access')}`,
+        'Content-Type': 'application/json'
+      },
+      withCredentials: true // 쿠키를 요청에 포함시키는 옵션 추가
+    })
+    .then(res => {
+      console.log('댓글이 삭제되었습니다.')
+      getArticle(articleId)
+      router.push('/article/:id', { id: articleId })
     })
     .catch(err => {
       console.log(err)
@@ -199,10 +264,12 @@ export const useCounterStore = defineStore('counter', () => {
   }
 
   return {
+    goHome, goLogin,
     signUp, logIn, logOut, getUser, modifyUser,
     getArticles, createArticle, getArticle, deleteArticle, updateArticle,
-    goHome, goLogin,
-    userInfo, articles, article,
-    isLogin
+    createComment, deleteComment, updateComment,
+    isLogin, userInfo,
+    articles, article,
+    comments
    }
 }, { persist: true })

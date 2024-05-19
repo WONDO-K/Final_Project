@@ -1,0 +1,58 @@
+문제상황 1.
+게시글 상세 목록 볼 시 데이터 업데이트보다 빠르게 router.push가 실행되면서, 이전 데이터가 남아있는 현상 발생
+-> updateArticle, getArticle 함수를 순서대로 실행되게 함으로써 해결
+
+// 게시글 수정하기
+const updateArticle = function(id, info) {
+axios.put(`http://127.0.0.1:8000/articles/articles/${id}/`, info, {
+    headers: {
+    'Authorization': `Bearer ${localStorage.getItem('access')}`,
+    'Content-Type': 'application/json'
+    },
+    withCredentials: true // 쿠키를 요청에 포함시키는 옵션 추가
+})
+.then(res => {
+    console.log('게시글이 수정되었습니다.')
+    getArticle(id)
+    router.push('/article/:id', { id: id })
+})
+.catch(err => {
+    console.log(err)
+})
+}
+
+// 게시글 상세정보 가져오기&댓글 가져오기
+const getArticle = function(id) {
+axios.get(`http://127.0.0.1:8000/articles/articles/${ id }/`)
+    .then(res => {
+    console.log('게시글 상세정보를 가져왔습니다.')
+    console.log(res.data)
+    article.value = res.data
+    comments.value = res.data.comments
+    })
+    .catch(err => {
+    console.log(err)
+    })
+}
+
+2. 댓글 생성 후 댓글 정보가 업데이트 되기 전에 router.push가 발생하면서 새로고침해야 새로운 댓글이 보이는 현상 발생
+-> getArticle()을 이용해서 댓글 목록 업데이트 후, 게시글 상세보기로 순차적으로 이동하게 수정
+
+// 댓글 작성하기
+const createComment = function(articleId, content) {
+  axios.post(`http://127.0.0.1:8000/articles/articles/${articleId}/comments/`, content, {
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('access')}`,
+      'Content-Type': 'application/json'
+    },
+    withCredentials: true // 쿠키를 요청에 포함시키는 옵션 추가
+  })
+  .then(res => {
+    console.log('댓글이 작성되었습니다.')
+    getArticle(articleId)
+    router.push('/article/:id', { id: articleId })
+  })
+  .catch(err => {
+    console.log(err)
+  })
+}

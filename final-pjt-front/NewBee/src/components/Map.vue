@@ -1,5 +1,5 @@
 <template>
-  <KakaoMap :lat="curLat" :lng="curLng" :width="'60rem'" class="mb-4" @onLoadKakaoMap="onLoadKakaoMap">
+  <KakaoMap :lat="curLat" :lng="curLng" :width="'60rem'" :height="'40rem'"  class="mb-4" @onLoadKakaoMap="onLoadKakaoMap">
     <KakaoMapMarker :lat="curLat" :lng="curLng">
       <template v-slot:infoWindow>
         <div style="padding: 10px">현재 위치</div>

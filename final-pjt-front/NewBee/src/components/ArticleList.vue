@@ -1,13 +1,13 @@
 <template>
   <div>
     <table class="table table-hover">
-      <thead>
+      <thead class="table-warning">
         <tr>
           <th scope="col">번호</th>
           <th scope="col">제목</th>
           <th scope="col">내용</th>
-          <th scope="col">댓글</th>
           <th scope="col">작성자</th>
+          <th scope="col">작성일</th>
         </tr>
       </thead>
       <tbody>
@@ -17,8 +17,8 @@
           <th scope="row">{{ article.id }}</th>
           <td>{{ cutContent(article.title) }}</td>
           <td>{{ cutContent(article.content) }}</td>
-          <td>{{ article.comments.length }}</td>
-          <td>{{ article.user.username }}</td>
+          <td>{{ article.user }}</td>
+          <td>{{ slicing(article.created_at) }}</td>
         </tr>
       </tbody>
     </table>
@@ -36,13 +36,21 @@ const router = useRouter()
 const route = useRoute()
 
 const cutContent = (content) => {
-  return content.length > 10 ? content.slice(0, 10) + '...' : content;
+  return content.length > 30 ? content.slice(0, 30) + '...' : content;
 }
 
-const goDetail = (article) => {
-  router.push({ name: 'articleDetail', params: { id: article.id }})
-  store.getArticle(article.id)
+const slicing = function (string) {
+  return string.slice(0, 10);
 }
+
+
+const goDetail = (article) => {
+  store.getArticle(article.id).then(() => {
+    router.push({ name: 'articleDetail', params: { id: article.id }})
+  })
+}
+
+
 </script>
 
 <style scoped>

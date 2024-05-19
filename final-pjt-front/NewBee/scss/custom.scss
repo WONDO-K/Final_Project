@@ -1,9 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap');
 // custom variables
-$yellow: #FFFF71;
-$blue: #71C6FF;
+$font-family-sans-serif: "Gowun Dodum", sans-serif;
 
-$input-border-color: #71C6FF;
+$yellow: #FFFF71;
+$blue: #FFE8AA;
+$cyan: #C671FF; // text-info color
+
+$input-border-color: #FFE8AA;
 $input-focus-border-color: #FFFF71;
+
+$table-hover-bg: #FFFFEF;
 
 // import bootstrap
 @import "../node_modules/bootstrap/scss/bootstrap";
