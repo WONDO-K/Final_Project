@@ -24,4 +24,7 @@ urlpatterns = [
     # 전월세보증금대출
     path('rent-loan/register/', RentLoanProductRegisterAPIView.as_view(), name='rent-loan-register'),
     path('rent-loan/<int:product_pk>/', RentLoanDetailAPIView.as_view(), name='rent-loan-detail'),
+
+    # 상품 가입
+    path("join_product/", JoinProductAPIView.as_view(), name='join_product'),
 ]

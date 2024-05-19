@@ -168,7 +168,7 @@ class DepositProductDetailAPIView(APIView):
 
 class SavingProductRegisterAPIView(APIView):
     url = f'http://finlife.fss.or.kr/finlifeapi/savingProductsSearch.json?auth={API_KEY}&topFinGrpNo=020000&pageNo=1'
-  
+
     def save_depoist_product_to_db(self, product_data, option_list):
         fin_prdt_cd = product_data.get('fin_prdt_cd') # 상품 코드
         fin_co_no = product_data.get('fin_co_no') # 금융회사 코드
@@ -451,3 +451,139 @@ class RentLoanDetailAPIView(APIView):
         rent_loan = get_object_or_404(RentLoanProduct, pk=product_pk)
         rent_loan_serializer = RentLoanSerializer(rent_loan)
         return JsonResponse(rent_loan_serializer.data)
+
+from .models.UserProducts import UserDepositProduct, UserSavingProduct, UserPensionProduct, UserRentLoanProduct    
+from drf_yasg import openapi
+from django.utils import timezone
+
+# 현재 로그인한 유저의 가입 상품 조회 --------------------------------------------------------
+class UserProductListView(APIView):
+    @swagger_auto_schema(
+        operation_summary="현재 로그인한 사용자의 가입 상품을 조회합니다.",
+        responses={200: "가입 상품 목록", 401: "인증 실패"},
+        tags=['가입한 상품 조회']
+    )
+    def get(self, request, *args, **kwargs):
+        user = self.request.user
+        
+        deposit_products = UserDepositProduct.objects.filter(user=user)
+        saving_products = UserSavingProduct.objects.filter(user=user)
+        pension_products = UserPensionProduct.objects.filter(user=user)
+        rent_loan_products = UserRentLoanProduct.objects.filter(user=user)
+
+        deposit_serializer = UserDepositProductSerializer(deposit_products, many=True)
+        saving_serializer = UserSavingProductSerializer(saving_products, many=True)
+        pension_serializer = UserPensionProductSerializer(pension_products, many=True)
+        rent_loan_serializer = UserRentLoanProductSerializer(rent_loan_products, many=True)
+
+        products = deposit_serializer.data + saving_serializer.data + pension_serializer.data + rent_loan_serializer.data
+        return JsonResponse({"products": products}, status=200)
+    
+# 상품 가입 --------------------------------------------------------
+class JoinProductAPIView(APIView):
+    @swagger_auto_schema(
+        operation_summary="사용자가 상품에 가입합니다.",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'product_type': openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    enum=['정기예금', '적금', '연금', '전세대출'],
+                    description="상품 유형을 선택하세요."
+                ),
+                'product_id': openapi.Schema(
+                    type=openapi.TYPE_INTEGER,
+                    description="상품 ID를 입력하세요."
+                ),
+                'option_id': openapi.Schema(
+                    type=openapi.TYPE_INTEGER,
+                    description="옵션 ID를 입력하세요."
+                )
+            },
+            required=['product_type', 'product_id', 'option_id']
+        ),
+        responses={201: "가입 성공", 400: "잘못된 요청"},
+        examples={
+            "application/json": {
+                "product_type": "정기예금",
+                "product_id": 1,
+                "option_id": 1
+            } 
+        }
+    )
+    def post(self, request):
+        serializer = JoinProductSerializer(data=request.data) 
+        if serializer.is_valid():
+            product_type = serializer.validated_data['product_type']
+            product_id = serializer.validated_data['product_id']
+            option_id = serializer.validated_data['option_id']
+            try:
+                product, option = get_product_and_option_models(product_type, product_id, option_id)
+            except ValueError as e:
+                return JsonResponse({"message": str(e)}, status=400)
+
+            # 각 상품 유형에 따라 올바른 시리얼라이저를 사용하여 유효성 검사하고 처리
+            if product_type == '정기예금':
+                user_product_serializer = UserDepositProductSerializer(data={
+                    'user': request.user.pk,
+                    'product_type': product_type,
+                    'selected_option': option.pk,
+                    'deposit_product': product.pk,
+                    'join_date': timezone.now().date()
+                })
+            elif product_type == '적금':
+                user_product_serializer = UserSavingProductSerializer(data={
+                    'user': request.user.pk,
+                    'product_type': product_type,
+                    'selected_option': option.pk,
+                    'saving_product': product.pk,
+                    'join_date': timezone.now().date()
+                })
+            elif product_type == '연금':
+                user_product_serializer = UserPensionProductSerializer(data={
+                    'user': request.user.pk,
+                    'product_type': product_type,
+                    'selected_option': option.pk,
+                    'pension_product': product.pk,
+                    'join_date': timezone.now().date()
+                })
+            elif product_type == '전세대출':
+                user_product_serializer = UserRentLoanProductSerializer(data={
+                    'user': request.user,
+                    'product_type': product_type,
+                    'selected_option': option.pk,
+                    'rent_loan_product': product.pk,
+                    'join_date': timezone.now().date()
+                })
+            else:
+                return JsonResponse({"message": "잘못된 상품 타입입니다."}, status=400)
+            
+            if user_product_serializer.is_valid():
+                user_product_serializer.save()
+                return JsonResponse({"message": "가입이 성공적으로 완료되었습니다."}, status=201)
+            else:
+                return JsonResponse({"message": "잘못된 사용자 상품 정보입니다.", "errors": user_product_serializer.errors}, status=400)
+        else:
+            return JsonResponse(serializer.errors, status=400)
+
+
+        
+def get_product_and_option_models(product_type, product_id, option_id):
+    if product_type == '정기예금':
+        product = DepositProduct.objects.get(pk=product_id)
+        option = DepositProductOption.objects.get(pk=option_id)
+        return product, option
+    elif product_type == '적금':
+        product = SavingProduct.objects.get(pk=product_id)
+        option = SavingProductOption.objects.get(pk=option_id)
+        return product, option
+    elif product_type == '연금':
+        product = PensionProduct.objects.get(pk=product_id)
+        option = PensionProductOption.objects.get(id=option_id)
+        return product, option
+    elif product_type == '전세대출':
+        product = RentLoanProduct.objects.get(pk=product_id)
+        option = RentLoanProductOption.objects.get(id=option_id)
+        return product, option
+    else:
+        raise ValueError("잘못된 정보입니다.")
