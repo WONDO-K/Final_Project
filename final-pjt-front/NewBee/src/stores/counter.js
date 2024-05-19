@@ -264,6 +264,54 @@ export const useCounterStore = defineStore('counter', () => {
       console.log(err)
     })
   }
+  // 은행 목록 가져오기
+  const getBankList = function() {
+    axios.get('http://http://127.0.0.1:8000/products/')
+    .then(res => {
+      console.log('상품 목록을 가져왔습니다.')
+      console.log(res.data)
+      articles.value = res.data
+    })
+    .catch(err => {
+      console.log(err)
+    })
+  }
+  // 예금 목록 가져오기
+  const getDepositList = function(){
+    axios.get('http://http://127.0.0.1:8000/products/deposit/register/')
+    .then(res => {
+      console.log('상품 목록을 가져왔습니다.')
+      console.log(res.data)
+      articles.value = res.data
+    })
+    .catch(err => {
+      console.log(err)
+    })
+  }
+  // 연금 목록 가져오기
+  const getPensionList = function(){
+    axios.get('http://http://127.0.0.1:8000/products/pension/register/')
+    .then(res => {
+      console.log('상품 목록을 가져왔습니다.')
+      console.log(res.data)
+      articles.value = res.data
+    })
+    .catch(err => {
+      console.log(err)
+    })
+  }
+  // 적금 목록 가져오기
+  const getSavingList = function(){
+    axios.get('http://http://127.0.0.1:8000/products/saving/register/')
+      .then(res => {
+        console.log('상품 목록을 가져왔습니다.')
+        console.log(res.data)
+        articles.value = res.data
+      })
+      .catch(err => {
+        console.log(err)
+      })
+    }
 
   return {
     goHome, goLogin,

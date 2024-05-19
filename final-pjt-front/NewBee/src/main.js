@@ -6,6 +6,7 @@ import App from './App.vue'
 import router from './router'
 // Bootstrap sass -> custom.css 적용
 import '/css/custom.css'
+import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import { useKakao } from 'vue3-kakao-maps/@utils'
 
 

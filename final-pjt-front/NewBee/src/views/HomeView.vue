@@ -1,12 +1,17 @@
 <template>
     <div>
-        <h1>HOME</h1>
+        <BestProductImage />
+        <FinanceVoca />
+        <ExchangeRate />
     </div>
 </template>
 
 <script setup>
 import { useCounterStore } from '@/stores/counter'
-import FinanceVoca from FinanceVoca.vue
+import FinanceVoca from '@/components/FinanceVoca.vue'
+import BestProductImage from '@/components/BestProductImage.vue'
+import ExchangeRate from '@/components/ExchangeRate.vue'
+
 </script>
 
 <style scoped>

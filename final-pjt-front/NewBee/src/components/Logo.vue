@@ -10,7 +10,7 @@
 <style scoped>
 /* 임시 css -> 차후 부트스트랩으로 변경 및 수정 예정 */
 img {
-  width: 100px;
-  height: 100px;
+  width: 80px;
+  height: 80px;
 }
 </style>
