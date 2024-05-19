@@ -87,7 +87,7 @@ class RentLoanOptionSerializer(serializers.ModelSerializer):
         ]
 
 class RentLoanSerializer(serializers.ModelSerializer):
-    options = RentLoanOptionSerializer(many=True, read_only=True)  # RentLoanOptionSerializer 포함(역참조)
+    rent_loan_options = RentLoanOptionSerializer(many=True, read_only=True)  # RentLoanOptionSerializer 포함(역참조)
 
     class Meta:
         model = RentLoanProduct
@@ -95,5 +95,5 @@ class RentLoanSerializer(serializers.ModelSerializer):
             'dcls_month', 'fin_co_no', 'kor_co_nm', 'fin_prdt_cd', 
             'fin_prdt_nm', 'join_way', 'loan_inci_expn', 'erly_rpay_fee', 
             'dly_rate', 'loan_lmt', 'dcls_strt_day', 'dcls_end_day', 
-            'fin_co_subm_day', 'options'
+            'fin_co_subm_day', 'rent_loan_options'
         ]
