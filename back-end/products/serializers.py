@@ -76,3 +76,24 @@ class PensionProductSerializer(serializers.ModelSerializer):
             'btrm_prft_rate_3', 'etc', 'sale_co', 'dcls_strt_day', 
             'dcls_end_day', 'fin_co_subm_day', 'pension_options'
         ]
+
+class RentLoanOptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RentLoanProductOption
+        fields = [
+            'dcls_month', 'fin_co_no', 'fin_prdt_cd', 'rpay_type', 
+            'rpay_type_nm', 'lend_rate_type', 'lend_rate_type_nm', 
+            'lend_rate_min', 'lend_rate_max', 'lend_rate_avg'
+        ]
+
+class RentLoanSerializer(serializers.ModelSerializer):
+    options = RentLoanOptionSerializer(many=True, read_only=True)  # RentLoanOptionSerializer 포함(역참조)
+
+    class Meta:
+        model = RentLoanProduct
+        fields = [
+            'dcls_month', 'fin_co_no', 'kor_co_nm', 'fin_prdt_cd', 
+            'fin_prdt_nm', 'join_way', 'loan_inci_expn', 'erly_rpay_fee', 
+            'dly_rate', 'loan_lmt', 'dcls_strt_day', 'dcls_end_day', 
+            'fin_co_subm_day', 'options'
+        ]
