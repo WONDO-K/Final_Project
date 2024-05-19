@@ -45,7 +45,7 @@ class User(AbstractUser, PermissionsMixin):
     wealth = models.IntegerField(null=True, blank=True)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now_add=True)
-    my_product = models.JSONField(null=True, blank=True)
+    #my_product = models.JSONField(null=True, blank=True)
     objects = UserManager()
     
     USERNAME_FIELD = 'username' # email로 로그인하는 것이 아닌 user_id로 로그인하기 위함
