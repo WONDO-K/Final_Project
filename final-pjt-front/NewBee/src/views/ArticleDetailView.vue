@@ -1,7 +1,7 @@
 <template>
   <div class="text-center">
     <h1 class="mb-4">게시글 상세 페이지</h1>
-    <div class="container">
+    <div class="container mb-3">
       <div class="mb-3">
         <label for="title" class="form-label">번호</label>
         <input type="text" class="form-control" id="title" :value="article.id" disabled>
@@ -18,15 +18,15 @@
         <label for="content" class="form-label">내용</label>
         <textarea class="form-control" id="content" rows="3" :value="article.content" disabled></textarea>
       </div>
+      <button class="btn btn-primary text-white">좋아요</button>
     </div>
-    <!-- 댓글 목록 들어갈 예정 -->
-    <button class="btn btn-primary text-white">좋아요</button>
-    <Comments />
     <!-- 글 작성자와 로그인한 유저가 같은지 확인 후 렌더링 -->
     <router-link :to="{ name: 'articleUpdate', params: { id: article.id } }" v-if="checkUser">
       <button type="submit" class="btn btn-primary text-white">게시글 수정</button>
+      <br>
     </router-link>
     <button type="submit" class="btn btn-primary text-white" @click="deleteArticle" v-if="checkUser">삭제</button>
+    <Comments />
   </div>
 </template>
 

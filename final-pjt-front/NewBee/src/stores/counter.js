@@ -38,6 +38,31 @@ export const useCounterStore = defineStore('counter', () => {
         console.log(err)
       })
     }
+    // 유저 정보 가져오기
+  const getUser = function() {
+    axios.get('http://127.0.0.1:8000/accounts/auth/', {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('access')}`,
+        'Content-Type': 'application/json'
+      },
+      withCredentials: true // 쿠키를 요청에 포함시키는 옵션 추가
+    })
+      .then(res => {
+        console.log('유저 정보를 가져왔습니다.')
+        console.log(res.data)
+        userInfo.value.userId = res.data.username
+        userInfo.value.email = res.data.email
+        userInfo.value.nickName = res.data.nickname
+        userInfo.value.userName = res.data.realname
+        userInfo.value.birth = res.data.birth
+        userInfo.value.salary = res.data.salary
+        userInfo.value.wealth = res.data.wealth
+        userInfo.value.gender = res.data.gender
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
   // 로그인
   // access 토큰 만료 시 refresh 토큰으로 재발급 logic 추가 필요
   const logIn = function(info) {
@@ -53,6 +78,7 @@ export const useCounterStore = defineStore('counter', () => {
         localStorage.setItem('refresh', res.data.token.refresh)
         // 로그인 완료 -> 메인 페이지로 이동
         isLogin.value = true
+        getUser()
         goHome()
       })
       .catch(err => {
@@ -75,32 +101,8 @@ export const useCounterStore = defineStore('counter', () => {
         localStorage.removeItem('access')
         localStorage.removeItem('refresh')
         isLogin.value = false
+        userInfo.value = {}
         goHome()
-      })
-      .catch(err => {
-        console.log(err)
-      })
-  }
-  // 유저 정보 가져오기
-  const getUser = function() {
-    axios.get('http://127.0.0.1:8000/accounts/auth/', {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('access')}`,
-        'Content-Type': 'application/json'
-      },
-      withCredentials: true // 쿠키를 요청에 포함시키는 옵션 추가
-    })
-      .then(res => {
-        console.log('유저 정보를 가져왔습니다.')
-        console.log(res.data)
-        userInfo.value.userId = res.data.username
-        userInfo.value.email = res.data.email
-        userInfo.value.nickName = res.data.nickname
-        userInfo.value.userName = res.data.realname
-        userInfo.value.birth = res.data.birth
-        userInfo.value.salary = res.data.salary
-        userInfo.value.wealth = res.data.wealth
-        userInfo.value.gender = res.data.gender
       })
       .catch(err => {
         console.log(err)

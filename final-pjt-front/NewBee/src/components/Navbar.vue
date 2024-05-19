@@ -13,8 +13,8 @@
         <router-link :to="{ name : 'login' }" v-show="!store.isLogin" class="h3 text-info text-decoration-none">로그인</router-link>
         <router-link :to="{ name : 'signup' }" v-show="!store.isLogin" class="h3 text-info text-decoration-none">회원가입</router-link>
         <!-- 로그인 했을 경우 -->
-        <router-link :to="{ name : 'mypage' }" @click="getUser" v-show="store.isLogin" class="h3 text-info text-decoration-none">마이페이지</router-link>
-        <a href="" class="h3 text-info text-decoration-none" @click="logOut" v-show="store.isLogin">로그아웃</a>
+        <router-link :to="{ name : 'mypage' }" @click="getUser" v-show="store.isLogin" class="h3 text-info text-decoration-none">{{ store.userInfo.nickName }}님</router-link>
+        <a class="h3 text-info text-decoration-none" @click="logOut" v-show="store.isLogin">로그아웃</a>
       </nav>
     </header>
   </div>
@@ -37,5 +37,9 @@ nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+a:hover {
+  cursor: pointer;
 }
 </style>

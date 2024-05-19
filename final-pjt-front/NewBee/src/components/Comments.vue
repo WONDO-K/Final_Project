@@ -1,22 +1,28 @@
 <template>
   <div>
-    <h1>Comments</h1>
-    <label for="comment">댓글</label>
-    <input type="text" id="comment" v-model="content">
-    <button @click="createComment(store.article.id)">등록</button>
     <div v-for="comment in store.comments"
-         :key="comment.id">
-      <p>{{ comment.content }}</p>
-      <p>{{ comment.user }}</p>
-      
-      <div v-if="comment.user === store.userInfo.userId">
-        <label for="update">댓글 수정</label>
-        <input type="text" :id="'update' + comment.id" v-model="updateContents[comment.id]">
-        <button @click="updateComment(store.article.id, comment.id)">진짜 수정</button>
-        <br>
-        <button>댓글 수정</button>
-        <button @click="deleteComment(store.article.id, comment.id)">댓글 삭제</button>
+    :key="comment.id"
+          :comment="comment" class="container">
+      <td>[{{ comment.user }}] </td>
+      <td>&nbsp;{{ comment.content }}</td>
+      <td v-if="store.isLogin && (comment.user === store.userInfo.userId)">
+        <button class="btn btn-primary text-white" @click="toggleUpdateForm(comment.id)">수정</button>
+      </td>
+      <td v-if="store.isLogin && (comment.user === store.userInfo.userId)">
+        <button class="btn btn-primary text-white" @click="deleteComment(store.article.id, comment.id)">삭제</button>
+      </td>
+      <div v-if="isClicked[comment.id]">
+        <td>
+          <input type="text" :id="'update' + comment.id" v-model="updateContents[comment.id]" class="form-control">
+        </td>
+        <td>
+          <button @click="updateComment(store.article.id, comment.id)" class="btn btn-primary text-white">수정</button>
+        </td>
       </div>
+    </div>
+    <div class="container mb-2">
+      <input type="text" id="comment" class="form-control mb-3 mt-3" placeholder="댓글 쓰기(로그인하셔야 이용가능합니다.)" v-model="content">
+      <button class="btn btn-primary text-white" @click="createComment(store.article.id)" v-if="store.isLogin">등록</button>
     </div>
   </div>
 </template>
@@ -28,6 +34,15 @@ import { useCounterStore } from '@/stores/counter';
 const store = useCounterStore()
 const content = ref('')
 const updateContents = reactive({}) // 각 댓글에 대한 수정 내용을 저장하는 객체
+const isClicked = reactive({}) // 각 댓글에 대한 클릭 상태를 저장하는 객체
+
+const toggleUpdateForm = function(commentId){
+  if (isClicked[commentId]) {
+    isClicked[commentId] = !isClicked[commentId]
+  } else {
+    isClicked[commentId] = true
+  }
+}
 
 const createComment = function(articleId){
   const payload = {
@@ -44,6 +59,7 @@ const updateComment = (articleId, commentId) => {
   store.updateComment(articleId, commentId, payload)
   // 업데이트 후 입력 필드 초기화
   updateContents[commentId] = ''
+  isClicked[commentId] = false
 }
 
 const deleteComment = (articleId, commentId) => {
