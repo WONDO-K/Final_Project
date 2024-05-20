@@ -242,11 +242,11 @@ class SavingProductRegisterAPIView(APIView):
 
         return JsonResponse({"message": "적금 상품 정보가 성공적으로 저장되었습니다."},status=201)
 
-@swagger_auto_schema(
-    operation_summary="적금 상품의 상세 정보를 가져옵니다.",
-    tags=['조회']
-)
+
 class SavingProductDetailAPIView(APIView):
+    @swagger_auto_schema(
+    operation_summary="적금 상품의 상세 정보를 가져옵니다.",
+    tags=['조회'])
     def get(self, request, product_pk):
         product = get_object_or_404(SavingProduct, pk=product_pk)
         product_serializer = SavingProductSerializer(product)
@@ -360,11 +360,11 @@ class PensionProductRegisterAPIView(APIView):
         return JsonResponse({"message": "연금 상품 정보가 성공적으로 저장되었습니다."}, status=201)
 
 
-@swagger_auto_schema(
-    operation_summary="연금 상품의 상세 정보를 가져옵니다.",
-    tags=['조회']
-)
+
 class PensionProductDetailAPIView(APIView):
+    @swagger_auto_schema(
+    operation_summary="연금 상품의 상세 정보를 가져옵니다.",
+    tags=['조회'])
     def get(self, request, product_pk):
         product = get_object_or_404(PensionProduct, pk=product_pk)
         product_serializer = PensionProductSerializer(product)
