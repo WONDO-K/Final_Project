@@ -3,6 +3,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
+from django.http import JsonResponse 
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from drf_yasg.utils import swagger_auto_schema
 from .models import Article, Comment
@@ -23,21 +24,26 @@ class ArticleListCreateAPIView(GenericAPIView):  # GenericAPIView는 APIView와 
     renderer_classes = (JSONRenderer,)
 
     # 게시글 작성
-    @swagger_auto_schema(tags=['게시판'], request_body=ArticleSerializer)
+    @swagger_auto_schema(
+            operation_summary='게시글 작성',
+            tags=['게시판'], 
+            request_body=ArticleSerializer)
     @permission_classes([IsAuthenticated])
     def post(self, request, *args, **kwargs):
         serializer = ArticleSerializer(data=request.data) # request.data에는 게시글 정보가 담겨있음
         if serializer.is_valid(raise_exception=True): # raise_exception=True로 설정하면 유효성 검사에 실패하면 400 Bad Request 응답을 반환
             serializer.save(user=request.user)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return JsonResponse({'message': '게시글 작성이 완료 되었습니다.'}, status=201)
 
     # 게시글 목록
-    @swagger_auto_schema(tags=['게시판'])
+    @swagger_auto_schema(
+            operation_summary='게시글 목록',
+            tags=['게시판'])
     @permission_classes([AllowAny])
     def get(self, request, *args, **kwargs):
         articles = Article.objects.all()
         serializer = ArticleListSerializer(articles, many=True)
-        return Response(serializer.data)
+        return JsonResponse({'result':serializer.data},status=200)
 
 # @method_decorator(csrf_exempt, name='dispatch')
 # # 게시글 조회, 수정, 삭제
@@ -81,22 +87,54 @@ class ArticleRetrieveAPIView(RetrieveUpdateDestroyAPIView):
     renderer_classes = (JSONRenderer,)
 
     # 게시글 조회
-    @swagger_auto_schema(tags=['게시판'])
+    @swagger_auto_schema(
+            operation_summary='게시글 조회',
+            tags=['게시판'])
     @permission_classes([AllowAny])
     def get(self, request, *args, **kwargs): 
         return super().get(request, *args, **kwargs)
 
     # 게시글 수정
-    @swagger_auto_schema(tags=['게시판'], request_body=ArticleSerializer)
+    @swagger_auto_schema(
+            operation_summary='게시글 수정',
+            tags=['게시판'],
+            request_body=ArticleSerializer)
     @permission_classes([IsAuthenticated])
     def put(self, request, *args, **kwargs):
         return super().put(request, *args, **kwargs)
 
     # 게시글 삭제
-    @swagger_auto_schema(tags=['게시판'])
+    @swagger_auto_schema(
+            operation_summary='게시글 삭제',
+            tags=['게시판'])
     @permission_classes([IsAuthenticated])
     def delete(self, request, *args, **kwargs):
         return super().delete(request, *args, **kwargs)
+    
+
+class ArticleLikesAPIView(APIView):
+    # 게시글 좋아요
+    @swagger_auto_schema(
+            operation_summary='게시글 좋아요',
+            tags=['게시판'])
+    @permission_classes([IsAuthenticated])
+    def post(self, request, pk=None, *args, **kwargs):
+        article = get_object_or_404(Article, pk=pk)
+        if article.like_users.filter(pk=request.user.pk).exists():
+            article.like_users.remove(request.user)
+            return JsonResponse({'message': '게시글 좋아요 취소가 성공적으로 처리되었습니다.'}, status=200)
+        else:
+            article.like_users.add(request.user)
+            return JsonResponse({'message': '게시글 좋아요가 성공적으로 처리되었습니다.'}, status=200)
+    
+    # 게시글 좋아요 수
+    @swagger_auto_schema(
+            operation_summary='게시글 좋아요 수',
+            tags=['게시판'])
+    @permission_classes([AllowAny])
+    def get(self, request, pk=None, *args, **kwargs):
+        article = get_object_or_404(Article, pk=pk)
+        return JsonResponse({'likes': article.like_users.count()},status=200)
 
 # 댓글 작성
 @method_decorator(csrf_exempt, name='dispatch')
@@ -107,7 +145,10 @@ class CommentCreateAPIView(GenericAPIView):
     renderer_classes = (JSONRenderer,)
 
     # 댓글 작성
-    @swagger_auto_schema(tags=['댓글'], request_body=CommentSerializer)
+    @swagger_auto_schema(
+            operation_summary='댓글 작성',
+            tags=['댓글'], 
+            request_body=CommentSerializer)
     @permission_classes([IsAuthenticated])
     def post(self, request, article_pk=None, *args, **kwargs):
         article = get_object_or_404(Article, pk=article_pk)
@@ -158,19 +199,29 @@ class CommentRetrieveAPIView(RetrieveUpdateDestroyAPIView):
     renderer_classes = (JSONRenderer,)
 
     # 댓글 조회
-    @swagger_auto_schema(tags=['댓글'])
+    @swagger_auto_schema(
+            operation_summary='댓글 조회',
+            tags=['댓글'])
     @permission_classes([AllowAny])
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
     
     # 댓글 수정
-    @swagger_auto_schema(tags=['댓글'], request_body=CommentSerializer)
+    @swagger_auto_schema(
+            operation_summary='댓글 수정',
+            ags=['댓글'], 
+            request_body=CommentSerializer)
     @permission_classes([IsAuthenticated])
     def put(self, request, *args, **kwargs):
         return super().put(request, *args, **kwargs)
 
     # 댓글 삭제
-    @swagger_auto_schema(tags=['댓글'])
+    @swagger_auto_schema(
+            operation_summary='댓글 삭제',
+            tags=['댓글'])
     @permission_classes([IsAuthenticated])
     def delete(self, request, *args, **kwargs):
         return super().delete(request, *args, **kwargs)
+    
+
+ 

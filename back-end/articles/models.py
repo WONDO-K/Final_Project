@@ -10,10 +10,11 @@ class Article(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True) 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='articles') # 게시글 작성자
+    like_users = models.ManyToManyField(User, related_name='like_users') # 게시글 좋아요 누른 유저
 
-class Like(models.Model):
-    article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='likes') # 좋아요를 누른 게시글
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='likes') # 좋아요를 누른 유저
+# class Like(models.Model):
+#     article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='likes') # 좋아요를 누른 게시글
+#     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='likes') # 좋아요를 누른 유저
 
 class Comment(models.Model):
     content = models.TextField(max_length=200) # 댓글 내용
