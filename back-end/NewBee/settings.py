@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'articles',
     'rates',
     'products',
+    'words',
     'drf_yasg',
     'corsheaders',
     'rest_framework',
