@@ -1,6 +1,6 @@
 <template>
   <div class="container text-center">
-    <h1>예금</h1>
+    <h1>연금</h1>
     <table class="table table-hover">
       <thead class="table-warning">
         <tr>
@@ -9,13 +9,15 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="deposit in depositList">
-          <th scope="row">{{ deposit.kor_co_nm }}</th>
-          <td>{{ deposit.fin_prdt_nm }}</td>
+        <tr v-for="pension in pensionList">
+          <th scope="row">{{ pension.kor_co_nm }}</th>
+          <td>{{ pension.fin_prdt_nm }}</td>
+          <td></td>
+          <td></td>
+          <td></td>
         </tr>
       </tbody>
     </table>
-    <button @click="aaa">aaa</button>
   </div>
 </template>
 
@@ -23,12 +25,7 @@
 import { useCounterStore } from '@/stores/counter'
 
 const store = useCounterStore()
-const depositList = store.depositList
-
-const aaa = () => {
-  console.log(depositList[0])
-  // store.changeIsListRequest()
-}
+const pensionList = store.pensionList
 </script>
 
 <style scoped>

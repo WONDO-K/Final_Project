@@ -26,7 +26,7 @@ const getBanks = async function () {
 const getDeposits = async function () {
   try {
     const res = await axios.get('http://127.0.0.1:8000/products/deposit/register/')
-    console.log('예금 상품 목록을 가져왔습니다.')
+    console.log('예금 상품 정보를 가져왔습니다.')
     console.log(res.data)
   } catch (err) {
     console.log(err)
@@ -37,7 +37,7 @@ const getDeposits = async function () {
 const getPensions = async function () {
   try {
     const res = await axios.get('http://127.0.0.1:8000/products/pension/register/')
-    console.log('연금 상품 목록을 가져왔습니다.')
+    console.log('연금 상품 정보를 가져왔습니다.')
   } catch (err) {
     console.log(err)
   }
@@ -47,7 +47,7 @@ const getPensions = async function () {
 const getRentLoans = async function () {
   try {
     const res = await axios.get('http://127.0.0.1:8000/products/rent-loan/register/')
-    console.log('대출 상품 목록을 가져왔습니다.')
+    console.log('대출 상품 정보를 가져왔습니다.')
   } catch (err) {
     console.log(err)
   }
@@ -57,7 +57,7 @@ const getRentLoans = async function () {
 const getSavings = async function () {
   try {
     const res = await axios.get('http://127.0.0.1:8000/products/saving/register/')
-    console.log('적금 상품 목록을 가져왔습니다.')
+    console.log('적금 상품 정보를 가져왔습니다.')
   } catch (err) {
     console.log(err)
   }
@@ -83,6 +83,8 @@ onMounted(async () => {
     <router-view />
     <Footer class="mt-auto"/>
   </div>
+
+  
 </template>
 
 <style scoped>

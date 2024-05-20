@@ -10,15 +10,27 @@ export const useCounterStore = defineStore('counter', () => {
   const isLogin = localStorage.getItem('access')? ref(true) : ref(false)
   // 금융 API 요청 여부
   const isRequest = ref(false)
-  
+  // 금융 List 요청 여부
+  const isListRequest = ref(false)
+  // 유저 정보
   const userInfo = ref({})
+  // 게시글 목록, 상세정보, 댓글
   const articles = ref([])
   const article = ref(null)
   const comments = ref(null)
+  // 예금, 연금, 대출, 적금 상품 목록
+  const depositList = ref(null)
+  const savingsList = ref(null)
+  const pensionList = ref(null)
+  const loanList = ref(null)
 
   // 금융 API 요청 여부 변경
   const changeRequest = function() {
     isRequest.value = !isRequest.value
+  }
+
+  const changeIsListRequest = function() {
+    isListRequest.value = !isListRequest.value
   }
 
   // 메인 페이지로 이동
@@ -278,6 +290,7 @@ export const useCounterStore = defineStore('counter', () => {
     .then(res => {
       console.log('예금 상품 목록을 가져왔습니다.')
       console.log(res.data)
+      depositList.value = res.data
     })
     .catch(err => {
       console.log(err)
@@ -289,6 +302,7 @@ export const useCounterStore = defineStore('counter', () => {
       .then(res => {
         console.log('연금 상품 목록을 가져왔습니다.')
         console.log(res.data)
+        pensionList.value = res.data
       })
       .catch(err => {
         console.log(err)
@@ -300,6 +314,7 @@ export const useCounterStore = defineStore('counter', () => {
       .then(res => {
         console.log('대출 상품 목록을 가져왔습니다.')
         console.log(res.data)
+        loanList.value = res.data
       })
       .catch(err => {
         console.log(err)
@@ -307,10 +322,11 @@ export const useCounterStore = defineStore('counter', () => {
   }
   // 적금 상품 목록 가져오기
   const getSavingsList = function () {
-    axios.get('http://127.0.0.1:8000/products/rent_loan_list/')
+    axios.get('http://127.0.0.1:8000/products/saving_list/')
       .then(res => {
         console.log('적금 상품 목록을 가져왔습니다.')
         console.log(res.data)
+        savingsList.value = res.data
       })
       .catch(err => {
         console.log(err)
@@ -318,14 +334,22 @@ export const useCounterStore = defineStore('counter', () => {
   }
 
   return {
-    changeRequest,
+    // 상태
+    isRequest, isListRequest,
+    isLogin,
+    // 데이터
+    userInfo,
+    articles, article,
+    comments,
+    depositList, pensionList, loanList, savingsList,
+    // 상태 변경 함수
+    changeRequest, changeIsListRequest,
+    // 페이지 이동 함수
     goHome, goLogin,
+    // 일반 함수
     signUp, logIn, logOut, getUser, modifyUser,
     getArticles, createArticle, getArticle, deleteArticle, updateArticle,
     createComment, deleteComment, updateComment,
     getDepositList, getPensionList, getLoanList, getSavingsList,
-    isLogin, userInfo, isRequest,
-    articles, article,
-    comments
    }
 }, { persist: true })

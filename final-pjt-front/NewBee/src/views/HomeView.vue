@@ -3,8 +3,8 @@
         <BestProductImage />
       <div class="container d-flex justify-content-between">
         <FinanceVoca />
-        <News />
         <ExchangeRate />
+        <News />
       </div>
     </div>
 </template>

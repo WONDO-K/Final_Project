@@ -32,6 +32,8 @@
           <option value="THB">THB(태국 바트)</option>
           <option value="USD">USD(미국 달러)</option>
         </select>
+        <button class="btn btn-primary mb-3" @click="changeValue">↑↓</button>
+        <br>
         <label for="TO" class="form-label">TO</label>
         <select id="TO" class="form-control text-center" v-model="to">
           <option value="AED">AED(아랍에미리트 디르함)</option>
@@ -93,8 +95,10 @@ const getExchangeRate = function() {
   })
 }
 
-function formatToTwoDecimalPlaces(number) {
-  return Number(number.toFixed(2));
+const changeValue = function() {
+  const temp = from.value
+  from.value = to.value
+  to.value = temp
 }
 
 const exchange = function() {
@@ -105,10 +109,14 @@ const exchange = function() {
   })
   .then((response) => {
     console.log('환전을 완료했습니다.')
-    console.log(response.data)
     console.log(response.data.result)
-    console.log(amount.value)
-    result.value = formatToTwoDecimalPlaces(response.data.result * amount.value / Number(amount.value.toString()[0]))
+    result.value = response.data.result
+    if (to.value === 'IDR(100)' || to.value === 'JPY(100)') {
+      result.value = (result.value * 100).toFixed(2)
+    } else {
+      result.value = result.value.toFixed(2)
+    }
+    result.value = result.value + ' ' + to.value
 
     to.value = ''
     from.value = ''

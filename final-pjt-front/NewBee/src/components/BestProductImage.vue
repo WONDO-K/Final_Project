@@ -3,7 +3,7 @@
     <div id="carouselExampleControls" class="carousel slide rounded-3 w-100 h-25 mb-4" data-bs-ride="carousel">
       <div class="carousel-inner">
         <div class="carousel-item active">
-          <img src="@/assets/images/temp1.jpeg" class="d-block w-100" alt="...">
+            <img src="@/assets/images/temp1.jpeg" class="d-block w-100" alt="">
         </div>
         <div class="carousel-item">
             <img src="@/assets/images/temp2.jpeg" class="d-block w-100" alt="">
@@ -25,13 +25,11 @@
 </template>
 
 <script setup>
-
 </script>
 
 <style scoped>
 /* 임시 CSS 차후 변경할 예정 */
 img {
-  height: 400px;
+  height: 300px;
 }
-
 </style>

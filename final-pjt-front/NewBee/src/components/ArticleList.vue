@@ -11,9 +11,9 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="article in store.articles"
+        <tr v-for="article in store.articles.result"
         :key="article.id"
-        :article="article" @click="goDetail(article)">
+        @click="goDetail(article)">
           <th scope="row">{{ article.id }}</th>
           <td>{{ cutContent(article.title) }}</td>
           <td>{{ cutContent(article.content) }}</td>
@@ -27,7 +27,6 @@
 
 <script setup>
 import { useCounterStore } from '@/stores/counter'
-import { RouterLink } from 'vue-router';
 import { useRouter } from 'vue-router'
 import { useRoute } from 'vue-router'
 
@@ -36,15 +35,14 @@ const router = useRouter()
 const route = useRoute()
 
 const cutContent = (content) => {
-  if (!content) return '안녕'
+  if (!content) return null
   return content.length > 30 ? content.slice(0, 30) + '...' : content;
 }
 
 const slicing = function (string) {
-  if (!string) return '안녕'
+  if (!string) return null
   return string.slice(0, 10);
 }
-
 
 const goDetail = (article) => {
   store.getArticle(article.id).then(() => {
