@@ -42,7 +42,10 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username', 'realname', 'password', 'password2', 'nickname', 'email', 'birth', 'salary', 'gender', 'wealth', 'is_staff', 'my_product']   
+        fields = ['username', 'realname', 'password', 'password2', 'nickname', 'email', 'birth', 'salary', 'gender', 'wealth', 'is_staff']   
+        extra_kwargs = {
+            'is_staff': {'read_only': True}, # is_staff는 관리자 여부를 나타내는 필드로 사용자가 직접 변경할 수 없도록 설정한다.
+        }
         #ref_name = 'UserSerializer'  # ref_name 추가
         
     def validate(self, data): # password과 password2의 일치 여부 확인

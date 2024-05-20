@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import *
+from .models import Bank, BankOption, DepositProduct, DepositProductOption, SavingProduct, SavingProductOption, PensionProduct, PensionProductOption, RentLoanProduct, RentLoanProductOption
+
 
 class BankOptionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -76,3 +77,70 @@ class PensionProductSerializer(serializers.ModelSerializer):
             'btrm_prft_rate_3', 'etc', 'sale_co', 'dcls_strt_day', 
             'dcls_end_day', 'fin_co_subm_day', 'pension_options'
         ]
+
+class RentLoanOptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RentLoanProductOption
+        fields = [
+            'dcls_month', 'fin_co_no', 'fin_prdt_cd', 'rpay_type', 
+            'rpay_type_nm', 'lend_rate_type', 'lend_rate_type_nm', 
+            'lend_rate_min', 'lend_rate_max', 'lend_rate_avg'
+        ]
+
+class RentLoanSerializer(serializers.ModelSerializer):
+    rent_loan_options = RentLoanOptionSerializer(many=True, read_only=True)  # RentLoanOptionSerializer 포함(역참조)
+
+    class Meta:
+        model = RentLoanProduct
+        fields = [
+            'dcls_month', 'fin_co_no', 'kor_co_nm', 'fin_prdt_cd', 
+            'fin_prdt_nm', 'join_way', 'loan_inci_expn', 'erly_rpay_fee', 
+            'dly_rate', 'loan_lmt', 'dcls_strt_day', 'dcls_end_day', 
+            'fin_co_subm_day', 'rent_loan_options'
+        ]
+from .models import UserDepositProduct, UserSavingProduct, UserPensionProduct, UserRentLoanProduct
+
+class JoinProductSerializer(serializers.Serializer): # 사용자가 상품에 가입할 때 사용하는 시리얼라이저
+    product_type = serializers.CharField(max_length=20) # 'deposit', 'saving', 'pension', 'rent_loan' 중 하나로 상품 타입을 의미
+    product_id = serializers.IntegerField() # 상품 ID
+    option_id = serializers.IntegerField() # 상품 옵션 ID
+
+
+class UserProductSerializer(serializers.ModelSerializer):
+    class Meta: # UserProductSerializer를 상속받는 Serializer 클래스에서 Meta 클래스를 정의할 때 상속받는 클래스의 Meta 클래스를 참조하도록 함
+        fields = ['user', 'product_type', 'selected_option', 'join_date']
+
+class UserDepositProductSerializer(UserProductSerializer):
+    class Meta(UserProductSerializer.Meta): 
+        model = UserDepositProduct
+        fields = UserProductSerializer.Meta.fields + ['deposit_product'] # UserProductSerializer의 fields에 'deposit_product' 필드를 추가
+
+class UserSavingProductSerializer(UserProductSerializer):
+    class Meta(UserProductSerializer.Meta):
+        model = UserSavingProduct
+        fields = UserProductSerializer.Meta.fields + ['saving_product']
+
+class UserPensionProductSerializer(UserProductSerializer):
+    class Meta(UserProductSerializer.Meta):
+        model = UserPensionProduct
+        fields = UserProductSerializer.Meta.fields + ['pension_product']
+
+class UserRentLoanProductSerializer(UserProductSerializer):
+    class Meta(UserProductSerializer.Meta):
+        model = UserRentLoanProduct
+        fields = UserProductSerializer.Meta.fields + ['rent_loan_product']
+
+# class UserProductSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         fields = ['id', 'user', 'selected_option', 'join_date']
+
+# class DynamicUserProductSerializer(serializers.ModelSerializer):
+#     class Meta(UserProductSerializer.Meta):
+#         pass
+    
+#     def __init__(self, *args, **kwargs):
+#         model = kwargs.pop('model', None)
+#         super().__init__(*args, **kwargs)
+#         if model:
+#             self.Meta.model = model # 상품 모델을 동적으로 변경
+#             self.Meta.fields += [model.product_field] # 상품 필드명을 동적으로 추가
