@@ -181,11 +181,11 @@ class UserProductSerializer(serializers.ModelSerializer):
 
 class UserDepositProductSerializer(UserProductSerializer):
 
-    productname = serializers.CharField(source='deposit_product.fin_prdt_nm') # deposit_product의 fin_prdt_nm 필드를 productname으로 변경
+    productname = serializers.CharField(source='deposit_product.fin_prdt_nm')  # deposit_product의 fin_prdt_nm 필드를 productname으로 변경
 
-    class Meta(UserProductSerializer.Meta): 
+    class Meta(UserProductSerializer.Meta):
         model = UserDepositProduct
-        fields = UserProductSerializer.Meta.fields + ['deposit_product','productname'] # UserProductSerializer의 fields에 'deposit_product' 필드를 추가
+        fields = UserProductSerializer.Meta.fields + ['deposit_product', 'productname']  # UserProductSerializer의 fields에 'deposit_product' 필드를 추가
 
 class UserSavingProductSerializer(UserProductSerializer):
 
@@ -210,5 +210,4 @@ class UserRentLoanProductSerializer(UserProductSerializer):
     class Meta(UserProductSerializer.Meta):
         model = UserRentLoanProduct
         fields = UserProductSerializer.Meta.fields + ['rent_loan_product','productname']
-
 

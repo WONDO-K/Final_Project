@@ -341,7 +341,7 @@ class JoinProductAPIView(APIView):
                 })
             elif product_type == '전세대출':
                 user_product_serializer = UserRentLoanProductSerializer(data={
-                    'user': request.user,
+                    'user': request.user.pk,
                     'product_type': product_type,
                     'selected_option': option.pk,
                     'rent_loan_product': product.pk,
