@@ -2,7 +2,7 @@ from django.db import models
 from .bank import Bank
 
 class DepositProduct(models.Model): # 정기 예금 상품
-    fin_prdt_cd = models.CharField(max_length=20, unique=True)  # 금융상품 코드
+    fin_prdt_cd = models.CharField(max_length=40, unique=True)  # 금융상품 코드
     fin_co_no = models.ForeignKey(Bank, on_delete=models.CASCADE)  # 금융회사 코드
     kor_co_nm = models.CharField(max_length=100)  # 금융회사명
     fin_prdt_nm = models.CharField(max_length=100)  # 금융 상품명

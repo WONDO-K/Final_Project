@@ -5,7 +5,7 @@ class PensionProduct(models.Model):
     dcls_month = models.CharField(max_length=6)  # 공시 제출월 [YYYYMM]
     fin_co_no = models.CharField(max_length=20)  # 금융회사 코드
     kor_co_nm = models.CharField(max_length=100)  # 금융회사 명
-    fin_prdt_cd = models.CharField(max_length=20)  # 금융상품 코드
+    fin_prdt_cd = models.CharField(max_length=40)  # 금융상품 코드
     fin_prdt_nm = models.CharField(max_length=100)  # 금융 상품명
     join_way = models.CharField(max_length=200)  # 가입 방법
     pnsn_kind = models.CharField(max_length=20)  # 연금종류
@@ -20,7 +20,7 @@ class PensionProduct(models.Model):
     btrm_prft_rate_2 = models.DecimalField(max_digits=5, decimal_places=2)  # 과거 수익률2(전전년도) [소수점 2자리]
     btrm_prft_rate_3 = models.DecimalField(max_digits=5, decimal_places=2)  # 과거 수익률3(전전전년도) [소수점 2자리]
     etc = models.TextField(null=True, blank=True)  # 기타사항
-    sale_co = models.CharField(max_length=100)  # 판매사
+    sale_co = models.CharField(max_length=200)  # 판매사
     dcls_strt_day = models.CharField(max_length=10)  # 공시 시작일 [YYYY-MM-DD]
     dcls_end_day = models.CharField(max_length=10,null=True, blank=True)  # 공시 종료일 [YYYY-MM-DD]
     fin_co_subm_day = models.CharField(max_length=20)  # 금융회사 제출일 [YYYYMMDDHH24MI]

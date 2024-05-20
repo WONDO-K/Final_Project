@@ -1,6 +1,7 @@
 from django.db import models
 
 class Bank(models.Model): # 은행
+    dcls_month = models.CharField(max_length=6) # 공시 제출월 [YYYYMM]
     fin_co_no = models.CharField(max_length=20, unique=True) # 금융회사 코드
     kor_co_nm = models.CharField(max_length=100) # 금융회사명
     homp_url = models.URLField() # 홈페이지 주소
