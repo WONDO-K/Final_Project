@@ -122,9 +122,10 @@ class ArticleLikesAPIView(APIView):
         article = get_object_or_404(Article, pk=pk)
         if article.like_users.filter(pk=request.user.pk).exists():
             article.like_users.remove(request.user)
+            return JsonResponse({'message': '게시글 좋아요 취소가 성공적으로 처리되었습니다.'}, status=200)
         else:
             article.like_users.add(request.user)
-        return JsonResponse({'message': '게시글 좋아요가 성공적으로 처리되었습니다.'}, status=200)
+            return JsonResponse({'message': '게시글 좋아요가 성공적으로 처리되었습니다.'}, status=200)
     
     # 게시글 좋아요 수
     @swagger_auto_schema(
