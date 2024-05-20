@@ -5,6 +5,15 @@
 </template>
 
 <script setup>
+import { useCounterStore } from '@/stores/counter'
+import { onMounted } from 'vue'
+
+const store = useCounterStore()
+
+onMounted(
+  store.getDepositList()
+)
+
 </script>
 
 <style scoped>

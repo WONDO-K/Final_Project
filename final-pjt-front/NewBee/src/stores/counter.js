@@ -272,12 +272,58 @@ export const useCounterStore = defineStore('counter', () => {
     })
   }
 
+  // 예금 상품 목록 가져오기
+  const getDepositList = function(){
+    axios.get('http://127.0.0.1:8000/products/deposit_list/')
+    .then(res => {
+      console.log('예금 상품 목록을 가져왔습니다.')
+      console.log(res.data)
+    })
+    .catch(err => {
+      console.log(err)
+    })
+  }
+  // 연금 상품 목록 가져오기
+  const getPensionList = function () {
+    axios.get('http://127.0.0.1:8000/products/pension_list/')
+      .then(res => {
+        console.log('연금 상품 목록을 가져왔습니다.')
+        console.log(res.data)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+  // 대출 상품 목록 가져오기
+  const getLoanList = function () {
+    axios.get('http://127.0.0.1:8000/products/rent_loan_list/')
+      .then(res => {
+        console.log('대출 상품 목록을 가져왔습니다.')
+        console.log(res.data)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+  // 적금 상품 목록 가져오기
+  const getSavingsList = function () {
+    axios.get('http://127.0.0.1:8000/products/rent_loan_list/')
+      .then(res => {
+        console.log('적금 상품 목록을 가져왔습니다.')
+        console.log(res.data)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+
   return {
     changeRequest,
     goHome, goLogin,
     signUp, logIn, logOut, getUser, modifyUser,
     getArticles, createArticle, getArticle, deleteArticle, updateArticle,
     createComment, deleteComment, updateComment,
+    getDepositList, getPensionList, getLoanList, getSavingsList,
     isLogin, userInfo, isRequest,
     articles, article,
     comments

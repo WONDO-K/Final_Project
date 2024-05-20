@@ -22,8 +22,6 @@ onMounted(() => {
 
 const isLogin = store.isLogin
 
-
-
 </script>
 
 <style scoped>

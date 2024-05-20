@@ -10,7 +10,7 @@
             <label for="content" class="form-label">내용</label>
             <textarea class="form-control" id="content" rows="3" placeholder="내용을 입력하세요" v-model="content"></textarea>
         </div>
-        <button type="submit" class="btn btn-primary text-white">작성</button>
+        <button type="submit" class="btn btn-primary">작성</button>
       </form>
     </div>
   </div>

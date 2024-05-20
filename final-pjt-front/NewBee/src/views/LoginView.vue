@@ -12,7 +12,7 @@
           <input type="password" id="password" class="form-control" placeholder="비밀번호" v-model="password">
           <label for="password">비밀번호</label>
         </div>
-        <button type="submit" class="btn btn-primary text-white">로그인</button>
+        <button type="submit" class="btn btn-primary">로그인</button>
       </form>
     </div>
   </div>

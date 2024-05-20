@@ -63,16 +63,16 @@ const getSavings = async function () {
   }
 }
 
-// onMounted(async () => {
-//   if (isRequest === false) {
-//     await getBanks()
-//     await getDeposits()
-//     await getPensions()
-//     await getRentLoans()
-//     await getSavings()
-//     changeRequest()
-//   }
-// })
+onMounted(async () => {
+  if (isRequest === false) {
+    await getBanks()
+    await getDeposits()
+    await getPensions()
+    await getRentLoans()
+    await getSavings()
+    changeRequest()
+  }
+})
 
 </script>
 

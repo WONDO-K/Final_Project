@@ -36,12 +36,12 @@ const router = useRouter()
 const route = useRoute()
 
 const cutContent = (content) => {
-  if (!content) return ''
+  if (!content) return '안녕'
   return content.length > 30 ? content.slice(0, 30) + '...' : content;
 }
 
 const slicing = function (string) {
-  if (!string) return ''
+  if (!string) return '안녕'
   return string.slice(0, 10);
 }
 
