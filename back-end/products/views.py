@@ -89,6 +89,7 @@ class DepositProductRegisterAPIView(APIView):
 
     def save_depoist_product_to_db(self, product_data, option_list):
         fin_prdt_cd = product_data.get('fin_prdt_cd') # 상품 코드
+        kor_co_nm = product_data.get('kor_co_nm') # 금융회사명
         fin_co_no = product_data.get('fin_co_no') # 금융회사 코드
         fin_co_instance = Bank.objects.get(fin_co_no=fin_co_no) # Bank 객체를 가져와서 넣어줘야 함
         fin_prdt_nm = product_data.get('fin_prdt_nm') # 상품명
@@ -108,6 +109,7 @@ class DepositProductRegisterAPIView(APIView):
             fin_prdt_cd=fin_prdt_cd, # 상품 코드로 조회
             defaults={ # 업데이트할 필드들
                 'fin_prdt_nm': fin_prdt_nm,
+                'kor_co_nm': kor_co_nm, # 'kor_co_nm' 추가
                 'fin_co_no' :  fin_co_instance, # Bank 객체를 넣어줘야 함
                 'join_way': join_way,
                 'mtrt_int': mtrt_int,
@@ -483,6 +485,7 @@ class UserProductListView(APIView):
 class JoinProductAPIView(APIView):
     @swagger_auto_schema(
         operation_summary="사용자가 상품에 가입합니다.",
+        tags=['금융'],
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
@@ -589,6 +592,48 @@ def get_product_and_option_models(product_type, product_id, option_id):
         raise ValueError("잘못된 정보입니다.")
     
 
+# class DepoistProductListAPIView(APIView):
+#     @swagger_auto_schema(
+#         operation_summary="정기 예금 상품 리스트를 가져옵니다.",
+#         tags=['조회']
+#     )
+#     def get(self, request):
+#         deposit_products = DepositProduct.objects.all()
+#         serializer = DepositProductSerializer(deposit_products, many=True)
+#         return JsonResponse(serializer.data, safe=False)
+
+# class SavingProductListAPIView(APIView):
+#     @swagger_auto_schema(
+#         operation_summary="적금 상품 리스트를 가져옵니다.",
+#         tags=['조회']
+#     )
+#     def get(self, request):
+#         saving_products = SavingProduct.objects.all()
+#         serializer = SavingProductSerializer(saving_products, many=True)
+#         return JsonResponse(serializer.data, safe=False)
+    
+# class PensionProductListAPIView(APIView):
+#     @swagger_auto_schema(
+#         operation_summary="연금 상품 리스트를 가져옵니다.",
+#         tags=['조회']
+#     )
+#     def get(self, request):
+#         pension_products = PensionProduct.objects.all()
+#         serializer = PensionProductSerializer(pension_products, many=True)
+#         return JsonResponse(serializer.data, safe=False)
+    
+# class RentLoanProductListAPIView(APIView):
+#     @swagger_auto_schema(
+#         operation_summary="전세대출 상품 리스트를 가져옵니다.",
+#         tags=['조회']
+    
+#     )
+#     def get(self, request):
+#         rent_loan_products = RentLoanProduct.objects.all()
+#         serializer = RentLoanSerializer(rent_loan_products, many=True)
+#         return JsonResponse(serializer.data, safe=False)
+
+# 각 금융 상품 리스트 API View
 class DepoistProductListAPIView(APIView):
     @swagger_auto_schema(
         operation_summary="정기 예금 상품 리스트를 가져옵니다.",
@@ -596,7 +641,7 @@ class DepoistProductListAPIView(APIView):
     )
     def get(self, request):
         deposit_products = DepositProduct.objects.all()
-        serializer = DepositProductSerializer(deposit_products, many=True)
+        serializer = DepositListSerializer(deposit_products, many=True)
         return JsonResponse(serializer.data, safe=False)
 
 class SavingProductListAPIView(APIView):
@@ -606,9 +651,9 @@ class SavingProductListAPIView(APIView):
     )
     def get(self, request):
         saving_products = SavingProduct.objects.all()
-        serializer = SavingProductSerializer(saving_products, many=True)
+        serializer = SavingListSerializer(saving_products, many=True)
         return JsonResponse(serializer.data, safe=False)
-    
+
 class PensionProductListAPIView(APIView):
     @swagger_auto_schema(
         operation_summary="연금 상품 리스트를 가져옵니다.",
@@ -616,16 +661,15 @@ class PensionProductListAPIView(APIView):
     )
     def get(self, request):
         pension_products = PensionProduct.objects.all()
-        serializer = PensionProductSerializer(pension_products, many=True)
+        serializer = PensionListSerializer(pension_products, many=True)
         return JsonResponse(serializer.data, safe=False)
-    
+
 class RentLoanProductListAPIView(APIView):
     @swagger_auto_schema(
         operation_summary="전세대출 상품 리스트를 가져옵니다.",
         tags=['조회']
-    
     )
     def get(self, request):
         rent_loan_products = RentLoanProduct.objects.all()
-        serializer = RentLoanSerializer(rent_loan_products, many=True)
+        serializer = RentLoanListSerializer(rent_loan_products, many=True)
         return JsonResponse(serializer.data, safe=False)
