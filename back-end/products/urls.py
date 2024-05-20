@@ -29,7 +29,7 @@ urlpatterns = [
     path("join_product/", JoinProductAPIView.as_view(), name='join_product'),
 
     # 상품 리스트 조회
-    path("depoit_list/", DepoistProductListAPIView.as_view(), name='deposit-list'),
+    path("deposit_list/", DepoistProductListAPIView.as_view(), name='deposit-list'),
     path("saving_list/", SavingProductListAPIView.as_view(), name='saving-list'),
     path("pension_list/", PensionProductListAPIView.as_view(), name='pension-list'),
     path("rent_loan_list/", RentLoanProductListAPIView.as_view(), name='rent-loan-list'),
