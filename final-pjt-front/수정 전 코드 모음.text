@@ -56,3 +56,74 @@ const createComment = function(articleId, content) {
     console.log(err)
   })
 }
+
+문제상황 3. 서버에 외부 API 요청을 한번에 보내다보니, 서버에서 DB에 동시에 접근하려는 문제 발생
+-> 함수가 하나 완료될때마다 다음 함수가 실행되도록 동기화 작업
+
+// 은행 목록 API 요청 호출
+const getBanks = function () {
+  axios.get('http://127.0.0.1:8000/products/banks/')
+  .then(res => {
+    console.log('은행 목록을 가져왔습니다.')
+    console.log(res.data)
+  })
+  .catch(err => {
+    console.log(err)
+  })
+}
+
+// 예금 목록 API 요청 호출
+const getDeposits = function () {
+  axios.get('http://127.0.0.1:8000/products/deposit/register/')
+  .then(res => {
+    console.log('예금 상품 목록을 가져왔습니다.')
+    console.log(res.data)
+  })
+  .catch(err => {
+    console.log(err)
+  })
+}
+
+// 연금 목록 API 요청 호출
+const getPensions = function () {
+  axios.get('http://127.0.0.1:8000/products/pension/register/')
+  .then(res => {
+    console.log('연금 상품 목록을 가져왔습니다.')
+  })
+  .catch(err => {
+    console.log(err)
+  })
+}
+
+// 대출 목록 API 요청 호출
+const getRentLoans = function () {
+  axios.get('http://127.0.0.1:8000/products/rent-loan/register/')
+  .then(res => {
+    console.log('대출 상품 목록을 가져왔습니다.')
+  })
+  .catch(err => {
+    console.log(err)
+  })
+}
+
+// 적금 목록 API 요청 호출
+const getSavings = function () {
+  axios.get('http://127.0.0.1:8000/products/saving/register/')
+  .then(res => {
+    console.log('적금 상품 목록을 가져왔습니다.')
+  })
+  .catch(err => {
+    console.log(err)
+  })
+}
+
+onMounted(async () => {
+  if (isRequest === false) {
+    await getBanks()
+    await getDeposits()
+    await getPensions()
+    await getRentLoans()
+    await getSavings()
+    changeRequest()
+  }
+})

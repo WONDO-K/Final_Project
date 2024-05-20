@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div id="carouselExampleControls" class="carousel slide rounded-3 w-100 h-25" data-bs-ride="carousel">
+    <div id="carouselExampleControls" class="carousel slide rounded-3 w-100 h-25 mb-4" data-bs-ride="carousel">
       <div class="carousel-inner">
         <div class="carousel-item active">
           <img src="@/assets/images/temp1.jpeg" class="d-block w-100" alt="...">

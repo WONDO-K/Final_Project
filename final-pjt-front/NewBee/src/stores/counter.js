@@ -8,11 +8,18 @@ import { useRoute } from 'vue-router'
 export const useCounterStore = defineStore('counter', () => {
   // 로그인 여부
   const isLogin = localStorage.getItem('access')? ref(true) : ref(false)
+  // 금융 API 요청 여부
+  const isRequest = ref(false)
   
   const userInfo = ref({})
   const articles = ref([])
   const article = ref(null)
   const comments = ref(null)
+
+  // 금융 API 요청 여부 변경
+  const changeRequest = function() {
+    isRequest.value = !isRequest.value
+  }
 
   // 메인 페이지로 이동
   const goHome = function() {
@@ -264,61 +271,14 @@ export const useCounterStore = defineStore('counter', () => {
       console.log(err)
     })
   }
-  // 은행 목록 가져오기
-  const getBankList = function() {
-    axios.get('http://http://127.0.0.1:8000/products/')
-    .then(res => {
-      console.log('상품 목록을 가져왔습니다.')
-      console.log(res.data)
-      articles.value = res.data
-    })
-    .catch(err => {
-      console.log(err)
-    })
-  }
-  // 예금 목록 가져오기
-  const getDepositList = function(){
-    axios.get('http://http://127.0.0.1:8000/products/deposit/register/')
-    .then(res => {
-      console.log('상품 목록을 가져왔습니다.')
-      console.log(res.data)
-      articles.value = res.data
-    })
-    .catch(err => {
-      console.log(err)
-    })
-  }
-  // 연금 목록 가져오기
-  const getPensionList = function(){
-    axios.get('http://http://127.0.0.1:8000/products/pension/register/')
-    .then(res => {
-      console.log('상품 목록을 가져왔습니다.')
-      console.log(res.data)
-      articles.value = res.data
-    })
-    .catch(err => {
-      console.log(err)
-    })
-  }
-  // 적금 목록 가져오기
-  const getSavingList = function(){
-    axios.get('http://http://127.0.0.1:8000/products/saving/register/')
-      .then(res => {
-        console.log('상품 목록을 가져왔습니다.')
-        console.log(res.data)
-        articles.value = res.data
-      })
-      .catch(err => {
-        console.log(err)
-      })
-    }
 
   return {
+    changeRequest,
     goHome, goLogin,
     signUp, logIn, logOut, getUser, modifyUser,
     getArticles, createArticle, getArticle, deleteArticle, updateArticle,
     createComment, deleteComment, updateComment,
-    isLogin, userInfo,
+    isLogin, userInfo, isRequest,
     articles, article,
     comments
    }

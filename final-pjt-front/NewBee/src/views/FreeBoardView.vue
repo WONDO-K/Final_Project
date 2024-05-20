@@ -4,7 +4,7 @@
     <div class="container mb-5">
       <ArticleList />
     </div>
-    <router-link :to="{name: 'createarticle'}" v-show="isLogin"><button class="btn btn-primary text-white">글쓰기</button></router-link>
+    <router-link :to="{name: 'createarticle'}" v-show="isLogin"><button class="btn btn-primary">글쓰기</button></router-link>
   </div>
 </template>
 
