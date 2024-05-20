@@ -5,7 +5,7 @@ from .bank import Bank
 class RentLoanProduct(models.Model):
     dcls_month = models.CharField(max_length=6, verbose_name='공시 제출월 [YYYYMM]')
     fin_co_no = models.ForeignKey(Bank, on_delete=models.CASCADE)
-    fin_prdt_cd = models.CharField(max_length=20, verbose_name='금융상품 코드')
+    fin_prdt_cd = models.CharField(max_length=40, verbose_name='금융상품 코드')
     kor_co_nm = models.CharField(max_length=100, verbose_name='금융회사 명')
     fin_prdt_nm = models.CharField(max_length=100, verbose_name='금융 상품명')
     join_way = models.CharField(max_length=200, verbose_name='가입 방법')

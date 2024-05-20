@@ -3,18 +3,22 @@ from .models import Bank, BankOption, DepositProduct, DepositProductOption, Savi
 
 
 class BankOptionSerializer(serializers.ModelSerializer):
+    
     class Meta:
         model = BankOption 
-        fields = ['area_cd', 'area_nm', 'exis_yn']
+        fields = ['bank','area_cd','area_nm','exis_yn']
+        read_only_fields = ['bank'] # bank 필드는 읽기 전용으로 설정
 
 class BankSerializer(serializers.ModelSerializer):
-    options = BankOptionSerializer(many=True)  # BankOptionSerializer 포함(역참조, 여러 개의 BankOption 객체를 시리얼라이즈)
+
+    options = BankOptionSerializer(many=True, required=False)  # BankOptionSerializer 포함(역참조, 여러 개의 BankOption 객체를 시리얼라이즈)
     
     class Meta:
         model = Bank
-        fields = ['fin_co_no', 'kor_co_nm', 'homp_url', 'cal_tel', 'options']
+        fields = ['id', 'fin_co_no', 'kor_co_nm', 'homp_url', 'cal_tel', 'options']
+        read_only_fields = ['id'] # id 필드는 읽기 전용으로 설정
 
-class DepositProductOptionSerializer(serializers.ModelSerializer):
+class DepositOptionsSerializer(serializers.ModelSerializer):
     class Meta:
         model = DepositProductOption
         fields = [
@@ -24,16 +28,16 @@ class DepositProductOptionSerializer(serializers.ModelSerializer):
 class DepositProductSerializer(serializers.ModelSerializer): 
 
     # related_name='deposit_options'로 지정한 필드명을 사용
-    deposit_options = DepositProductOptionSerializer(many=True)  # DepositProductOptionSerializer 포함(역참조, 여러 개의 DepositProductOption 객체를 시리얼라이즈)
+    deposit_options = DepositOptionsSerializer(many=True,required=False)  # DepositProductOptionSerializer 포함(역참조, 여러 개의 DepositProductOption 객체를 시리얼라이즈)
 
     class Meta:
         model = DepositProduct
         fields = [
-            'fin_prdt_cd','kor_co_nm', 'fin_co_no', 'fin_prdt_nm', 
+            'fin_prdt_cd','kor_co_nm', 'fin_prdt_nm', 
             'join_way', 'mtrt_int', 'spcl_cnd', 'join_deny', 'join_member', 
             'etc_note', 'max_limit', 'dcls_strt_day', 'dcls_end_day', 'dcls_month', 
             'fin_co_subm_day', 'deposit_options']
-        
+
 class SavingProductOptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = SavingProductOption
@@ -43,12 +47,12 @@ class SavingProductOptionSerializer(serializers.ModelSerializer):
 
 class SavingProductSerializer(serializers.ModelSerializer):
 
-    saving_options = SavingProductOptionSerializer(many=True)  # SavingProductOptionSerializer 포함(역참조, 여러 개의 SavingProductOption 객체를 시리얼라이즈)
+    saving_options = SavingProductOptionSerializer(many=True,required=False)  # SavingProductOptionSerializer 포함(역참조, 여러 개의 SavingProductOption 객체를 시리얼라이즈)
 
     class Meta:
         model = SavingProduct
         fields = [
-            'fin_prdt_cd', 'kor_co_nm', 'fin_co_no', 'fin_prdt_nm', 
+            'fin_prdt_cd', 'kor_co_nm', 'fin_prdt_nm', 
             'join_way', 'mtrt_int', 'spcl_cnd', 'join_deny', 'join_member', 
             'etc_note', 'max_limit', 'dcls_strt_day', 'dcls_end_day', 'dcls_month', 
             'fin_co_subm_day','saving_options']
@@ -65,7 +69,7 @@ class PensionProductOptionSerializer(serializers.ModelSerializer):
         
 class PensionProductSerializer(serializers.ModelSerializer):
 
-    pension_options = PensionProductOptionSerializer(many=True, read_only=True)
+    pension_options = PensionProductOptionSerializer(many=True,required=False,read_only=True)
 
     class Meta:
         model = PensionProduct
@@ -88,12 +92,12 @@ class RentLoanOptionSerializer(serializers.ModelSerializer):
         ]
 
 class RentLoanSerializer(serializers.ModelSerializer):
-    rent_loan_options = RentLoanOptionSerializer(many=True, read_only=True)  # RentLoanOptionSerializer 포함(역참조)
+    rent_loan_options = RentLoanOptionSerializer(many=True, required=False, read_only=True)  # RentLoanOptionSerializer 포함(역참조)
 
     class Meta:
         model = RentLoanProduct
         fields = [
-            'dcls_month', 'fin_co_no', 'kor_co_nm', 'fin_prdt_cd', 
+            'dcls_month', 'kor_co_nm', 'fin_prdt_cd', 
             'fin_prdt_nm', 'join_way', 'loan_inci_expn', 'erly_rpay_fee', 
             'dly_rate', 'loan_lmt', 'dcls_strt_day', 'dcls_end_day', 
             'fin_co_subm_day', 'rent_loan_options'
