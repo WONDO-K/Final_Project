@@ -3,7 +3,9 @@
     <header>
       <nav class="bg-warning rounded-3">
         <Logo />
-        <router-link to="" class="h3 text-info text-decoration-none">예금</router-link>
+        <router-link :to="{ name: 'productsBoard' }" class="h3 text-info text-decoration-none">
+          예금
+        </router-link>
         <router-link to="" class="h3 text-info text-decoration-none">적금</router-link>
         <router-link to="" class="h3 text-info text-decoration-none">연금</router-link>
         <router-link to="" class="h3 text-info text-decoration-none">대출</router-link>
