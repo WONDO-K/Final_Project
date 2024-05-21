@@ -12,7 +12,7 @@
       </thead>
       <tbody>
         <tr v-for="deposit in depositList"
-        :key="deposit.id"
+        :key="deposit.pk"
         @click="goDepositDetail(deposit)">
           <th scope="row">{{ deposit.kor_co_nm }}</th>
           <td>{{ deposit.fin_prdt_nm }}</td>
@@ -26,8 +26,10 @@
 
 <script setup>
 import { useCounterStore } from '@/stores/counter'
+import { useRouter } from 'vue-router'
 
 const store = useCounterStore()
+const router = useRouter()
 const depositList = store.depositList
 
 function findMinAndMaxRate(options) {
@@ -54,8 +56,8 @@ function findMinAndMaxRate(options) {
 }
 
 const goDepositDetail = (deposit) => {
-  store.getArticle(deposit.id).then(() => {
-    router.push({ name: 'depositDetail', params: { id: deposit.id } })
+  store.getDepositDetail(deposit.pk).then(() => {
+    router.push({ name: 'depositDetail', params: { id: deposit.pk } })
   })
 }
 </script>

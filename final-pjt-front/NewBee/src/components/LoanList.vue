@@ -11,7 +11,9 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="loan in loanList">
+        <tr v-for="loan in loanList"
+        key="loan.pk"
+        @click="goLoanDetail(loan)">
           <th scope="row">{{ loan.kor_co_nm }}</th>
           <td>{{ loan.fin_prdt_nm }}</td>
           <td>{{ findMinAvgAndMinRate(loan.rent_loan_options).minAvgRate }}
@@ -28,8 +30,10 @@
 
 <script setup>
 import { useCounterStore } from '@/stores/counter'
+import { useRouter } from 'vue-router'
 
 const store = useCounterStore()
+const router = useRouter()
 const loanList = store.loanList
 
 function findMinAvgAndMinRate(options) {
@@ -58,6 +62,12 @@ function findMinAvgAndMinRate(options) {
     minAvgRate,
     minRate
   };
+}
+
+const goLoanDetail = (loan) => {
+  store.getLoanDetail(loan.pk).then(() => {
+    router.push({ name: 'loanDetail', params: { id: loan.pk } })
+  })
 }
 </script>
 

@@ -11,7 +11,9 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="saving in savingsList">
+        <tr v-for="saving in savingsList"
+        :key="saving.pk"
+        @click="goSavingDetail(saving)">
           <th scope="row">{{ saving.kor_co_nm }}</th>
           <td>{{ saving.fin_prdt_nm }}</td>
           <td>{{ findMinAndMaxRate(saving.saving_options).minIntrRate }}%</td>
@@ -24,8 +26,10 @@
 
 <script setup>
 import { useCounterStore } from '@/stores/counter'
+import { useRouter } from 'vue-router'
 
 const store = useCounterStore()
+const router = useRouter()
 const savingsList = store.savingsList
 
 function findMinAndMaxRate(options) {
@@ -49,6 +53,12 @@ function findMinAndMaxRate(options) {
     minIntrRate,
     maxIntrRate2
   }
+}
+
+const goSavingDetail = (saving) => {
+  store.getSavingDetail(saving.pk).then(() => {
+    router.push({ name: 'savingDetail', params: { id: saving.pk } })
+  })
 }
 </script>
 

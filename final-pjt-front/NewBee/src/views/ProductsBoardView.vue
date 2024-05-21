@@ -14,7 +14,7 @@
       <!-- <PensionList /> -->
 
       <!-- 대출 상품 목록 표시 -->
-      <!-- <LoanList /> -->
+      <LoanList />
     </div>
   </div>
 </template>

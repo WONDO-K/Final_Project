@@ -10,7 +10,9 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="pension in pensionList">
+        <tr v-for="pension in pensionList"
+        :key="pension.pk"
+        @click="goPensionDetail(pension)">
           <th scope="row">{{ pension.kor_co_nm }}</th>
           <td>{{ pension.fin_prdt_nm }}</td>
           <td>자세히 보기</td>
@@ -22,9 +24,18 @@
 
 <script setup>
 import { useCounterStore } from '@/stores/counter'
+import { useRouter } from 'vue-router'
 
 const store = useCounterStore()
+const router = useRouter()
 const pensionList = store.pensionList
+
+const goPensionDetail = (pension) => {
+  store.getPensionDetail(pension.pk).then(() => {
+    router.push({ name: 'pensionDetail', params: { id: pension.pk }})
+  })
+}
+
 </script>
 
 <style scoped>

@@ -349,6 +349,60 @@ export const useCounterStore = defineStore('counter', () => {
         console.log(err)
       })
   }
+  // 적금 상품 상세정보 가져오기
+  const getSavingDetail = function (productId) {
+    return axios.get(`http://127.0.0.1:8000/products/saving/${productId}/`)
+    .then(res => {
+      console.log('적금 상품 상세정보를 가져왔습니다.')
+      console.log(res.data)
+      savingsDetail.value = res.data
+    })
+    .catch(err => {
+      console.log(err)
+    })
+  }
+  // 연금 상품 상세정보 가져오기
+  const getPensionDetail = function (productId) {
+    return axios.get(`http://127.0.0.1:8000/products/pension/${productId}/`)
+    .then(res => {
+      console.log('연금 상품 상세정보를 가져왔습니다.')
+      console.log(res.data)
+      pensionDetail.value = res.data
+    })
+    .catch(err => {
+      console.log(err)
+    })
+  }
+  // 대출 상품 상세정보 가져오기
+  const getLoanDetail = function (productId) {
+    return axios.get(`http://127.0.0.1:8000/products/rent-loan/${productId}/`)
+    .then(res => {
+      console.log('대출 상품 상세정보를 가져왔습니다.')
+      console.log(res.data)
+      loanDetail.value = res.data
+    })
+    .catch(err => {
+      console.log(err)
+    })
+  }
+
+  // 상품 가입하기
+  const joinProduct = function (info) {
+    axios.post(`http://127.0.0.1:8000/products/join_product/`, info, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('access')}`,
+        'Content-Type': 'application/json'
+      },
+      withCredentials: true // 쿠키를 요청에 포함시키는 옵션 추가
+    })
+    .then(res => {
+      console.log('상품 가입이 완료되었습니다.')
+      // router.push('/mypage')
+    })
+    .catch(err => {
+      console.log(err)
+    })
+  }
 
   return {
     // 상태
@@ -369,6 +423,7 @@ export const useCounterStore = defineStore('counter', () => {
     getArticles, createArticle, getArticle, deleteArticle, updateArticle,
     createComment, deleteComment, updateComment,
     getDepositList, getPensionList, getLoanList, getSavingsList,
-    getDepositDetail,
+    getDepositDetail, getSavingDetail, getPensionDetail, getLoanDetail,
+    joinProduct
    }
 }, { persist: true })
