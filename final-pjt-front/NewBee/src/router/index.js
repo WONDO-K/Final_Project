@@ -10,7 +10,12 @@ import ArticleCreateView from '@/views/ArticleCreateView.vue'
 import ArticleDetailView from '@/views/ArticleDetailView.vue'
 import ArticleUpdateView from '@/views/ArticleUpdateView.vue'
 // 상품 관련
-import ProductsBoardView from '@/views/ProductsBoardView.vue'
+import DepositsListView from '@/views/DepositsListView.vue'
+import SavingsListView from '@/views/SavingsListView.vue'
+import PensionListView from '@/views/PensionListView.vue'
+import LoanListView from '@/views/LoanListView.vue'
+
+// 상품 상세보기
 import DepositDetailView from '@/views/DepositDetailView.vue'
 import SavingDetailView from '@/views/SavingDetailView.vue'
 import PensionDetailView from '@/views/PensionDetailView.vue'
@@ -65,9 +70,24 @@ const router = createRouter({
       component: ArticleUpdateView,
     },
     {
-      path: '/productsboard',
-      name: 'productsBoard',
-      component: ProductsBoardView,
+      path: '/depositslist',
+      name: 'depositsList',
+      component: DepositsListView,
+    },
+    {
+      path: '/savingslist',
+      name: 'savingsList',
+      component: SavingsListView,
+    },
+    {
+      path: '/pensionlist',
+      name: 'pensionList',
+      component: PensionListView,
+    },
+    {
+      path: '/loanlist',
+      name: 'loanList',
+      component: LoanListView,
     },
     {
       path: '/depositdetail/:id/',
@@ -88,7 +108,7 @@ const router = createRouter({
       path: '/loandetail/:id/',
       name: 'loanDetail',
       component: LoanDetailView,
-    }
+    },
   ]
 })
 

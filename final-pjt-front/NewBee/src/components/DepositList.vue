@@ -11,7 +11,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="deposit in depositList"
+        <tr v-for="deposit in displayedDeposits"
         :key="deposit.pk"
         @click="goDepositDetail(deposit)">
           <th scope="row">{{ deposit.kor_co_nm }}</th>
@@ -21,16 +21,25 @@
         </tr>
       </tbody>
     </table>
+    <button class="btn btn-primary" @click="prevPage"  :disabled="currentPage === 0">이전</button>
+    <button class="btn btn-primary" @click="nextPage" :disabled="currentPage >= maxPage">다음</button>
   </div>
 </template>
 
 <script setup>
 import { useCounterStore } from '@/stores/counter'
 import { useRouter } from 'vue-router'
+import { ref, computed } from 'vue'
 
 const store = useCounterStore()
 const router = useRouter()
 const depositList = store.depositList
+
+const itemsPerPage = 10
+const currentPage = ref(0)
+
+const maxPage = computed(() => Math.ceil(depositList.length / itemsPerPage) - 1)
+const displayedDeposits = computed(() => depositList.slice(currentPage.value * itemsPerPage, (currentPage.value + 1) * itemsPerPage))
 
 function findMinAndMaxRate(options) {
   let minIntrRate = Infinity;
@@ -59,6 +68,18 @@ const goDepositDetail = (deposit) => {
   store.getDepositDetail(deposit.pk).then(() => {
     router.push({ name: 'depositDetail', params: { id: deposit.pk } })
   })
+}
+
+const nextPage = () => {
+  if (currentPage.value < maxPage.value) {
+    currentPage.value++
+  }
+}
+
+const prevPage = () => {
+  if (currentPage.value > 0) {
+    currentPage.value--
+  }
 }
 </script>
 

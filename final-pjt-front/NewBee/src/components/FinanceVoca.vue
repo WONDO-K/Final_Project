@@ -5,9 +5,10 @@
         오늘의 경제용어
       </div>
       <div class="card-body">
-        <h5 class="card-title">소비자동향지수</h5>
+          {{ ecoWord }}
+        <h5 class="card-title"></h5>
         <p class="card-text">
-          소비자들이 느끼는 경기, 소비지출계획, 생활형편 등 경제에 대한 전반적인 인식을 조사하여 지수화함으로써 소비 및 경기를 파악하는 지표로 활용된다. 소비자동향지수는 1964년 미국 미시간대학이 최초로 작성하였으며 그 이후 우리나라를 비롯한 세계 각국에서 편제하여 공표하고 있다. 한국은행의 소비자동향지수는 매월 초～중순에 걸쳐 조사하여 하순에 결과를 발표하고 있다.
+          {{ ecoContent }}
         </p>
       </div>
     </div>
@@ -16,8 +17,16 @@
 
 <script setup>
 import { useCounterStore } from '@/stores/counter'
+import { onMounted } from 'vue';
 
 const store = useCounterStore()
+const ecoWord = store.ecoWord
+const ecoContent = store.ecoContent
+
+onMounted(() => {
+  store.getEcoWord()
+})
+
 </script>
 
 <style scoped>

@@ -6,23 +6,23 @@
       <td>[{{ comment.user }}] </td>
       <td>&nbsp;{{ comment.content }}</td>
       <td v-if="store.isLogin && (comment.user === store.userInfo.userId)">
-        <button class="btn btn-primary text-white" @click="toggleUpdateForm(comment.id)">수정</button>
+        <button class="btn btn-primary" @click="toggleUpdateForm(comment.id)">수정</button>
       </td>
       <td v-if="store.isLogin && (comment.user === store.userInfo.userId)">
-        <button class="btn btn-primary text-white" @click="deleteComment(store.article.id, comment.id)">삭제</button>
+        <button class="btn btn-primary" @click="deleteComment(store.article.id, comment.id)">삭제</button>
       </td>
       <div v-if="isClicked[comment.id]">
         <td>
           <input type="text" :id="'update' + comment.id" v-model="updateContents[comment.id]" class="form-control">
         </td>
         <td>
-          <button @click="updateComment(store.article.id, comment.id)" class="btn btn-primary text-white">수정</button>
+          <button @click="updateComment(store.article.id, comment.id)" class="btn btn-primary">수정</button>
         </td>
       </div>
     </div>
     <div class="container mb-2">
       <input type="text" id="comment" class="form-control mb-3 mt-3" placeholder="댓글 쓰기(로그인하셔야 이용가능합니다.)" v-model="content">
-      <button class="btn btn-primary text-white" @click="createComment(store.article.id)" v-if="store.isLogin">등록</button>
+      <button class="btn btn-primary" @click="createComment(store.article.id)" v-if="store.isLogin">댓글 등록</button>
     </div>
   </div>
 </template>

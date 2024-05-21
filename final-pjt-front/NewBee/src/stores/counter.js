@@ -17,7 +17,12 @@ export const useCounterStore = defineStore('counter', () => {
   // 게시글 목록, 상세정보, 댓글
   const articles = ref([])
   const article = ref(null)
+  const articleLike = ref(null)
   const comments = ref(null)
+  // 경제용어 단어, 내용
+  // API로 받아오는 데이터가 없을 경우 기본값으로 설정
+  const ecoWord = ref('소비자동향지수')
+  const ecoContent = ref('소비자들이 느끼는 경기, 소비지출계획, 생활형편 등 경제에 대한 전반적인 인식을 조사하여 지수화함으로써 소비 및 경기를 파악하는 지표로 활용된다. 소비자동향지수는 1964년 미국 미시간대학이 최초로 작성하였으며 그 이후 우리나라를 비롯한 세계 각국에서 편제하여 공표하고 있다. 한국은행의 소비자동향지수는 매월 초～중순에 걸쳐 조사하여 하순에 결과를 발표하고 있다.')
   // 예금, 연금, 대출, 적금 상품 목록
   const depositList = ref(null)
   const savingsList = ref(null)
@@ -33,7 +38,7 @@ export const useCounterStore = defineStore('counter', () => {
   const changeRequest = function() {
     isRequest.value = !isRequest.value
   }
-
+  // 금융 List 요청 여부 변경
   const changeIsListRequest = function() {
     isListRequest.value = !isListRequest.value
   }
@@ -45,6 +50,19 @@ export const useCounterStore = defineStore('counter', () => {
   // 로그인 페이지로 이동
   const goLogin = function() {
     router.push('/login')
+  }
+  // 경제 용어 가져오기
+  const getEcoWord = function () {
+    axios.get('http://127.0.0.1:8000/words/random/')
+      .then(res => {
+        console.log('경제용어 단어를 가져왔습니다.')
+        console.log(res.data)
+        ecoWord.value = res.data.word
+        ecoContent.value = res.data.content
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 
   // 회원가입
@@ -62,7 +80,7 @@ export const useCounterStore = defineStore('counter', () => {
         console.log(err)
       })
     }
-    // 유저 정보 가져오기
+  // 유저 정보 가져오기
   const getUser = function() {
     axios.get('http://127.0.0.1:8000/accounts/auth/', {
       headers: {
@@ -179,13 +197,46 @@ export const useCounterStore = defineStore('counter', () => {
       })    
   }
   // 게시글 상세정보 가져오기&댓글 가져오기
-  const getArticle = function (id) {
-    return axios.get(`http://127.0.0.1:8000/articles/articles/${id}/`)
+  const getArticle = function (ArticleId) {
+    return axios.get(`http://127.0.0.1:8000/articles/articles/${ArticleId}/`)
       .then(res => {
         console.log('게시글 상세정보를 가져왔습니다.')
         console.log(res.data)
         article.value = res.data
         comments.value = res.data.comments
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+  // 게시글 좋아요 정보 가져오기
+  const getLike = function (ArticleId) {
+    axios.get(`http://127.0.0.1:8000/articles/articles/${ArticleId}/like/`)
+      .then(res => {
+        console.log('게시글 좋아요 정보를 가져왔습니다.')
+        console.log(res.data)
+        articleLike.value = res.data.likes
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+
+  // 게시글 좋아요 누르기
+  const likeArticle = function (ArticleId) {
+    axios.post(`http://127.0.0.1:8000/articles/articles/${ArticleId}/like/`, {}, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('access')}`,
+        'Content-Type': 'application/json'
+      },
+      withCredentials: true // 쿠키를 요청에 포함시키는 옵션 추가
+    })
+      .then(res => {
+        console.log('게시글이 좋아요 되었습니다.')
+        return getLike(ArticleId);
+      })
+      .then(() => {
+        router.push({ name: 'articleDetail', params: { id: ArticleId } })
       })
       .catch(err => {
         console.log(err)
@@ -406,11 +457,12 @@ export const useCounterStore = defineStore('counter', () => {
 
   return {
     // 상태
-    isRequest, isListRequest,
     isLogin,
+    isRequest, isListRequest,
     // 데이터
     userInfo,
-    articles, article,
+    ecoWord, ecoContent,
+    articles, article, articleLike,
     comments,
     depositList, pensionList, loanList, savingsList,
     depositDetail, pensionDetail, loanDetail, savingsDetail,
@@ -419,8 +471,10 @@ export const useCounterStore = defineStore('counter', () => {
     // 페이지 이동 함수
     goHome, goLogin,
     // 일반 함수
+    getEcoWord,
     signUp, logIn, logOut, getUser, modifyUser,
     getArticles, createArticle, getArticle, deleteArticle, updateArticle,
+    likeArticle, getLike,
     createComment, deleteComment, updateComment,
     getDepositList, getPensionList, getLoanList, getSavingsList,
     getDepositDetail, getSavingDetail, getPensionDetail, getLoanDetail,

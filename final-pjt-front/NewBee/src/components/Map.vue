@@ -9,7 +9,7 @@
       :lat="marker.lat" :lng="marker.lng" :infoWindow="marker.infoWindow" :clickable="true"
       @onClickKakaoMapMarker="onClickMapMarker(marker)" />
   </KakaoMap>
-  <button class="btn btn-primary text-white" @click="getCurrentPos">현재 위치</button>
+  <button class="btn btn-primary" @click="getCurrentPos">현재 위치</button>
 </template>
 
 <script setup>

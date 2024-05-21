@@ -45,11 +45,10 @@ const slicing = function (string) {
 }
 
 const goDetail = (article) => {
-  store.getArticle(article.id).then(() => {
+  Promise.all([store.getArticle(article.id), store.getLike(article.id)]).then(() => {
     router.push({ name: 'articleDetail', params: { id: article.id }})
   })
 }
-
 
 </script>
 

@@ -3,12 +3,13 @@
     <header>
       <nav class="bg-warning rounded-3">
         <Logo />
-        <router-link :to="{ name: 'productsBoard' }" class="h3 text-info text-decoration-none">
+        <router-link :to="{ name: 'depositsList' }" class="h3 text-info text-decoration-none">
           예금
         </router-link>
-        <router-link to="" class="h3 text-info text-decoration-none">적금</router-link>
-        <router-link to="" class="h3 text-info text-decoration-none">연금</router-link>
-        <router-link to="" class="h3 text-info text-decoration-none">대출</router-link>
+        <router-link :to="{ name: 'savingsList'}" class="h3 text-info text-decoration-none">적금</router-link>
+        <router-link :to="{ name: 'pensionList'}" class="h3 text-info text-decoration-none">연금</router-link>
+        <router-link :to="{ name: 'loanList'}" class="h3 text-info text-decoration-none">대출</router-link>
+        
         <router-link :to="{ name : 'banksearch'}" class="h3 text-info text-decoration-none">근처 은행 찾기</router-link>
         <router-link :to="{ name: 'freeboard' }" class="h3 text-info text-decoration-none">자유게시판</router-link>
         <!-- 로그인 안했을 경우 -->

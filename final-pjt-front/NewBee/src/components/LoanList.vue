@@ -11,8 +11,8 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="loan in loanList"
-        key="loan.pk"
+        <tr v-for="loan in displayedLoans"
+        :key="loan.pk"
         @click="goLoanDetail(loan)">
           <th scope="row">{{ loan.kor_co_nm }}</th>
           <td>{{ loan.fin_prdt_nm }}</td>
@@ -25,16 +25,25 @@
         </tr>
       </tbody>
     </table>
+    <button class="btn btn-primary" @click="prevPage" :disabled="currentPage === 0">이전</button>
+    <button class="btn btn-primary" @click="nextPage" :disabled="currentPage >= maxPage">다음</button>
   </div>
 </template>
 
 <script setup>
 import { useCounterStore } from '@/stores/counter'
 import { useRouter } from 'vue-router'
+import { ref, computed } from 'vue'
 
 const store = useCounterStore()
 const router = useRouter()
 const loanList = store.loanList
+
+const itemsPerPage = 10
+const currentPage = ref(0)
+
+const maxPage = computed(() => Math.ceil(loanList.length / itemsPerPage) - 1)
+const displayedLoans = computed(() => loanList.slice(currentPage.value * itemsPerPage, (currentPage.value + 1) * itemsPerPage))
 
 function findMinAvgAndMinRate(options) {
   let minAvgRate = Infinity;
@@ -68,6 +77,18 @@ const goLoanDetail = (loan) => {
   store.getLoanDetail(loan.pk).then(() => {
     router.push({ name: 'loanDetail', params: { id: loan.pk } })
   })
+}
+
+const nextPage = () => {
+  if (currentPage.value < maxPage.value) {
+    currentPage.value++
+  }
+}
+
+const prevPage = () => {
+  if (currentPage.value > 0) {
+    currentPage.value--
+  }
 }
 </script>
 

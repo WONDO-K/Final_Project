@@ -131,8 +131,6 @@ const exchange = function() {
 // onMounted(() => {
 //   getExchangeRate()
 // })
-
-
 </script>
 
 <style scoped>

@@ -10,7 +10,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="pension in pensionList"
+        <tr v-for="pension in displayedPensions"
         :key="pension.pk"
         @click="goPensionDetail(pension)">
           <th scope="row">{{ pension.kor_co_nm }}</th>
@@ -19,16 +19,25 @@
         </tr>
       </tbody>
     </table>
+    <button class="btn btn-primary" @click="prevPage" :disabled="currentPage === 0">이전</button>
+    <button class="btn btn-primary" @click="nextPage" :disabled="currentPage >= maxPage">다음</button>
   </div>
 </template>
 
 <script setup>
 import { useCounterStore } from '@/stores/counter'
 import { useRouter } from 'vue-router'
+import { ref, computed } from 'vue'
 
 const store = useCounterStore()
 const router = useRouter()
 const pensionList = store.pensionList
+
+const itemsPerPage = 10
+const currentPage = ref(0)
+
+const maxPage = computed(() => Math.ceil(pensionList.length / itemsPerPage) - 1)
+const displayedPensions = computed(() => pensionList.slice(currentPage.value * itemsPerPage, (currentPage.value + 1) * itemsPerPage))
 
 const goPensionDetail = (pension) => {
   store.getPensionDetail(pension.pk).then(() => {
@@ -36,6 +45,17 @@ const goPensionDetail = (pension) => {
   })
 }
 
+const nextPage = () => {
+  if (currentPage.value < maxPage.value) {
+    currentPage.value++
+  }
+}
+
+const prevPage = () => {
+  if (currentPage.value > 0) {
+    currentPage.value--
+  }
+}
 </script>
 
 <style scoped>

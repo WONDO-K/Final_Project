@@ -18,14 +18,15 @@
         <label for="content" class="form-label">내용</label>
         <textarea class="form-control" id="content" rows="3" :value="article.content" disabled></textarea>
       </div>
-      <button class="btn btn-primary text-white">좋아요</button>
+      <p>{{ store.articleLike }}명이 좋아요를 눌렀어요!</p>
+      <button class="btn btn-primary" @click="likeArticle">좋아요</button>
     </div>
     <!-- 글 작성자와 로그인한 유저가 같은지 확인 후 렌더링 -->
     <router-link :to="{ name: 'articleUpdate', params: { id: article.id } }" v-if="checkUser">
-      <button type="submit" class="btn btn-primary text-white">게시글 수정</button>
+      <button type="submit" class="btn btn-primary mb-1">게시글 수정</button>
       <br>
     </router-link>
-    <button type="submit" class="btn btn-primary text-white" @click="deleteArticle" v-if="checkUser">삭제</button>
+    <button type="submit" class="btn btn-primary mb-5" @click="deleteArticle" v-if="checkUser">게시글 삭제</button>
     <Comments />
   </div>
 </template>
@@ -37,9 +38,11 @@ import { useCounterStore } from '@/stores/counter'
 import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import { onMounted } from 'vue';
+import { useRoute } from 'vue-router'
 import Comments from '@/components/Comments.vue'
 
 const store = useCounterStore()
+const route = useRoute()
 const article = store.article
 const isLogin = store.isLogin
 const userInfo = store.userInfo
@@ -48,13 +51,16 @@ const checkUser = computed(() => (isLogin && userInfo.userId === article.user)? 
 
 onMounted(() => {
   store.getArticle(article.id)
+  store.getLike(article.id)
 })
+
+const likeArticle = function(){
+  store.likeArticle(article.id)
+}
 
 const deleteArticle = function(){
   store.deleteArticle(article.id)
 }
-
-
 
 </script>
 

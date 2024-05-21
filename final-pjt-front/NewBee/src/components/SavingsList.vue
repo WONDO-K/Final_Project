@@ -11,7 +11,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="saving in savingsList"
+        <tr v-for="saving in displayedSavings"
         :key="saving.pk"
         @click="goSavingDetail(saving)">
           <th scope="row">{{ saving.kor_co_nm }}</th>
@@ -21,16 +21,25 @@
         </tr>
       </tbody>
     </table>
+    <button class="btn btn-primary" @click="prevPage" :disabled="currentPage === 0">이전</button>
+    <button class="btn btn-primary" @click="nextPage" :disabled="currentPage >= maxPage">다음</button>
   </div>
 </template>
 
 <script setup>
 import { useCounterStore } from '@/stores/counter'
 import { useRouter } from 'vue-router'
+import { ref, computed } from 'vue'
 
 const store = useCounterStore()
 const router = useRouter()
 const savingsList = store.savingsList
+
+const itemsPerPage = 10
+const currentPage = ref(0)
+
+const maxPage = computed(() => Math.ceil(savingsList.length / itemsPerPage) - 1)
+const displayedSavings = computed(() => savingsList.slice(currentPage.value * itemsPerPage, (currentPage.value + 1) * itemsPerPage))
 
 function findMinAndMaxRate(options) {
   let minIntrRate = Infinity;
@@ -59,6 +68,18 @@ const goSavingDetail = (saving) => {
   store.getSavingDetail(saving.pk).then(() => {
     router.push({ name: 'savingDetail', params: { id: saving.pk } })
   })
+}
+
+const nextPage = () => {
+  if (currentPage.value < maxPage.value) {
+    currentPage.value++
+  }
+}
+
+const prevPage = () => {
+  if (currentPage.value > 0) {
+    currentPage.value--
+  }
 }
 </script>
 
