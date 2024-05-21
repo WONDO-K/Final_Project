@@ -104,10 +104,69 @@ class RentLoanSerializer(serializers.ModelSerializer):
         ]
 
 # 상품 리스트 조회 용 ----------------------------------------------------------------------------------------------------------------------------------------------------
+# class ProductListSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         fields = ['fin_co_no','fin_prdt_cd','kor_co_nm','fin_prdt_nm',] 
+    
+
+# class SimpleDepositProductOptionSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = DepositProductOption
+#         fields = [
+#             'intr_rate_type', 'intr_rate', 'intr_rate2'
+#         ]
+
+# class DepositListSerializer(ProductListSerializer):
+#     deposit_options = SimpleDepositProductOptionSerializer(many=True, read_only=True)
+
+#     class Meta(ProductListSerializer.Meta):
+#         model = DepositProduct
+#         fields = ProductListSerializer.Meta.fields + ['deposit_options']
+
+# class SimpleSavingProductOptionSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = SavingProductOption
+#         fields = [
+#             'intr_rate_type', 'rsrv_type', 'save_trm', 'intr_rate', 'intr_rate2'
+#         ]
+# class SavingListSerializer(ProductListSerializer):
+#     saving_options = SimpleSavingProductOptionSerializer(many=True, read_only=True)
+
+#     class Meta(ProductListSerializer.Meta):
+#         model = SavingProduct
+#         fields = ProductListSerializer.Meta.fields + ['saving_options']
+
+# class SimplePensionProductOptionSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = PensionProductOption
+#         fields = [
+#             'pnsn_recp_trm', 'pnsn_entr_age', 'mon_paym_atm', 'paym_prd', 'pnsn_strt_age', 'pnsn_recp_amt'
+#         ]
+# class PensionListSerializer(ProductListSerializer):
+#     pension_options = SimplePensionProductOptionSerializer(many=True, read_only=True)
+
+#     class Meta(ProductListSerializer.Meta):
+#         model = PensionProduct
+#         fields = ProductListSerializer.Meta.fields + ['pension_options']
+
+# class SimpleRentLoanProductOptionSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = RentLoanProductOption
+#         fields = [
+#             'rpay_type', 'lend_rate_type', 'lend_rate_min', 'lend_rate_max', 'lend_rate_avg'
+#         ]
+# class RentLoanListSerializer(ProductListSerializer):
+#     rent_loan_options = SimpleRentLoanProductOptionSerializer(many=True, read_only=True)
+
+#     class Meta(ProductListSerializer.Meta):
+#         model = RentLoanProduct
+#         fields = ProductListSerializer.Meta.fields + ['rent_loan_options']
+
+from rest_framework import serializers
+
 class ProductListSerializer(serializers.ModelSerializer):
     class Meta:
-        fields = ['fin_co_no','fin_prdt_cd','kor_co_nm','fin_prdt_nm',]
-        # read_only_fields = ['fin_co_no','fin_prdt_cd','kor_co_nm','fin_prdt_nm',]
+        fields = ['fin_co_no', 'fin_prdt_cd', 'kor_co_nm', 'fin_prdt_nm', 'pk']
 
 class SimpleDepositProductOptionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -129,6 +188,7 @@ class SimpleSavingProductOptionSerializer(serializers.ModelSerializer):
         fields = [
             'intr_rate_type', 'rsrv_type', 'save_trm', 'intr_rate', 'intr_rate2'
         ]
+
 class SavingListSerializer(ProductListSerializer):
     saving_options = SimpleSavingProductOptionSerializer(many=True, read_only=True)
 
@@ -142,6 +202,7 @@ class SimplePensionProductOptionSerializer(serializers.ModelSerializer):
         fields = [
             'pnsn_recp_trm', 'pnsn_entr_age', 'mon_paym_atm', 'paym_prd', 'pnsn_strt_age', 'pnsn_recp_amt'
         ]
+
 class PensionListSerializer(ProductListSerializer):
     pension_options = SimplePensionProductOptionSerializer(many=True, read_only=True)
 
@@ -155,12 +216,14 @@ class SimpleRentLoanProductOptionSerializer(serializers.ModelSerializer):
         fields = [
             'rpay_type', 'lend_rate_type', 'lend_rate_min', 'lend_rate_max', 'lend_rate_avg'
         ]
+
 class RentLoanListSerializer(ProductListSerializer):
     rent_loan_options = SimpleRentLoanProductOptionSerializer(many=True, read_only=True)
 
     class Meta(ProductListSerializer.Meta):
         model = RentLoanProduct
         fields = ProductListSerializer.Meta.fields + ['rent_loan_options']
+
 
 
 # 유저 상품 가입----------------------------------------------------------------------------------------------------------------------------------------------------
