@@ -6,4 +6,4 @@ class Word(models.Model):
     content = models.TextField()  # 설명을 저장하는 필드
 
     def __str__(self):
-        return self.word
+        return self.economic_word
