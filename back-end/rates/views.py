@@ -21,12 +21,11 @@ class RatesListAPIView(APIView):
     def save_currency_to_db(self, currency_data):
         cur_nm = currency_data.get('cur_nm') # 통화명
         cur_unit = currency_data.get('cur_unit')# 통화단위
-        ttb = currency_data.get('ttb') # 전신환(송금) 보내실 때
-        tts = currency_data.get('tts') # 전신환(송금) 받으실 때
+        deal_bas_r = currency_data.get('deal_bas_r')# 매매기준율
         # 기존 데이터를 업데이트하거나 새 데이터를 생성
         CurrencyRate.objects.update_or_create( # update_or_create 메서드를 사용하여 기존 데이터를 업데이트하거나 새 데이터를 생성
             cur_unit=cur_unit,
-            defaults={'cur_nm': cur_nm, 'ttb': ttb, 'tts': tts}
+            defaults={'cur_nm': cur_nm, 'deal_bas_r': deal_bas_r}
         )
 
     @swagger_auto_schema(
@@ -51,9 +50,8 @@ class RatesListAPIView(APIView):
             currency_rates = {}
             for currency_data in json_data:
                 cur_unit = currency_data.get('cur_unit')
-                ttb = currency_data.get('ttb')
-                tts = currency_data.get('tts')
-                currency_rates[cur_unit] = {'ttb': ttb, 'tts': tts}
+                deal_bas_r = currency_data.get('deal_bas_r')
+                currency_rates[cur_unit] = deal_bas_r
                 # 데이터베이스에 저장
                 self.save_currency_to_db(currency_data)
             
@@ -69,12 +67,11 @@ class ExchangeMoneyAPIView(APIView):
         operation_summary="환율을 기반으로 두 통화 간의 금액 변환",
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT, # 요청 바디의 타입
-            required=['amount', 'from_currency', 'to_currency','transaction_type'], # 필수 요청 바디 파라미터
+            required=['amount', 'from_currency', 'to_currency'], # 필수 요청 바디 파라미터
             properties={ # 요청 바디의 스키마
                 'amount': openapi.Schema(type=openapi.TYPE_NUMBER, description='변환할 금액'), # 요청 바디의 amount 필드
                 'from_currency': openapi.Schema(type=openapi.TYPE_STRING, description='변환할 통화'), # 요청 바디의 from_currency 필드
-                'to_currency': openapi.Schema(type=openapi.TYPE_STRING, description='변환하고 싶은 통화'), # 요청 바디의 to_currency 필드
-                'transaction_type' : openapi.Schema(type=openapi.TYPE_STRING, description='거래 유형') # 요청 바디의 transaction_type 필드
+                'to_currency': openapi.Schema(type=openapi.TYPE_STRING, description='변환하고 싶은 통화') # 요청 바디의 to_currency 필드
             },
         ),
         responses={
@@ -95,36 +92,20 @@ class ExchangeMoneyAPIView(APIView):
         try:
             # 사용자가 입력한 환율 정보를 가져옴
             data = request.data
-            amount = data.get('amount')  # 변환할 금액
-            from_currency = data.get('from_currency')  # 변환할 통화
-            to_currency = data.get('to_currency')  # 변환하고 싶은 통화
-            transaction_type = data.get('transaction_type')  # 거래 유형
+            amount = data.get('amount') # 변환할 금액
+            from_currency = data.get('from_currency') # 변환할 통화
+            to_currency = data.get('to_currency') # 변환하고 싶은 통화
             
             # 데이터베이스에서 해당 환율 정보를 가져옴
             from_currency_rate = CurrencyRate.objects.get(cur_unit=from_currency)
             to_currency_rate = CurrencyRate.objects.get(cur_unit=to_currency)
             
-            # 거래 유형에 따라 송금 보낼 때 또는 송금 받을 때의 환율을 적용하여 계산
-            if transaction_type == 'send':
-                ttb_from = float(from_currency_rate.ttb)  
-                tts_to = float(to_currency_rate.tts) 
-                
-                # 송금 보낼 때의 환율을 사용하여 변환할 금액을 계산
-                result_intermediate = amount / ttb_from
-                
-                # 송금 받을 때의 환율을 사용하여 변환된 금액을 다시 원화로 변환
-                result = result_intermediate * tts_to
-            elif transaction_type == 'receive':
-                ttb_to = float(to_currency_rate.ttb)  
-                tts_from = float(from_currency_rate.tts) 
-                
-                # 송금 받을 때의 환율을 사용하여 변환할 금액을 계산
-                result_intermediate = amount * ttb_to
-                
-                # 송금 보낼 때의 환율을 사용하여 변환된 금액을 다시 원화로 변환
-                result = result_intermediate / tts_from
-            else:
-                return Response({'error': '잘못된 거래 유형입니다.'}, status=status.HTTP_400_BAD_REQUEST)
+            # 환율 계산 (기준이 되는 통화를 원화로 가정하고 계산)
+            deal_bas_r_from = float(from_currency_rate.deal_bas_r.replace(',', '')) # 문자열에서 콤마를 제거하고 실수로 변환
+            deal_bas_r_to = float(to_currency_rate.deal_bas_r.replace(',', '')) 
+
+            # 1 from_currency 단위를 원화로 변환한 후, 원하는 to_currency 단위로 변환
+            result = (amount * deal_bas_r_from) / deal_bas_r_to
             
             return Response({'result': result}, status=status.HTTP_200_OK)
         
