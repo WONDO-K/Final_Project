@@ -172,8 +172,7 @@ class SimpleDepositProductOptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = DepositProductOption
         fields = [
-            'intr_rate_type', 'intr_rate', 'intr_rate2'
-        ]
+            'intr_rate_type', 'intr_rate', 'intr_rate2', 'pk']
 
 class DepositListSerializer(ProductListSerializer):
     deposit_options = SimpleDepositProductOptionSerializer(many=True, read_only=True)
@@ -186,7 +185,7 @@ class SimpleSavingProductOptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = SavingProductOption
         fields = [
-            'intr_rate_type', 'rsrv_type', 'save_trm', 'intr_rate', 'intr_rate2'
+            'intr_rate_type', 'rsrv_type', 'save_trm', 'intr_rate', 'intr_rate2','pk'
         ]
 
 class SavingListSerializer(ProductListSerializer):
@@ -200,7 +199,7 @@ class SimplePensionProductOptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = PensionProductOption
         fields = [
-            'pnsn_recp_trm', 'pnsn_entr_age', 'mon_paym_atm', 'paym_prd', 'pnsn_strt_age', 'pnsn_recp_amt'
+            'pnsn_recp_trm', 'pnsn_entr_age', 'mon_paym_atm', 'paym_prd', 'pnsn_strt_age', 'pnsn_recp_amt', 'pk'
         ]
 
 class PensionListSerializer(ProductListSerializer):
@@ -214,7 +213,7 @@ class SimpleRentLoanProductOptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = RentLoanProductOption
         fields = [
-            'rpay_type', 'lend_rate_type', 'lend_rate_min', 'lend_rate_max', 'lend_rate_avg'
+            'rpay_type', 'lend_rate_type', 'lend_rate_min', 'lend_rate_max', 'lend_rate_avg', 'pk'
         ]
 
 class RentLoanListSerializer(ProductListSerializer):
