@@ -28,8 +28,8 @@ class SavingProductOption(models.Model): # 적금 상품 옵션
     rsrv_type = models.CharField(max_length=100, verbose_name='적립 유형')
     rsrv_type_nm = models.CharField(max_length=100, verbose_name='적립 유형명')
     save_trm = models.IntegerField(verbose_name='저축 기간', help_text='단위: 개월')
-    intr_rate = models.DecimalField(max_digits=5, decimal_places=2, verbose_name='저축 금리')
-    intr_rate2 = models.DecimalField(max_digits=5, decimal_places=2, verbose_name='최고 우대금리')
+    intr_rate = models.DecimalField(max_digits=5, decimal_places=2,null=True, blank=True, verbose_name='저축 금리')
+    intr_rate2 = models.DecimalField(max_digits=5, decimal_places=2,null=True, blank=True, verbose_name='최고 우대금리')
 
     class Meta:
         verbose_name = '저축 상품 옵션'
