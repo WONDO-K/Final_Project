@@ -42,9 +42,10 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username', 'realname', 'password', 'password2', 'nickname', 'email', 'birth', 'salary', 'gender', 'wealth', 'is_staff']   
+        fields = ['username', 'realname', 'password', 'password2', 'nickname', 'email', 'birth', 'salary', 'gender', 'wealth', 'is_staff','is_active']   
         extra_kwargs = {
             'is_staff': {'read_only': True}, # is_staff는 관리자 여부를 나타내는 필드로 사용자가 직접 변경할 수 없도록 설정한다.
+            'is_active': {'read_only': True}, # is_active는 계정 활성화 여부를 나타내는 필드로 사용자가 직접 변경할 수 없도록 설정한다.
         }
         #ref_name = 'UserSerializer'  # ref_name 추가
         

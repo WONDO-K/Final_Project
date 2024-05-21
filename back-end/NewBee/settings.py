@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'rates',
     'products',
     'words',
+    'recommens',
     'django_extensions',
     'drf_yasg',
     'corsheaders',
