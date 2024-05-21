@@ -16,7 +16,7 @@ class BankRegisterAPIView(APIView):
     @swagger_auto_schema(
         operation_summary="외부 API에서 은행 목록을 가져와 데이터베이스에 저장합니다.",
         responses={200: "성공"},
-        tags=['금융']
+        tags=['은행']
     )
     def get(self, request):
         response = requests.get(self.url).json()
@@ -38,11 +38,12 @@ class BankRegisterAPIView(APIView):
 
         return JsonResponse({"message": "은행 정보가 성공적으로 저장되었습니다."}, status=201)
 
-@swagger_auto_schema(
-    operation_summary="은행의 상세 정보를 가져옵니다.",
-    tags=['금융']
-    )
+
 class BankDetailAPIView(APIView):
+    @swagger_auto_schema(
+    operation_summary="은행의 상세 정보를 가져옵니다.",
+    tags=['은행']
+    )
     def get(self, request, bank_pk):
         bank = get_object_or_404(Bank, pk=bank_pk)
         bank_serializer = BankSerializer(bank)
@@ -54,11 +55,12 @@ class BankDetailAPIView(APIView):
         }
         return JsonResponse(data)
 
-@swagger_auto_schema(
-    operation_summary="은행의 금융 상품 리스트를 가져옵니다.",
-    tags=['조회']
-    )   
+
 class BanksProductsAPIView(APIView):
+    @swagger_auto_schema(
+    operation_summary="은행의 금융 상품 리스트를 가져옵니다.",
+    tags=['은행']
+    )   
     def get(self, request, bank_pk):
         bank = get_object_or_404(Bank, pk=bank_pk) # Bank 객체를 가져옴
         products = DepositProduct.objects.filter(fin_co_no=bank) # 해당 은행의 상품들을 가져옴
@@ -73,7 +75,7 @@ class DepositProductRegisterAPIView(APIView):
 
     @swagger_auto_schema(
         operation_summary="외부 API에서 정기예금 상품 정보를 가져와 데이터베이스에 저장합니다.",
-        tags=['금융']
+        tags=['정기예금']
     )
     def get(self, request):
         response = requests.get(self.url).json()
@@ -106,7 +108,7 @@ class DepositProductRegisterAPIView(APIView):
 class DepositProductDetailAPIView(APIView):
     @swagger_auto_schema(
     operation_summary="정기예금의 상세 정보를 가져옵니다.",
-    tags=['조회']
+    tags=['정기예금']
     )
     def get(self, request, product_pk):
         product = get_object_or_404(DepositProduct, pk=product_pk)
@@ -119,7 +121,7 @@ class SavingProductRegisterAPIView(APIView):
 
     @swagger_auto_schema(
         operation_summary="외부 API에서 적금 상품 정보를 가져와 데이터베이스에 저장합니다.",
-        tags=['금융']
+        tags=['적금']
     )
     def get(self, request):
         response = requests.get(self.url).json()
@@ -150,7 +152,7 @@ class SavingProductRegisterAPIView(APIView):
 class SavingProductDetailAPIView(APIView):
     @swagger_auto_schema(
     operation_summary="적금 상품의 상세 정보를 가져옵니다.",
-    tags=['조회'])
+    tags=['적금'])
     def get(self, request, product_pk):
         product = get_object_or_404(SavingProduct, pk=product_pk)
         product_serializer = SavingProductSerializer(product)
@@ -164,7 +166,7 @@ class PensionProductRegisterAPIView(APIView):
     
     @swagger_auto_schema(
         operation_summary="외부 API에서 연금 저축 상품 정보를 가져와 데이터베이스에 저장합니다.",
-        tags=['금융']
+        tags=['연금']
     )
     def get(self, request):
         response = requests.get(self.url).json()
@@ -194,7 +196,7 @@ class PensionProductRegisterAPIView(APIView):
 class PensionProductDetailAPIView(APIView):
     @swagger_auto_schema(
     operation_summary="연금 상품의 상세 정보를 가져옵니다.",
-    tags=['조회'])
+    tags=['연금'])
     def get(self, request, product_pk):
         product = get_object_or_404(PensionProduct, pk=product_pk)
         product_serializer = PensionProductSerializer(product)
@@ -206,7 +208,7 @@ class RentLoanProductRegisterAPIView(APIView):
 
     @swagger_auto_schema(
         operation_summary="외부 API에서 전,월세 보증금 대출 상품 정보를 가져와 데이터베이스에 저장합니다.",
-        tags=['금융']
+        tags=['대출']
     )
     def get(self, request):
         response = requests.get(self.url).json()
@@ -237,7 +239,7 @@ class RentLoanProductRegisterAPIView(APIView):
 class RentLoanDetailAPIView(APIView):
     @swagger_auto_schema(
         operation_summary="전월세보증금대출 상품의 상세 정보를 가져옵니다.",
-        tags=['조회']
+        tags=['대출']
     )
     def get(self, request, product_pk):
         rent_loan = get_object_or_404(RentLoanProduct, pk=product_pk)
@@ -373,7 +375,7 @@ def get_product_and_option_models(product_type, product_id, option_id):
 class DepoistProductListAPIView(APIView):
     @swagger_auto_schema(
         operation_summary="정기 예금 상품 리스트를 가져옵니다.",
-        tags=['조회']
+        tags=['정기예금']
     )
     def get(self, request):
         deposit_products = DepositProduct.objects.all()
@@ -383,7 +385,7 @@ class DepoistProductListAPIView(APIView):
 class SavingProductListAPIView(APIView):
     @swagger_auto_schema(
         operation_summary="적금 상품 리스트를 가져옵니다.",
-        tags=['조회']
+        tags=['적금']
     )
     def get(self, request):
         saving_products = SavingProduct.objects.all()
@@ -393,7 +395,7 @@ class SavingProductListAPIView(APIView):
 class PensionProductListAPIView(APIView):
     @swagger_auto_schema(
         operation_summary="연금 상품 리스트를 가져옵니다.",
-        tags=['조회']
+        tags=['연금']
     )
     def get(self, request):
         pension_products = PensionProduct.objects.all()
@@ -403,7 +405,7 @@ class PensionProductListAPIView(APIView):
 class RentLoanProductListAPIView(APIView):
     @swagger_auto_schema(
         operation_summary="전세대출 상품 리스트를 가져옵니다.",
-        tags=['조회']
+        tags=['대출']
     )
     def get(self, request):
         rent_loan_products = RentLoanProduct.objects.all()

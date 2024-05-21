@@ -44,6 +44,7 @@ class User(AbstractUser, PermissionsMixin):
     gender = models.CharField(max_length=2, choices=GENDER_CHOICES, null=True, blank=True)
     wealth = models.IntegerField(null=True, blank=True)
     is_staff = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
     date_joined = models.DateTimeField(auto_now_add=True)
     #my_product = models.JSONField(null=True, blank=True)
     objects = UserManager()

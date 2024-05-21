@@ -46,4 +46,5 @@ urlpatterns = [
     path('rates/', include('rates.urls')),
     path('products/', include('products.urls')),
     path('words/', include('words.urls')),
+    path('recommens/', include('recommens.urls')),
 ]
