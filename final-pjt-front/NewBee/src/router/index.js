@@ -11,6 +11,10 @@ import ArticleDetailView from '@/views/ArticleDetailView.vue'
 import ArticleUpdateView from '@/views/ArticleUpdateView.vue'
 // 상품 관련
 import ProductsBoardView from '@/views/ProductsBoardView.vue'
+import DepositDetailView from '@/views/DepositDetailView.vue'
+import SavingDetailView from '@/views/SavingDetailView.vue'
+import PensionDetailView from '@/views/PensionDetailView.vue'
+import LoanDetailView from '@/views/LoanDetailView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -64,6 +68,26 @@ const router = createRouter({
       path: '/productsboard',
       name: 'productsBoard',
       component: ProductsBoardView,
+    },
+    {
+      path: '/depositdetail/:id/',
+      name: 'depositDetail',
+      component: DepositDetailView,
+    },
+    {
+      path: '/savingdetail/:id/',
+      name: 'savingDetail',
+      component: SavingDetailView,
+    },
+    {
+      path: '/pensiondetail/:id/',
+      name: 'pensionDetail',
+      component: PensionDetailView,
+    },
+    {
+      path: '/loandetail/:id/',
+      name: 'loanDetail',
+      component: LoanDetailView,
     }
   ]
 })

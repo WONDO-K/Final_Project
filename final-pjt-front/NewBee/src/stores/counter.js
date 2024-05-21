@@ -23,6 +23,11 @@ export const useCounterStore = defineStore('counter', () => {
   const savingsList = ref(null)
   const pensionList = ref(null)
   const loanList = ref(null)
+  // 예금, 연금, 대출, 적금 상품 상세정보
+  const depositDetail = ref(null)
+  const savingsDetail = ref(null)
+  const pensionDetail = ref(null)
+  const loanDetail = ref(null)
 
   // 금융 API 요청 여부 변경
   const changeRequest = function() {
@@ -332,6 +337,18 @@ export const useCounterStore = defineStore('counter', () => {
         console.log(err)
       })
   }
+  // 예금 상품 상세정보 가져오기
+  const getDepositDetail = function (productId) {
+    return axios.get(`http://127.0.0.1:8000/products/deposit/${productId}/`)
+      .then(res => {
+        console.log('예금 상품 상세정보를 가져왔습니다.')
+        console.log(res.data)
+        depositDetail.value = res.data
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
 
   return {
     // 상태
@@ -342,6 +359,7 @@ export const useCounterStore = defineStore('counter', () => {
     articles, article,
     comments,
     depositList, pensionList, loanList, savingsList,
+    depositDetail, pensionDetail, loanDetail, savingsDetail,
     // 상태 변경 함수
     changeRequest, changeIsListRequest,
     // 페이지 이동 함수
@@ -351,5 +369,6 @@ export const useCounterStore = defineStore('counter', () => {
     getArticles, createArticle, getArticle, deleteArticle, updateArticle,
     createComment, deleteComment, updateComment,
     getDepositList, getPensionList, getLoanList, getSavingsList,
+    getDepositDetail,
    }
 }, { persist: true })
