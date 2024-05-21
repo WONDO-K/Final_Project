@@ -102,11 +102,12 @@ class DepositProductRegisterAPIView(APIView):
 
         return JsonResponse({"message": "정기예금 상품 정보가 성공적으로 저장되었습니다."}, status=201)
 
-@swagger_auto_schema(
+
+class DepositProductDetailAPIView(APIView):
+    @swagger_auto_schema(
     operation_summary="정기예금의 상세 정보를 가져옵니다.",
     tags=['조회']
-)
-class DepositProductDetailAPIView(APIView):
+    )
     def get(self, request, product_pk):
         product = get_object_or_404(DepositProduct, pk=product_pk)
         product_serializer = DepositProductSerializer(product)
