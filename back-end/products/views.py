@@ -314,42 +314,30 @@ class JoinProductAPIView(APIView):
             except ValueError as e:
                 return JsonResponse({"message": str(e)}, status=400)
 
-            # 각 상품 유형에 따라 올바른 시리얼라이저를 사용하여 유효성 검사하고 처리
+            user_product_data = {
+                'user': request.user.pk,
+                'product_type': product_type,
+                'selected_option': option.pk,
+                'join_date': timezone.now().date()
+            }
+
+            print(f'user_product_data: {user_product_data}')
+
             if product_type == '정기예금':
-                user_product_serializer = UserDepositProductSerializer(data={
-                    'user': request.user.pk,
-                    'product_type': product_type,
-                    'selected_option': option.pk,
-                    'deposit_product': product.pk,
-                    'join_date': timezone.now().date()
-                })
+                user_product_data['deposit_product'] = product.pk
+                user_product_serializer = UserDepositProductSerializer(data=user_product_data)
             elif product_type == '적금':
-                user_product_serializer = UserSavingProductSerializer(data={
-                    'user': request.user.pk,
-                    'product_type': product_type,
-                    'selected_option': option.pk,
-                    'saving_product': product.pk,
-                    'join_date': timezone.now().date()
-                })
+                user_product_data['saving_product'] = product.pk
+                user_product_serializer = UserSavingProductSerializer(data=user_product_data)
             elif product_type == '연금':
-                user_product_serializer = UserPensionProductSerializer(data={
-                    'user': request.user.pk,
-                    'product_type': product_type,
-                    'selected_option': option.pk,
-                    'pension_product': product.pk,
-                    'join_date': timezone.now().date()
-                })
+                user_product_data['pension_product'] = product.pk
+                user_product_serializer = UserPensionProductSerializer(data=user_product_data)
             elif product_type == '전세대출':
-                user_product_serializer = UserRentLoanProductSerializer(data={
-                    'user': request.user.pk,
-                    'product_type': product_type,
-                    'selected_option': option.pk,
-                    'rent_loan_product': product.pk,
-                    'join_date': timezone.now().date()
-                })
+                user_product_data['rent_loan_product'] = product.pk
+                user_product_serializer = UserRentLoanProductSerializer(data=user_product_data)
             else:
                 return JsonResponse({"message": "잘못된 상품 타입입니다."}, status=400)
-            
+
             if user_product_serializer.is_valid():
                 user_product_serializer.save()
                 return JsonResponse({"message": "가입이 성공적으로 완료되었습니다."}, status=201)
@@ -357,13 +345,12 @@ class JoinProductAPIView(APIView):
                 return JsonResponse({"message": "잘못된 사용자 상품 정보입니다.", "errors": user_product_serializer.errors}, status=400)
         else:
             return JsonResponse(serializer.errors, status=400)
-
-
         
 def get_product_and_option_models(product_type, product_id, option_id):
     if product_type == '정기예금':
         product = DepositProduct.objects.get(pk=product_id)
         option = DepositProductOption.objects.get(pk=option_id)
+        print(f'product: {product}, option: {option}')
         return product, option
     elif product_type == '적금':
         product = SavingProduct.objects.get(pk=product_id)
