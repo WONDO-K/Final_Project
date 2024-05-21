@@ -5,6 +5,7 @@ import string
 from django.core.wsgi import get_wsgi_application
 from django.utils import timezone
 from datetime import datetime, timedelta
+from django.contrib.auth.hashers import make_password
 
 # Django 프로젝트 설정 파일 경로 설정
 import os
@@ -52,6 +53,7 @@ def calculate_age(birth_date):
     birth_date = datetime.strptime(birth_date, '%Y-%m-%d')
     return today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
 
+PASSWORD = make_password('Qwe123123!')  # 비밀번호를 장고 해시로 저장
 
 # 사용자 데이터 및 금융 상품 생성 및 연결
 with open(user_save_dir, 'w', encoding="utf-8") as f:
@@ -69,7 +71,7 @@ with open(user_save_dir, 'w', encoding="utf-8") as f:
         file['fields'] = {
             'username': username,  # 랜덤한 사용자 이름 생성
             'realname': realname_list[i],  # 유저 이름 랜덤 생성
-            'password': 'Qwe123123!',  # 비밀번호
+            'password':PASSWORD,  # 비밀번호
             'nickname': username,  # 닉네임
             'email': f'{username}@example.com',  # 이메일
             'wealth': random.randrange(0, 100000000, 100000),  # 현재 가진 금액

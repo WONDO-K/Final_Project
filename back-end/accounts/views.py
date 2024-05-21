@@ -23,7 +23,7 @@ from rest_framework.views import APIView
 # Create your views here.
 # 회원가입
 class RegisterAPIView(APIView):
-    @swagger_auto_schema(tags=['회원가입'], request_body=UserSerializer) # swagger와 연동
+    @swagger_auto_schema(operation_summary='회원가입을 진행합니다.',tags=['회원가입'], request_body=UserSerializer) # swagger와 연동
     def post(self, request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
@@ -49,7 +49,7 @@ class RegisterAPIView(APIView):
 
 # 유저 ID 중복 확인
 class UsernameCheckAPIView(APIView):
-    @swagger_auto_schema(tags=['회원가입'], manual_parameters=[
+    @swagger_auto_schema(operation_summary='ID 중복을 확인합니다.',tags=['회원가입'], manual_parameters=[
         # openapi.Parameter를 사용하는 의미는 swagger에서 해당 파라미터를 보여주기 위함이다. -> 즉, Swagger에서만 사용되는 값이다.
         # 프론트에서는 값을 입력하고 중복확인 버튼을 누르면 검증이 이루어지기 때문에 프론트에서는 필요없는 값이다.
         # type=openapi.TYPE_STRING는 해당 파라미터의 타입을 지정해주는 것이다.
@@ -80,7 +80,7 @@ class UsernameCheckAPIView(APIView):
     
 # 이메일 중복 확인
 class EmailCheckAPIView(APIView):
-    @swagger_auto_schema(tags=['회원가입'], manual_parameters=[
+    @swagger_auto_schema(operation_summary='이메일 중복을 확인합니다.',tags=['회원가입'], manual_parameters=[
         openapi.Parameter('email', openapi.IN_QUERY, description="이메일 중복을 체크합니다.", type=openapi.TYPE_STRING)
     ])
     def get(self, request):
@@ -109,7 +109,7 @@ class EmailCheckAPIView(APIView):
 # 로그인 및 인증
 class AuthAPIView(APIView):
     # 유저 정보 가져오기
-    @swagger_auto_schema(tags=['로그인 및 인증'])
+    @swagger_auto_schema(operation_summary='현재 로그인한 유저의 정보를 불러옵니다.',tags=['로그인 및 인증'])
     def get(self, request):
         try:
             # Authorization 헤더에서 액세스 토큰 추출
@@ -159,7 +159,7 @@ class AuthAPIView(APIView):
         except (jwt.exceptions.InvalidTokenError):
             return Response({"detail": "잘못된 토큰입니다."}, status=status.HTTP_400_BAD_REQUEST)
     # 로그인
-    @swagger_auto_schema(tags=['로그인 및 인증'], request_body=LoginSerializer) # swagger와 연동
+    @swagger_auto_schema(operation_summary='로그인을 진행합니다.',tags=['로그인 및 인증'], request_body=LoginSerializer) # swagger와 연동
     def post(self,request):
         user = authenticate(
             username=request.data.get('username'), 
@@ -192,7 +192,7 @@ class AuthAPIView(APIView):
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
     # 로그아웃
-    @swagger_auto_schema(tags=['로그인 및 인증'], responses={status.HTTP_200_OK: openapi.Response("Logout successfully")})
+    @swagger_auto_schema(operation_summary='로그아웃을 진행합니다.',tags=['로그인 및 인증'], responses={status.HTTP_200_OK: openapi.Response("Logout successfully")})
     def delete(self, request):
         res = Response(
             {"message" : "logout successfully"}, 
@@ -201,14 +201,19 @@ class AuthAPIView(APIView):
         res.delete_cookie("refresh")
         return res
     
+
+
+    
 # 회원정보 수정
-@swagger_auto_schema(tags=['회원정보 수정'], request_body=UserUpdateSerializer)
+
 class UserRetrieveUpdateAPIView(RetrieveUpdateAPIView): # RetrieveUpdateAPIView는 create를 제외한 Retrieve, Update 기능을 제공한다.
     permission_classes = [IsAuthenticated]
     renderer_classes = (JSONRenderer,)
     serializer_class = UserUpdateSerializer
+    @swagger_auto_schema(operation_summary='현재 로그인한 유저의 정보를 불러옵니다.',tags=['회원정보 수정'], request_body=UserUpdateSerializer)
     def get_object(self):
         return self.request.user # 현재 로그인한 유저의 정보를 실제 객체로 가져온다.
+    @swagger_auto_schema(operation_summary='현재 로그인한 유저의 회원정보를 수정합니다.',tags=['회원정보 수정'], request_body=UserUpdateSerializer)
     def patch(self, request, *args, **kwargs):
         serializer = UserUpdateSerializer(instance=request.user, data=request.data, partial=True)
 
@@ -217,6 +222,17 @@ class UserRetrieveUpdateAPIView(RetrieveUpdateAPIView): # RetrieveUpdateAPIView�
             return Response(serializer.data, status=status.HTTP_200_OK) # 저장한 데이터를 반환한다.
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) # 유효성 검사에 실패하면 에러를 반환한다.
+
+class UserDeleteAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+    renderer_classes = (JSONRenderer,)
+    
+    @swagger_auto_schema(operation_summary='현재 로그인한 유저의 회원 탈퇴를 진행합니다.',tags=['로그인 및 인증'])
+    def post(self,request):
+        user = request.user
+        user.is_active = False
+        user.save()
+        return Response('message: 회원 탈퇴가 완료되었습니다.',status=200)
 
 # 비밀번호 변경
 class ChangePasswordAPIView(APIView):

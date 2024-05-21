@@ -19,4 +19,7 @@ urlpatterns = [
 
     # 상품 관련 경로
     path("user_products/", UserProductListView.as_view(), name='user_products'),
+
+    # 유저 회원 탈퇴
+    path("delete/", UserDeleteAPIView.as_view(), name='delete'),
 ]
