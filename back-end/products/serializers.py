@@ -177,38 +177,42 @@ class JoinProductSerializer(serializers.Serializer): # 사용자가 상품에 �
 class UserProductSerializer(serializers.ModelSerializer):
     class Meta: # UserProductSerializer를 상속받는 Serializer 클래스에서 Meta 클래스를 정의할 때 상속받는 클래스의 Meta 클래스를 참조하도록 함
         fields = ['user', 'product_type', 'selected_option', 'join_date']
-        read_only_fields = ['user','selected_option'] # user 필드는 읽기 전용으로 설정
+
 
 class UserDepositProductSerializer(UserProductSerializer):
 
-    productname = serializers.CharField(source='deposit_product.fin_prdt_nm') # deposit_product의 fin_prdt_nm 필드를 productname으로 변경
-
-    class Meta(UserProductSerializer.Meta): 
+    class Meta(UserProductSerializer.Meta):
         model = UserDepositProduct
-        fields = UserProductSerializer.Meta.fields + ['deposit_product','productname'] # UserProductSerializer의 fields에 'deposit_product' 필드를 추가
+        fields = UserProductSerializer.Meta.fields + ['deposit_product']
 
+    def get_deposit_product(self, obj):
+        return obj.deposit_product.fin_prdt_nm
+    
 class UserSavingProductSerializer(UserProductSerializer):
-
-    productname = serializers.CharField(source='saving_product.fin_prdt_nm') # saving_product의 fin_prdt_nm 필드를 productname으로 변경
 
     class Meta(UserProductSerializer.Meta):
         model = UserSavingProduct
-        fields = UserProductSerializer.Meta.fields + ['saving_product','productname']
+        fields = UserProductSerializer.Meta.fields + ['saving_product']
+
+    def get_saving_product(self, obj):
+        return obj.saving_product.fin_prdt_nm
 
 class UserPensionProductSerializer(UserProductSerializer):
 
-    productname = serializers.CharField(source='pension_product.fin_prdt_nm') # pension_product의 fin_prdt_nm 필드를 productname으로 변경
-
     class Meta(UserProductSerializer.Meta):
         model = UserPensionProduct
-        fields = UserProductSerializer.Meta.fields + ['pension_product','productname']
+        fields = UserProductSerializer.Meta.fields + ['pension_product']
+
+    def get_pension_product(self, obj):
+        return obj.pension_product.fin_prdt_nm
 
 class UserRentLoanProductSerializer(UserProductSerializer):
 
-    productname = serializers.CharField(source='rent_loan_product.fin_prdt_nm') # rent_loan_product의 fin_prdt_nm 필드를 productname으로 변경
-
     class Meta(UserProductSerializer.Meta):
         model = UserRentLoanProduct
-        fields = UserProductSerializer.Meta.fields + ['rent_loan_product','productname']
+        fields = UserProductSerializer.Meta.fields + ['rent_loan_product']
+    
+    def get_rent_loan_product(self, obj):
+        return obj.rent_loan_product.fin_prdt_nm
 
 
