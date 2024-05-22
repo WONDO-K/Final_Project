@@ -3,11 +3,12 @@ import { defineStore } from 'pinia'
 import axios from 'axios'
 import router from '@/router'
 import { useRoute } from 'vue-router'
+import { Colors } from 'chart.js'
 
 
 export const useCounterStore = defineStore('counter', () => {
   // 로그인 여부
-  const isLogin = localStorage.getItem('access')? ref(true) : ref(false)
+  const isLogin = localStorage.getItem('access') ? ref(true) : ref(false)
   // 금융 API 요청 여부
   const isRequest = ref(false)
   // 금융 List 요청 여부
@@ -34,22 +35,69 @@ export const useCounterStore = defineStore('counter', () => {
   const savingsDetail = ref(null)
   const pensionDetail = ref(null)
   const loanDetail = ref(null)
+  // 인기, 추천 상품 목록
+  const bestProduct = ref(null)
+  const recommendProduct = ref(null)
+  const depositBestIds = ref(null)
+  const savingBestIds = ref(null)
+  const pensionBestIds = ref(null)
+  const rentLoanBestIds = ref(null)
 
   // 금융 API 요청 여부 변경
-  const changeRequest = function() {
+  const changeRequest = function () {
     isRequest.value = !isRequest.value
   }
   // 금융 List 요청 여부 변경
-  const changeIsListRequest = function() {
+  const changeIsListRequest = function () {
     isListRequest.value = !isListRequest.value
   }
 
+  // const depositIds = data.deposit.map(item => item.id);
+  // const savingIds = data.saving.map(item => item.id);
+  // const pensionIds = data.pension.map(item => item.id);
+  // const rentLoanIds = data.rent_loan.map(item => item.id);
+
+  // 인기 상품 가져오기
+  const getBestProduct = function () {
+    axios.get('http://127.0.0.1:8000/recommens/top-products/')
+      .then(res => {
+        console.log('인기 상품을 가져왔습니다.')
+        console.log(res.data)
+        bestProduct.value = res.data
+        // depositBestIds.value = res.data.deposit.map(item => item.id);
+        // savingBestIds.value = res.data.saving.map(item => item.id);
+        // pensionBestIds.value = res.data.pension.map(item => item.id);
+        // rentLoanBestIds.value = res.data.rent_loan.map(item => item.id);
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+  // 추천 상품 가져오기
+  const getRecommendProduct = function () {
+    axios.get('http://127.0.0.1:8000/recommens/similar-products/', {
+      params: {
+        age: 2024 - Number(userInfo.value.birth.slice(0, 4)) + 1,
+        salary: userInfo.value.salary,
+        wealth: userInfo.value.wealth
+      }
+    })
+      .then(res => {
+        console.log('추천 상품을 가져왔습니다.')
+        console.log(res.data)
+        recommendProduct.value = res.data
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+
   // 메인 페이지로 이동
-  const goHome = function() {
+  const goHome = function () {
     router.push('/')
   }
   // 로그인 페이지로 이동
-  const goLogin = function() {
+  const goLogin = function () {
     router.push('/login')
   }
   // 경제 용어 가져오기
@@ -67,12 +115,12 @@ export const useCounterStore = defineStore('counter', () => {
   }
 
   // 회원가입
-  const signUp = function(info){
+  const signUp = function (info) {
     axios.post('http://127.0.0.1:8000/accounts/register/', info, {
       headers: {
         'Content-Type': 'application/json'
       }
-      })
+    })
       .then(res => {
         console.log('회원가입이 완료되었습니다.')
         goLogin()
@@ -80,9 +128,9 @@ export const useCounterStore = defineStore('counter', () => {
       .catch(err => {
         console.log(err)
       })
-    }
+  }
   // 유저 정보 가져오기
-  const getUser = function() {
+  const getUser = function () {
     axios.get('http://127.0.0.1:8000/accounts/auth/', {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('access')}`,
@@ -101,13 +149,14 @@ export const useCounterStore = defineStore('counter', () => {
         userInfo.value.salary = res.data.salary
         userInfo.value.wealth = res.data.wealth
         userInfo.value.gender = res.data.gender
+        getMyProduct()
       })
       .catch(err => {
         console.log(err)
       })
   }
   // 유저 상품 정보 가져오기
-  const getMyProduct = function() {
+  const getMyProduct = function () {
     axios.get('http://127.0.0.1:8000/accounts/user_products/', {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('access')}`,
@@ -126,12 +175,12 @@ export const useCounterStore = defineStore('counter', () => {
   }
   // 로그인
   // access 토큰 만료 시 refresh 토큰으로 재발급 logic 추가 필요
-  const logIn = function(info) {
+  const logIn = function (info) {
     axios.post('http://127.0.0.1:8000/accounts/auth/', info, {
       headers: {
         'Content-Type': 'application/json'
-        }
-      })
+      }
+    })
       .then(res => {
         console.log('로그인이 완료되었습니다.')
         // 로컬 스토리지에 토큰 저장
@@ -140,6 +189,7 @@ export const useCounterStore = defineStore('counter', () => {
         // 로그인 완료 -> 메인 페이지로 이동
         isLogin.value = true
         getUser()
+        getMyProduct()
         goHome()
       })
       .catch(err => {
@@ -148,7 +198,7 @@ export const useCounterStore = defineStore('counter', () => {
       })
   }
   // 로그아웃
-  const logOut = function() {
+  const logOut = function () {
     axios.delete('http://127.0.0.1:8000/accounts/auth/', {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('access')}`,
@@ -169,8 +219,31 @@ export const useCounterStore = defineStore('counter', () => {
         console.log(err)
       })
   }
+  // 회원탈퇴
+  const signOut = function () {
+    axios.post('http://127.0.0.1:8000/accounts/delete/', {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('access')}`,
+        'Content-Type': 'application/json'
+      },
+      withCredentials: true // 쿠키를 요청에 포함시키는 옵션 추가
+    })
+      .then(res => {
+        console.log('회원탈퇴가 완료되었습니다.')
+        // 로컬 스토리지에서 토큰 삭제
+        console.log(isLogin.value)
+        localStorage.removeItem('access')
+        localStorage.removeItem('refresh')
+        isLogin.value = false
+        userInfo.value = {}
+        goHome()
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
   // 유저 정보 수정
-  const modifyUser = function(info) {
+  const modifyUser = function (info) {
     axios.patch('http://127.0.0.1:8000/accounts/update/', info, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('access')}`,
@@ -187,7 +260,7 @@ export const useCounterStore = defineStore('counter', () => {
       })
   }
   // 비밀번호 변경
-  const changePassword = function(info) {
+  const changePassword = function (info) {
     axios.post('http://127.0.0.1:8000/accounts/change_password/', info, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('access')}`,
@@ -204,7 +277,7 @@ export const useCounterStore = defineStore('counter', () => {
       })
   }
   // 게시글 목록 가져오기
-  const getArticles = function() {
+  const getArticles = function () {
     axios.get('http://127.0.0.1:8000/articles/articles/')
       .then(res => {
         console.log('게시글을 가져왔습니다.')
@@ -216,7 +289,7 @@ export const useCounterStore = defineStore('counter', () => {
       })
   }
   // 게시글 작성하기
-  const createArticle = function(info) {
+  const createArticle = function (info) {
     axios.post('http://127.0.0.1:8000/articles/articles/', info, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('access')}`,
@@ -230,7 +303,7 @@ export const useCounterStore = defineStore('counter', () => {
       })
       .catch(err => {
         console.log(err)
-      })    
+      })
   }
   // 게시글 상세정보 가져오기&댓글 가져오기
   const getArticle = function (ArticleId) {
@@ -280,7 +353,7 @@ export const useCounterStore = defineStore('counter', () => {
   }
 
   // 게시글 삭제하기
-  const deleteArticle = function(ArticleId) {
+  const deleteArticle = function (ArticleId) {
     axios.delete(`http://127.0.0.1:8000/articles/articles/${ArticleId}/`, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('access')}`,
@@ -317,7 +390,7 @@ export const useCounterStore = defineStore('counter', () => {
         console.log(err)
       })
   }
-  
+
   // 댓글 작성하기
   const createComment = function (articleId, content) {
     axios.post(`http://127.0.0.1:8000/articles/articles/${articleId}/comments/`, content, {
@@ -339,7 +412,7 @@ export const useCounterStore = defineStore('counter', () => {
       })
   }
   // 댓글 수정하기
-  const updateComment = function(articleId, commentId, content) {
+  const updateComment = function (articleId, commentId, content) {
     axios.put(`http://127.0.0.1:8000/articles/articles/${articleId}/comments/${commentId}/`, content, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('access')}`,
@@ -347,46 +420,46 @@ export const useCounterStore = defineStore('counter', () => {
       },
       withCredentials: true // 쿠키를 요청에 포함시키는 옵션 추가
     })
-    .then(res => {
-      console.log('댓글이 수정되었습니다.')
-      getArticle(articleId)
-      // router.push('/article/:id', { id: articleId })
-    })
-    .catch(err => {
-      console.log(err)
-    })
+      .then(res => {
+        console.log('댓글이 수정되었습니다.')
+        getArticle(articleId)
+        // router.push('/article/:id', { id: articleId })
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 
   // 댓글 삭제하기 
-  const deleteComment = function(articleId, commentId) {
-    axios.delete(`http://127.0.0.1:8000/articles/articles/${articleId}/comments/${commentId}/`,{
+  const deleteComment = function (articleId, commentId) {
+    axios.delete(`http://127.0.0.1:8000/articles/articles/${articleId}/comments/${commentId}/`, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('access')}`,
         'Content-Type': 'application/json'
       },
       withCredentials: true // 쿠키를 요청에 포함시키는 옵션 추가
     })
-    .then(res => {
-      console.log('댓글이 삭제되었습니다.')
-      getArticle(articleId)
-      router.push('/article/:id', { id: articleId })
-    })
-    .catch(err => {
-      console.log(err)
-    })
+      .then(res => {
+        console.log('댓글이 삭제되었습니다.')
+        getArticle(articleId)
+        router.push('/article/:id', { id: articleId })
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 
   // 예금 상품 목록 가져오기
-  const getDepositList = function(){
+  const getDepositList = function () {
     axios.get('http://127.0.0.1:8000/products/deposit_list/')
-    .then(res => {
-      console.log('예금 상품 목록을 가져왔습니다.')
-      console.log(res.data)
-      depositList.value = res.data
-    })
-    .catch(err => {
-      console.log(err)
-    })
+      .then(res => {
+        console.log('예금 상품 목록을 가져왔습니다.')
+        console.log(res.data)
+        depositList.value = res.data
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
   // 연금 상품 목록 가져오기
   const getPensionList = function () {
@@ -424,6 +497,8 @@ export const useCounterStore = defineStore('counter', () => {
         console.log(err)
       })
   }
+
+
   // 예금 상품 상세정보 가져오기
   const getDepositDetail = function (productId) {
     return axios.get(`http://127.0.0.1:8000/products/deposit/${productId}/`)
@@ -439,38 +514,39 @@ export const useCounterStore = defineStore('counter', () => {
   // 적금 상품 상세정보 가져오기
   const getSavingDetail = function (productId) {
     return axios.get(`http://127.0.0.1:8000/products/saving/${productId}/`)
-    .then(res => {
-      console.log('적금 상품 상세정보를 가져왔습니다.')
-      console.log(res.data)
-      savingsDetail.value = res.data
-    })
-    .catch(err => {
-      console.log(err)
-    })
+      .then(res => {
+        console.log('적금 상품 상세정보를 가져왔습니다.')
+        console.log(res.data)
+        savingsDetail.value = res.data
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
   // 연금 상품 상세정보 가져오기
   const getPensionDetail = function (productId) {
     return axios.get(`http://127.0.0.1:8000/products/pension/${productId}/`)
-    .then(res => {
-      console.log('연금 상품 상세정보를 가져왔습니다.')
-      console.log(res.data)
-      pensionDetail.value = res.data
-    })
-    .catch(err => {
-      console.log(err)
-    })
+      .then(res => {
+        console.log('연금 상품 상세정보를 가져왔습니다.')
+        console.log(res.data)
+        pensionDetail.value = res.data
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
+
   // 대출 상품 상세정보 가져오기
   const getLoanDetail = function (productId) {
     return axios.get(`http://127.0.0.1:8000/products/rent-loan/${productId}/`)
-    .then(res => {
-      console.log('대출 상품 상세정보를 가져왔습니다.')
-      console.log(res.data)
-      loanDetail.value = res.data
-    })
-    .catch(err => {
-      console.log(err)
-    })
+      .then(res => {
+        console.log('대출 상품 상세정보를 가져왔습니다.')
+        console.log(res.data)
+        loanDetail.value = res.data
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 
   // 상품 가입하기
@@ -482,13 +558,13 @@ export const useCounterStore = defineStore('counter', () => {
       },
       withCredentials: true // 쿠키를 요청에 포함시키는 옵션 추가
     })
-    .then(res => {
-      console.log('상품 가입이 완료되었습니다.')
-      // router.push('/mypage')
-    })
-    .catch(err => {
-      console.log(err)
-    })
+      .then(res => {
+        console.log('상품 가입이 완료되었습니다.')
+        router.push('/mypage')
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 
   return {
@@ -496,7 +572,9 @@ export const useCounterStore = defineStore('counter', () => {
     isLogin,
     isRequest, isListRequest,
     // 데이터
-    userInfo, userProduct,
+    recommendProduct,
+    depositBestIds, savingBestIds, pensionBestIds, rentLoanBestIds,
+    userInfo, userProduct, bestProduct,
     ecoWord, ecoContent,
     articles, article, articleLike,
     comments,
@@ -507,8 +585,9 @@ export const useCounterStore = defineStore('counter', () => {
     // 페이지 이동 함수
     goHome, goLogin,
     // 일반 함수
+    getBestProduct, getRecommendProduct,
     getEcoWord,
-    signUp, logIn, logOut, getUser, modifyUser, changePassword,
+    signUp, signOut, logIn, logOut, getUser, modifyUser, changePassword,
     getMyProduct,
     getArticles, createArticle, getArticle, deleteArticle, updateArticle,
     likeArticle, getLike,
@@ -516,5 +595,5 @@ export const useCounterStore = defineStore('counter', () => {
     getDepositList, getPensionList, getLoanList, getSavingsList,
     getDepositDetail, getSavingDetail, getPensionDetail, getLoanDetail,
     joinProduct
-   }
+  }
 }, { persist: true })

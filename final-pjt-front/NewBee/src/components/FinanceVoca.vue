@@ -22,10 +22,13 @@ import { onMounted } from 'vue';
 const store = useCounterStore()
 const ecoWord = store.ecoWord
 const ecoContent = store.ecoContent
+const isRequest = store.isRequest
 
-// onMounted(() => {
-//   store.getEcoWord()
-// })
+onMounted(() => {
+  if (isRequest === true){
+    store.getEcoWord()
+  }
+})
 
 </script>
 

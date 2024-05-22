@@ -64,7 +64,6 @@ const getSavings = async function () {
 }
 
 // 경제용어 API 요청 호출
-// DB 저장할 필요 없어서 필요 없는건지 이미 DB에 저장되어 있는건지 확인 필요
 const getWord = async function() {
   try {
     const res = await axios.get('http://127.0.0.1:8000/words/register/')
@@ -76,7 +75,7 @@ const getWord = async function() {
 
 onMounted(async () => {
   if (isRequest === false) {
-    // await getWord()
+    await getWord()
     await getBanks()
     await getDeposits()
     await getPensions()
@@ -85,6 +84,7 @@ onMounted(async () => {
     changeRequest()
   }
 })
+
 
 </script>
 

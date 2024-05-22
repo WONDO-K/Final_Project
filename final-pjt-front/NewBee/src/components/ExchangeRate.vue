@@ -128,9 +128,9 @@ const exchange = function() {
 }
 
 // 차후에 주석 해제하여 환율을 가져오는 함수 실행
-// onMounted(() => {
-//   getExchangeRate()
-// })
+onMounted(() => {
+  getExchangeRate()
+})
 </script>
 
 <style scoped>

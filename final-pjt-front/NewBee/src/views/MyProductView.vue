@@ -1,14 +1,15 @@
 <template>
   <div class="text-center">
     <div v-for="(product, index) in userProduct" :key="product.id">
-      <h2>{{ index + 1 }}번 상품</h2>
+      <h3>{{ index + 1 }}</h3>
       <h4>상품 종류: {{ product.product_type }}</h4>
       <h4>가입날짜: {{ product.join_date }}</h4>
       <div>
         <canvas :id="'rateChart-' + index"></canvas>
       </div>
-      <button @click="getDetail(product, index)">상품 정보 그래프</button>
-      <button class="mb-3" @click="goDetail">상세 페이지</button>
+      <button class="mb-5" v-if="(product.product_type === '적금') || (product.product_type === '정기예금')"
+        @click="getDetail(product, index)">상품 정보 그래프</button>
+      <!-- <button class=" mb-3" @click="goDetail(product.deposit_product)">상세 페이지</button> -->
     </div>
   </div>
 </template>
@@ -32,12 +33,16 @@ onMounted(() => {
 
 const getDetail = async (product, index) => {
   let data = null;
+  let product_title = '';
+
   if (product.product_type === '정기예금') {
-    await store.getDepositDetail(product.deposit_product)
-    data = store.depositDetail.deposit_options
+    await store.getDepositDetail(product.deposit_product);
+    data = store.depositDetail.deposit_options;
+    product_title = store.depositDetail.fin_prdt_nm;
   } else if (product.product_type === '적금') {
-    await store.getSavingDetail(product.savings_product)
-    data = store.savingsDetail.saving_options
+    await store.getSavingDetail(product.saving_product);
+    data = store.savingsDetail.saving_options;
+    product_title = store.savingsDetail.fin_prdt_nm;
   }
 
   if (data) {
@@ -65,6 +70,15 @@ const getDetail = async (product, index) => {
       },
       options: {
         responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: product_title,
+            font: {
+              size: 30 // 원하는 크기로 설정하세요
+            }
+          }
+        },
         scales: {
           x: {
             title: {
@@ -85,14 +99,14 @@ const getDetail = async (product, index) => {
   }
 }
 
-const goDetail = function () {
-  router.push({ name: 'ProductDetail' })
-}
+// const goDetail = function (id) {
+//   router.push({ name: 'depositDetail' }, params: { id: id })
+// }
 </script>
 
 <style scoped>
 canvas {
-  width: 1000px;
+  width: 800px;
   margin: 0 auto;
 }
 </style>

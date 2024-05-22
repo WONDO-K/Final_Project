@@ -1,5 +1,7 @@
 <template>
   <div>
+    <BestLoan />
+    <RecommendLoan />
     <LoanList />
   </div>
 </template>
@@ -8,6 +10,8 @@
 import { useCounterStore } from '@/stores/counter'
 import LoanList from '@/components/LoanList.vue'
 import { onMounted } from 'vue'
+import BestLoan from '@/components/BestLoan.vue'
+import RecommendLoan from '@/components/RecommendLoan.vue'
 
 const store = useCounterStore()
 

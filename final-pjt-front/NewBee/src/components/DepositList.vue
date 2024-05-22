@@ -11,7 +11,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="deposit in displayedDeposits" :key="deposit.pk" @click="goDepositDetail(deposit)">
+        <tr v-for="deposit in displayedDeposits" :key="deposit?.pk" @click="goDepositDetail(deposit)">
           <th scope="row">{{ deposit.kor_co_nm }}</th>
           <td>{{ deposit.fin_prdt_nm }}</td>
           <td>{{ findMinAndMaxRate(deposit.deposit_options).minIntrRate }}%</td>
@@ -27,12 +27,15 @@
     <button class="btn btn-primary" @click="nextPage"
       :disabled="currentPage >= maxPage || !depositList || !depositList.length">다음</button>
   </div>
+  <button @click="aaa">버튼</button>
 </template>
 
 <script setup>
 import { useCounterStore } from '@/stores/counter'
 import { useRouter } from 'vue-router'
 import { ref, computed } from 'vue'
+import { onMounted } from 'vue'
+
 
 const store = useCounterStore()
 const router = useRouter()
@@ -84,6 +87,15 @@ const prevPage = () => {
     currentPage.value--
   }
 }
+
+onMounted(() => {
+  // store.getDepositList()
+  store.getBestProduct()
+  // if (store.isLogin) {
+  //   store.getRecommendProduct()
+  // }
+})
+
 </script>
 
 <style scoped>

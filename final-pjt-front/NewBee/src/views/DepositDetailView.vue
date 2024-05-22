@@ -14,9 +14,7 @@
         <option disabled value="" class="text-center">옵션을 선택해주세요</option>
         <option v-for="(option, index) in depositDetail.deposit_options" :value="index + 1" :key="index">
           저축 유형: {{ option.intr_rate_type_nm }}
-          <br>
           저축 기간: {{ option.save_trm }}개월
-          <br>
           기본 금리: {{ option.intr_rate }}%
           우대 금리: {{ option.intr_rate2 }}%
         </option>
@@ -52,7 +50,7 @@ const joinDeposit = function () {
 }
 
 onMounted(() => {
-  store.getDepositsDetail(depositId)
+  // store.getDepositsDetail()
 })
 
 </script>

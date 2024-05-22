@@ -1,69 +1,43 @@
 <template>
   <div>
     <div class="card text-center border-primary" style="width: 18rem;">
-        <div class="card-header">
-          오늘의 뉴스
-        </div>
-        <div class="card-body">
-          <!-- <h5 class="card-title">소비자동향지수</h5> -->
-          <p class="card-text">
-            대충 뉴스 제목 링크들 어쩌구 저쩌구
-          </p>
-          <p class="card-text">
-            대충 뉴스 제목 링크들 어쩌구 저쩌구
-          </p>
-          <p class="card-text">
-            대충 뉴스 제목 링크들 어쩌구 저쩌구
-          </p>
-          <p class="card-text">
-            대충 뉴스 제목 링크들 어쩌구 저쩌구
-          </p>
-          <p class="card-text">
-            대충 뉴스 제목 링크들 어쩌구 저쩌구
-          </p>
-          <p class="card-text">
-            대충 뉴스 제목 링크들 어쩌구 저쩌구
-          </p>
-          <p class="card-text">
-            대충 뉴스 제목 링크들 어쩌구 저쩌구
-          </p>
-        </div>
-        <button @click="getNews">안녕</button>
+      <div class="card-header">
+        오늘의 뉴스
       </div>
+      <div class="card-body">
+        <p v-for="item in news" :key="item.originallink">
+          <a :href="item.originallink" target="_blank">{{ cleanText(item.title) }}</a>
+        </p>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { onMounted, ref } from 'vue'
-import { useCounterStore } from '@/stores/counter'
 import axios from 'axios'
 
-// const getNews = async () => {
-//   try {
-//     const response = await axios.get('https://openapi.naver.com/v1/search/news.json', {
-//       headers: {
-//         'X-Naver-Client-Id': 'NvN6J4EaKqHVd3h_lF2D',
-//         'X-Naver-Client-Secret': 'rfuVjTp8eP'
-//       },
-//       params: {
-//         query: 'hello',  // 검색어
-//         display: 5,      // 검색 결과 출력 건수
-//         start: 1         // 검색 시작 위치
-//       }
-//     });
-//     console.log(response.data);
-//   } catch (error) {
-//     console.error('Error fetching news:', error.response ? error.response.data : error.message);
-//   }
-// }
+const news = ref([])
+const getNews = function () {
+  axios.get('http://127.0.0.1:8000/news/search/')
+    .then(res => {
+      console.log(res.data.results)
+      console.log('뉴스를 가져왔습니다.')
+      news.value = res.data.results
+    })
+    .catch(err => {
+      console.log(err)
+    })
+}
+
+const cleanText = (text) => {
+  // HTML 태그 제거 및 한글만 추출하는 정규식
+  return text.replace(/<\/?[^>]+(>|$)/g, '').replace(/[^ㄱ-ㅎㅏ-ㅣ가-힣\s]/g, '')
+}
 
 onMounted(() => {
-  // getNews()
+  getNews()
 })
-
-
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

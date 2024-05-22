@@ -122,7 +122,7 @@ const router = createRouter({
       path: '/myproduct',
       name: 'myProduct',
       component: MyProductView
-    }
+    },
   ]
 })
 

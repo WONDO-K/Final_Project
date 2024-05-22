@@ -1,7 +1,7 @@
 <template>
   <div class="mb-3">
     <header>
-      <nav class="bg-warning rounded-3">
+      <nav class="rounded-3">
         <Logo />
         <router-link :to="{ name: 'depositsList' }" class="h3 text-info text-decoration-none">
           예금
