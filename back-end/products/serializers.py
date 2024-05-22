@@ -278,3 +278,13 @@ class UserRentLoanProductSerializer(UserProductSerializer):
         return obj.rent_loan_product.fin_prdt_nm
 
 
+# 적금 수령액 계산용 ----------------------------------------------------------------------------------------------------------------------------------------------------
+
+class CalcSavingSerializer(serializers.Serializer):
+    product_pk = serializers.IntegerField(help_text="적금 상품의 ID를 입력하세요.")  # 적금 상품 ID
+    option_pk = serializers.IntegerField(help_text="적금 상품 옵션의 ID를 입력하세요.")  # 적금 상품 옵션 ID
+    principal = serializers.DecimalField(max_digits=10, decimal_places=2, help_text="투자한 원금을 입력하세요.")  # 원금
+    n = serializers.IntegerField(default=1, help_text="복리 계산 시 연 단위 횟수를 입력하세요. (기본값 1)")  # 복리 계산 시 연 단위 횟수 (기본값 1)
+
+    class Meta:
+        fields = ['product_pk', 'option_pk', 'principal', 'n']

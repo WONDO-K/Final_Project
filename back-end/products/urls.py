@@ -34,4 +34,7 @@ urlpatterns = [
     path("pension_list/", PensionProductListAPIView.as_view(), name='pension-list'),
     path("rent_loan_list/", RentLoanProductListAPIView.as_view(), name='rent-loan-list'),
     
+    # 적금 만기 시 예상 수령액
+    path('calculate_maturity_amount/', CalculateEndSavingAmountAPIView.as_view(), name='calculate_maturity_amount'),
+
 ]

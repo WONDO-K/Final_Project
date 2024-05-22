@@ -411,3 +411,63 @@ class RentLoanProductListAPIView(APIView):
         rent_loan_products = RentLoanProduct.objects.all()
         serializer = RentLoanListSerializer(rent_loan_products, many=True)
         return JsonResponse(serializer.data, safe=False)
+    
+
+from .serializers import CalcSavingSerializer
+from decimal import Decimal, getcontext
+
+class CalculateEndSavingAmountAPIView(APIView):
+
+    getcontext().prec = 10  # 소수점 계산 정확도 설정
+
+    def calculate_simple_interest(self, principal, rate, time_in_months):
+        if rate is None or principal < 0 or time_in_months <= 0:
+            return None  # 유효하지 않은 입력 데이터ㄴ
+        
+        rate_decimal = Decimal(rate) / Decimal(100) 
+        time_in_years = Decimal(time_in_months) / Decimal(12)
+        
+        maturity_amount = principal + (principal * rate_decimal * time_in_years)
+        return round(maturity_amount, 2)
+
+    def calculate_compound_interest(self, principal, rate, time_in_months, n=1):
+        if rate is None or principal < 0 or time_in_months <= 0:
+            return None  # 유효하지 않은 입력 데이터
+        
+        rate_decimal = Decimal(rate) / Decimal(100)
+        time_in_years = Decimal(time_in_months) / Decimal(12)
+        
+        maturity_amount = principal * (1 + rate_decimal / n) ** (n * time_in_years)
+        return round(maturity_amount, 2)
+
+    @swagger_auto_schema(
+        operation_summary="적금의 최종 만기 수령액을 계산합니다.",
+        tags=['적금 계산'],
+        request_body=CalcSavingSerializer,
+    )
+    def post(self,request):
+        serializer = CalcSavingSerializer(data=request.data)
+
+        if not serializer.is_valid():
+            return JsonResponse(serializer.errors, status=400)
+        
+        product_pk = serializer.validated_data['product_pk']
+        option_pk = serializer.validated_data['option_pk']
+        principal = serializer.validated_data['principal'] #
+        n = serializer.validated_data['n']
+
+        saving_product = get_object_or_404(SavingProduct, pk=product_pk)
+        saving_option = get_object_or_404(SavingProductOption, pk=option_pk, saving_product=saving_product)
+
+        if saving_option.intr_rate_type == 'S': # 단리
+            maturity_amount = self.calculate_simple_interest(principal, saving_option.intr_rate, saving_option.save_trm)
+        elif saving_option.intr_rate_type == 'M': # 복리
+            maturity_amount = self.calculate_compound_interest(principal, saving_option.intr_rate, saving_option.save_trm, n)
+        else:
+            return JsonResponse({"message": "유효하지 않은 이자율 유형입니다."}, status=400)
+        
+        if maturity_amount is None:
+            return JsonResponse({"message": " 만기 수령액을 계산할 수 없습니다.."}, status=400)
+        
+        return JsonResponse({"예상 만기 수령액": maturity_amount}, status=200)
+
