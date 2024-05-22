@@ -131,6 +131,9 @@ celerybeat.pid
 # SageMath parsed files
 *.sage.py
 
+# Ignore migration files with _initial.py suffix
+*_initial.py
+
 # Environments
 .env
 .venv
