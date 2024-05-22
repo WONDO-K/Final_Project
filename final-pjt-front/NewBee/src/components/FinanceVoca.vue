@@ -23,9 +23,9 @@ const store = useCounterStore()
 const ecoWord = store.ecoWord
 const ecoContent = store.ecoContent
 
-onMounted(() => {
-  store.getEcoWord()
-})
+// onMounted(() => {
+//   store.getEcoWord()
+// })
 
 </script>
 

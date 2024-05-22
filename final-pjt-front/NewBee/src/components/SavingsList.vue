@@ -1,7 +1,7 @@
 <template>
   <div class="container text-center">
     <h1>적금</h1>
-    <table class="table table-hover">
+    <table class="table table-hover" v-if="savingsList && savingsList.length">
       <thead class="table-warning">
         <tr>
           <th scope="col">은행명</th>
@@ -11,9 +11,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="saving in displayedSavings"
-        :key="saving.pk"
-        @click="goSavingDetail(saving)">
+        <tr v-for="saving in displayedSavings" :key="saving.pk" @click="goSavingDetail(saving)">
           <th scope="row">{{ saving.kor_co_nm }}</th>
           <td>{{ saving.fin_prdt_nm }}</td>
           <td>{{ findMinAndMaxRate(saving.saving_options).minIntrRate }}%</td>
@@ -21,8 +19,13 @@
         </tr>
       </tbody>
     </table>
-    <button class="btn btn-primary" @click="prevPage" :disabled="currentPage === 0">이전</button>
-    <button class="btn btn-primary" @click="nextPage" :disabled="currentPage >= maxPage">다음</button>
+    <div v-else>
+      데이터가 없습니다.
+    </div>
+    <button class="btn btn-primary" @click="prevPage"
+      :disabled="currentPage === 0 || !savingsList || !savingsList.length">이전</button>
+    <button class="btn btn-primary" @click="nextPage"
+      :disabled="currentPage >= maxPage || !savingsList || !savingsList.length">다음</button>
   </div>
 </template>
 
@@ -33,13 +36,13 @@ import { ref, computed } from 'vue'
 
 const store = useCounterStore()
 const router = useRouter()
-const savingsList = store.savingsList
+const savingsList = computed(() => store.savingsList || [])
 
 const itemsPerPage = 10
 const currentPage = ref(0)
 
-const maxPage = computed(() => Math.ceil(savingsList.length / itemsPerPage) - 1)
-const displayedSavings = computed(() => savingsList.slice(currentPage.value * itemsPerPage, (currentPage.value + 1) * itemsPerPage))
+const maxPage = computed(() => Math.ceil(savingsList.value.length / itemsPerPage) - 1)
+const displayedSavings = computed(() => savingsList.value.slice(currentPage.value * itemsPerPage, (currentPage.value + 1) * itemsPerPage))
 
 function findMinAndMaxRate(options) {
   let minIntrRate = Infinity;
@@ -57,6 +60,13 @@ function findMinAndMaxRate(options) {
       maxIntrRate2 = intrRate2;
     }
   })
+
+  if (minIntrRate === Infinity) {
+    minIntrRate = '-';
+  }
+  if (maxIntrRate2 === -Infinity) {
+    maxIntrRate2 = '-';
+  }
 
   return {
     minIntrRate,
@@ -84,4 +94,7 @@ const prevPage = () => {
 </script>
 
 <style scoped>
+tr:hover {
+  cursor: pointer;
+}
 </style>

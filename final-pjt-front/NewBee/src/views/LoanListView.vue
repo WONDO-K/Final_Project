@@ -12,9 +12,7 @@ import { onMounted } from 'vue'
 const store = useCounterStore()
 
 onMounted(() => {
-  if (store.loanList.length === 0){
-    store.getLoanList()
-  }
+  store.getLoanList()
 })
 </script>
 

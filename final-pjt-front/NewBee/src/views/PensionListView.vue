@@ -12,9 +12,7 @@ import { onMounted } from 'vue'
 const store = useCounterStore()
 
 onMounted(() => {
-  if (store.pensionList.length === 0){
-    store.getPensionList()
-  }
+  store.getPensionList()
 })
 </script>
 

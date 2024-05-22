@@ -1,7 +1,7 @@
 <template>
   <div class="container text-center">
     <h1>연금</h1>
-    <table class="table table-hover">
+    <table class="table table-hover" v-if="pensionList && pensionList.length">
       <thead class="table-warning">
         <tr>
           <th scope="col">은행명</th>
@@ -10,17 +10,20 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="pension in displayedPensions"
-        :key="pension.pk"
-        @click="goPensionDetail(pension)">
+        <tr v-for="pension in displayedPensions" :key="pension.pk" @click="goPensionDetail(pension)">
           <th scope="row">{{ pension.kor_co_nm }}</th>
           <td>{{ pension.fin_prdt_nm }}</td>
           <td>자세히 보기</td>
         </tr>
       </tbody>
     </table>
-    <button class="btn btn-primary" @click="prevPage" :disabled="currentPage === 0">이전</button>
-    <button class="btn btn-primary" @click="nextPage" :disabled="currentPage >= maxPage">다음</button>
+    <div v-else>
+      데이터가 없습니다.
+    </div>
+    <button class="btn btn-primary" @click="prevPage"
+      :disabled="currentPage === 0 || !pensionList || !pensionList.length">이전</button>
+    <button class="btn btn-primary" @click="nextPage"
+      :disabled="currentPage >= maxPage || !pensionList || !pensionList.length">다음</button>
   </div>
 </template>
 
@@ -31,17 +34,17 @@ import { ref, computed } from 'vue'
 
 const store = useCounterStore()
 const router = useRouter()
-const pensionList = store.pensionList
+const pensionList = computed(() => store.pensionList || [])
 
 const itemsPerPage = 10
 const currentPage = ref(0)
 
-const maxPage = computed(() => Math.ceil(pensionList.length / itemsPerPage) - 1)
-const displayedPensions = computed(() => pensionList.slice(currentPage.value * itemsPerPage, (currentPage.value + 1) * itemsPerPage))
+const maxPage = computed(() => Math.ceil(pensionList.value.length / itemsPerPage) - 1)
+const displayedPensions = computed(() => pensionList.value.slice(currentPage.value * itemsPerPage, (currentPage.value + 1) * itemsPerPage))
 
 const goPensionDetail = (pension) => {
   store.getPensionDetail(pension.pk).then(() => {
-    router.push({ name: 'pensionDetail', params: { id: pension.pk }})
+    router.push({ name: 'pensionDetail', params: { id: pension.pk } })
   })
 }
 

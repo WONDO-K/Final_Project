@@ -1,8 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
+// 유저 관련
+import MyPageView from '@/views/MyPageView.vue'
 import SignupView from '@/views/SignupView.vue'
 import LoginView from '@/views/LoginView.vue'
-import MyPageView from '@/views/MyPageView.vue'
+import PasswordChangeView from '@/views/PasswordChangeView.vue'
+import MyProductView from '@/views/MyProductView.vue'
+// 은행 관련
 import BankSearchView from '@/views/BankSearchView.vue'
 // 커뮤니티 관련
 import FreeBoardView from '@/views/FreeBoardView.vue'
@@ -43,6 +47,11 @@ const router = createRouter({
       path: '/mypage',
       name: 'mypage',
       component: MyPageView,
+    },
+    {
+      path: '/passwordchange',
+      name: 'passwordChange',
+      component: PasswordChangeView,
     },
     {
       path: '/banksearch',
@@ -109,6 +118,11 @@ const router = createRouter({
       name: 'loanDetail',
       component: LoanDetailView,
     },
+    {
+      path: '/myproduct',
+      name: 'myProduct',
+      component: MyProductView
+    }
   ]
 })
 

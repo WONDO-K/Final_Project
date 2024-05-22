@@ -1,7 +1,7 @@
 <template>
   <div class="container text-center">
     <h1>대출</h1>
-    <table class="table table-hover">
+    <table class="table table-hover" v-if="loanList && loanList.length">
       <thead class="table-warning">
         <tr>
           <th scope="col">은행명</th>
@@ -11,22 +11,25 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="loan in displayedLoans"
-        :key="loan.pk"
-        @click="goLoanDetail(loan)">
+        <tr v-for="loan in displayedLoans" :key="loan.pk" @click="goLoanDetail(loan)">
           <th scope="row">{{ loan.kor_co_nm }}</th>
           <td>{{ loan.fin_prdt_nm }}</td>
           <td>{{ findMinAvgAndMinRate(loan.rent_loan_options).minAvgRate }}
             <span v-if="findMinAvgAndMinRate(loan.rent_loan_options).minAvgRate !== '-'">%</span>
           </td>
           <td>{{ findMinAvgAndMinRate(loan.rent_loan_options).minRate }}
-            <span v-if="findMinAvgAndMinRate(loan.rent_loan_options).minAvgRate !== '-'">%</span>
+            <span v-if="findMinAvgAndMinRate(loan.rent_loan_options).minRate !== '-'">%</span>
           </td>
         </tr>
       </tbody>
     </table>
-    <button class="btn btn-primary" @click="prevPage" :disabled="currentPage === 0">이전</button>
-    <button class="btn btn-primary" @click="nextPage" :disabled="currentPage >= maxPage">다음</button>
+    <div v-else>
+      데이터가 없습니다.
+    </div>
+    <button class="btn btn-primary" @click="prevPage"
+      :disabled="currentPage === 0 || !loanList || !loanList.length">이전</button>
+    <button class="btn btn-primary" @click="nextPage"
+      :disabled="currentPage >= maxPage || !loanList || !loanList.length">다음</button>
   </div>
 </template>
 
@@ -37,13 +40,13 @@ import { ref, computed } from 'vue'
 
 const store = useCounterStore()
 const router = useRouter()
-const loanList = store.loanList
+const loanList = computed(() => store.loanList || [])
 
 const itemsPerPage = 10
 const currentPage = ref(0)
 
-const maxPage = computed(() => Math.ceil(loanList.length / itemsPerPage) - 1)
-const displayedLoans = computed(() => loanList.slice(currentPage.value * itemsPerPage, (currentPage.value + 1) * itemsPerPage))
+const maxPage = computed(() => Math.ceil(loanList.value.length / itemsPerPage) - 1)
+const displayedLoans = computed(() => loanList.value.slice(currentPage.value * itemsPerPage, (currentPage.value + 1) * itemsPerPage))
 
 function findMinAvgAndMinRate(options) {
   let minAvgRate = Infinity;
@@ -61,10 +64,12 @@ function findMinAvgAndMinRate(options) {
       minRate = rate;
     }
   });
-  if (minAvgRate === Infinity){
-    minAvgRate = '-'
-  } else if (minRate === Infinity){
-    minRate = '-'
+
+  if (minAvgRate === Infinity) {
+    minAvgRate = '-';
+  }
+  if (minRate === Infinity) {
+    minRate = '-';
   }
 
   return {

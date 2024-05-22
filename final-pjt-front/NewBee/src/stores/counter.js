@@ -14,6 +14,7 @@ export const useCounterStore = defineStore('counter', () => {
   const isListRequest = ref(false)
   // 유저 정보
   const userInfo = ref({})
+  const userProduct = ref([])
   // 게시글 목록, 상세정보, 댓글
   const articles = ref([])
   const article = ref(null)
@@ -105,6 +106,24 @@ export const useCounterStore = defineStore('counter', () => {
         console.log(err)
       })
   }
+  // 유저 상품 정보 가져오기
+  const getMyProduct = function() {
+    axios.get('http://127.0.0.1:8000/accounts/user_products/', {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('access')}`,
+        'Content-Type': 'application/json'
+      },
+      withCredentials: true // 쿠키를 요청에 포함시키는 옵션 추가
+    })
+      .then(res => {
+        console.log('유저 상품 정보를 가져왔습니다.')
+        userProduct.value = res.data.products
+        console.log(res.data.products)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
   // 로그인
   // access 토큰 만료 시 refresh 토큰으로 재발급 logic 추가 필요
   const logIn = function(info) {
@@ -161,6 +180,23 @@ export const useCounterStore = defineStore('counter', () => {
     })
       .then(res => {
         console.log('유저 정보가 수정되었습니다.')
+        goHome()
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+  // 비밀번호 변경
+  const changePassword = function(info) {
+    axios.post('http://127.0.0.1:8000/accounts/change_password/', info, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('access')}`,
+        'Content-Type': 'application/json'
+      },
+      withCredentials: true // 쿠키를 요청에 포함시키는 옵션 추가
+    })
+      .then(res => {
+        console.log('비밀번호가 변경되었습니다.')
         goHome()
       })
       .catch(err => {
@@ -460,7 +496,7 @@ export const useCounterStore = defineStore('counter', () => {
     isLogin,
     isRequest, isListRequest,
     // 데이터
-    userInfo,
+    userInfo, userProduct,
     ecoWord, ecoContent,
     articles, article, articleLike,
     comments,
@@ -472,7 +508,8 @@ export const useCounterStore = defineStore('counter', () => {
     goHome, goLogin,
     // 일반 함수
     getEcoWord,
-    signUp, logIn, logOut, getUser, modifyUser,
+    signUp, logIn, logOut, getUser, modifyUser, changePassword,
+    getMyProduct,
     getArticles, createArticle, getArticle, deleteArticle, updateArticle,
     likeArticle, getLike,
     createComment, deleteComment, updateComment,

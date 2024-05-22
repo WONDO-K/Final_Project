@@ -12,9 +12,7 @@ import DepositList from '@/components/DepositList.vue'
 const store = useCounterStore()
 
 onMounted(() => {
-  if (store.depositList.length === 0){
-    store.getDepositList()
-  }
+  store.getDepositList()
 })
 </script>
 
