@@ -32,7 +32,8 @@ PRODUCT_API_KEY = env('PRODUCT_API_KEY')
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY')
-
+NAVER_CLIENT_ID= env('NAVER_CLIENT_ID')
+NAVER_CLIENT_SECRET=env('NAVER_CLIENT_SECRET')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -49,6 +50,7 @@ INSTALLED_APPS = [
     'products',
     'words',
     'recommens',
+    'news',
     'django_extensions',
     'drf_yasg',
     'corsheaders',
