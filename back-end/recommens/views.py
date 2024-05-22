@@ -1,4 +1,3 @@
-import numpy as np
 from django.db.models import Count
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -46,7 +45,7 @@ class TopProductsView(APIView):
             .order_by('-count')[:5]
         )
         def convert_to_list(queryset, product_type):
-            # 상품 모델에 따라 필요한 속성을 선택합니다.
+            # 상품 모델에 따라 필요한 속성을 선택.
             if product_type == 'deposit':
                 product_model = DepositProduct
             elif product_type == 'saving':
@@ -56,7 +55,7 @@ class TopProductsView(APIView):
             elif product_type == 'rent_loan':
                 product_model = RentLoanProduct
 
-            # 각 상품의 id와 fin_prdt_nm, 그리고 count를 포함하여 반환합니다.
+            # 각 상품의 id와 fin_prdt_nm, 그리고 count를 포함하여 반환한다.
             return [{'id': item[f'{product_type}_product'], 'name': product_model.objects.get(pk=item[f'{product_type}_product']).fin_prdt_nm, 'count': item['count']} for item in queryset]
 
         deposit_top_5_list = convert_to_list(deposit_top_5, 'deposit')
@@ -82,7 +81,7 @@ class SimmilarRecommendProductsAPIView(APIView):
         query_serializer=RecommendProductsQuerySerializer
     )
     def get(self,request):
-        serializer = RecommendProductsQuerySerializer(data=request.GET)
+        serializer = RecommendProductsQuerySerializer(data=request.GET) # request.GET으로 값을 꺼내는 이유는 쿼리스트링으로 값을 받기 때문이다.
         serializer.is_valid(raise_exception=True)
 
         age = serializer.validated_data['age']
@@ -91,10 +90,10 @@ class SimmilarRecommendProductsAPIView(APIView):
 
         # 범위 설정
         age_range = 5
-        wealth_range = 10_000_000
-        salary_range = 1_000_000
+        wealth_range = 10_000_000 # 1천만원
+        salary_range = 1_000_000 # 100만원
 
-        # 범위 내에서 유사한 사용자들의 상품 가입 정보를 가져온다..
+        # 범위 내에서 유사한 사용자들의 상품 가입 정보를 가져온다.
         similar_users = self.find_similar_users(age, wealth, salary, age_range, wealth_range, salary_range)
 
         # 각 상품별로 가입자 수를 계산한다.
@@ -121,15 +120,6 @@ class SimmilarRecommendProductsAPIView(APIView):
         )
         return similar_users
 
-    # def calculate_product_counts(self, users):
-    #     # 각 상품별 가입자 수를 계산
-    #     deposit_counts = UserDepositProduct.objects.filter(user__in=users).values('deposit_product').annotate(count=Count('user'))
-    #     saving_counts = UserSavingProduct.objects.filter(user__in=users).values('saving_product').annotate(count=Count('user'))
-    #     pension_counts = UserPensionProduct.objects.filter(user__in=users).values('pension_product').annotate(count=Count('user'))
-    #     rent_loan_counts = UserRentLoanProduct.objects.filter(user__in=users).values('rent_loan_product').annotate(count=Count('user'))
-
-    #     return deposit_counts, saving_counts, pension_counts, rent_loan_counts
-    
     def calculate_product_counts(self, users):
         # 각 상품별 가입자 수를 계산
         deposit_counts = UserDepositProduct.objects.filter(user__in=users).values('deposit_product', 'deposit_product__fin_prdt_nm').annotate(count=Count('user'))
@@ -140,7 +130,7 @@ class SimmilarRecommendProductsAPIView(APIView):
         return deposit_counts, saving_counts, pension_counts, rent_loan_counts
 
     def extract_top_products(self, product_counts):
-        # 상품별 가입자 수를 기준으로 상위 3개 상품을 추출합니다.
+        # 상품별 가입자 수를 기준으로 상위 3개 상품을 추출한다.
         top_deposit_products = sorted(product_counts[0], key=lambda x: x['count'], reverse=True)[:3]
         top_saving_products = sorted(product_counts[1], key=lambda x: x['count'], reverse=True)[:3]
         top_pension_products = sorted(product_counts[2], key=lambda x: x['count'], reverse=True)[:3]

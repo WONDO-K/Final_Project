@@ -422,7 +422,7 @@ class CalculateEndSavingAmountAPIView(APIView):
 
     def calculate_simple_interest(self, principal, rate, time_in_months):
         if rate is None or principal < 0 or time_in_months <= 0:
-            return None  # 유효하지 않은 입력 데이터
+            return None  # 유효하지 않은 입력 데이터ㄴ
         
         rate_decimal = Decimal(rate) / Decimal(100) 
         time_in_years = Decimal(time_in_months) / Decimal(12)
