@@ -1,7 +1,5 @@
 <template>
   <div>
-    <BestPension />
-    <h1>연금</h1>
     <div class="container text-center">
       <table class="table table-hover" v-if="pensionList && pensionList.length">
         <thead class="table-warning">
@@ -22,9 +20,9 @@
       <div v-else>
         데이터가 없습니다.
       </div>
-      <button class="btn btn-primary" @click="prevPage"
+      <button class="btn btn-primary fw-bold" @click="prevPage"
         :disabled="currentPage === 0 || !pensionList || !pensionList.length">이전</button>
-      <button class="btn btn-primary" @click="nextPage"
+      <button class="btn btn-primary fw-bold" @click="nextPage"
         :disabled="currentPage >= maxPage || !pensionList || !pensionList.length">다음</button>
     </div>
   </div>
@@ -34,7 +32,6 @@
 import { useCounterStore } from '@/stores/counter'
 import { useRouter } from 'vue-router'
 import { ref, computed } from 'vue'
-import BestPension from './BestPension.vue'
 
 const store = useCounterStore()
 const router = useRouter()

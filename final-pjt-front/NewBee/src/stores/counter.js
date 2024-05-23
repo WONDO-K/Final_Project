@@ -190,6 +190,7 @@ export const useCounterStore = defineStore('counter', () => {
         isLogin.value = true
         getUser()
         getMyProduct()
+        getRecommendProduct()
         goHome()
       })
       .catch(err => {

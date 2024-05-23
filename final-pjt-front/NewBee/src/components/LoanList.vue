@@ -1,6 +1,5 @@
 <template>
   <div class="container text-center">
-    <h1>대출</h1>
     <table class="table table-hover" v-if="loanList && loanList.length">
       <thead class="table-warning">
         <tr>
@@ -26,9 +25,9 @@
     <div v-else>
       데이터가 없습니다.
     </div>
-    <button class="btn btn-primary" @click="prevPage"
+    <button class="btn btn-primary fw-bold" @click="prevPage"
       :disabled="currentPage === 0 || !loanList || !loanList.length">이전</button>
-    <button class="btn btn-primary" @click="nextPage"
+    <button class="btn btn-primary fw-bold" @click="nextPage"
       :disabled="currentPage >= maxPage || !loanList || !loanList.length">다음</button>
   </div>
 </template>

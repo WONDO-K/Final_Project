@@ -36,7 +36,7 @@
         <input type="number" id="wealth" class="form-control" v-model="userInfo.wealth">
         <label for="wealth">자산(단위: 만원)</label>
       </div>
-      <button type="submit" class="btn btn-primary" @click="modifyUser">수정</button>
+      <button type="submit" class="btn btn-primary fw-bold" @click="modifyUser">수정</button>
     </form>
   </div>
 </template>

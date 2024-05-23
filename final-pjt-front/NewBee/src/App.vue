@@ -82,6 +82,8 @@ onMounted(async () => {
     await getRentLoans()
     await getSavings()
     changeRequest()
+    store.getBestProduct()
+    // store.getRecommendProduct()
   }
 })
 

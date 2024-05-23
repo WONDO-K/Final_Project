@@ -1,11 +1,11 @@
 <template>
   <div>
     <div class="card text-center border-primary" style="width: 18rem;">
-      <div class="card-header">
+      <div class="card-header fw-bold fs-5">
         오늘의 경제용어
       </div>
       <div class="card-body">
-          {{ ecoWord }}
+          <p class="fw-bold">{{ ecoWord }}</p>
         <h5 class="card-title"></h5>
         <p class="card-text">
           {{ ecoContent }}

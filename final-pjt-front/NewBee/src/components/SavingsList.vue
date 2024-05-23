@@ -1,8 +1,6 @@
 <template>
   <div>
-    <BestSaving />
     <div class="container text-center">
-      <h1>적금</h1>
       <table class="table table-hover" v-if="savingsList && savingsList.length">
         <thead class="table-warning">
           <tr>
@@ -36,7 +34,6 @@
 import { useCounterStore } from '@/stores/counter'
 import { useRouter } from 'vue-router'
 import { ref, computed } from 'vue'
-import BestSaving from './BestSaving.vue'
 
 const store = useCounterStore()
 const router = useRouter()

@@ -1,12 +1,12 @@
 <template>
   <div>
     <div class="card text-center border-primary" style="width: 40rem;">
-      <div class="card-header">
+      <div class="card-header fw-bold fs-5">
         오늘의 환율은?
       </div>
       <div class="card-body mb-3">
-        <h5 class="card-title mb-4">환율계산기</h5>
-        <label for="from" class="form-label">FROM</label>
+        <h5 class="card-title mb-4 fw-bold">환율계산기</h5>
+        <label for="from" class="form-label fw-bold">FROM</label>
         <select id="from" class="form-control text-center mb-3" v-model="from">
           <option value="AED">AED(아랍에미리트 디르함)</option>
           <option value="AUD">AUD(호주 달러)</option>
@@ -32,9 +32,9 @@
           <option value="THB">THB(태국 바트)</option>
           <option value="USD">USD(미국 달러)</option>
         </select>
-        <button class="btn btn-primary mb-3" @click="changeValue">↑↓</button>
+        <button class="btn btn-primary mb-3 fw-bold" @click="changeValue">↑↓</button>
         <br>
-        <label for="TO" class="form-label">TO</label>
+        <label for="TO" class="form-label fw-bold">TO</label>
         <select id="TO" class="form-control text-center" v-model="to">
           <option value="AED">AED(아랍에미리트 디르함)</option>
           <option value="AUD">AUD(호주 달러)</option>
@@ -62,9 +62,9 @@
         </select>
       </div>
       <div class="card-body">
-        <label for="amount" class="form-label">환전 금액</label>
+        <label for="amount" class="form-label fw-bold">환전 금액</label>
         <input type="number" name="" id="amount" class="form-control text-center mb-3" v-model="amount">
-        <button class="btn btn-primary" @click="exchange">환산</button>
+        <button class="btn btn-primary fw-bold" @click="exchange">환산</button>
       </div>
       <div class="card-body">
         <label for="result" class="form-label">결과</label>

@@ -1,8 +1,12 @@
 <template>
   <div>
-    <h1>추천 Saving</h1>
-    <div v-for="best in recommendProduct.saving">
-      <p @click="goSavingDetail(best)">{{ best.saving_product__fin_prdt_nm }}</p>
+    <div class="card" style="width: 18rem;">
+      <div class="card-header fw-bold fs-5">
+        추천 적금 상품
+      </div>
+      <ul class="list-group list-group-flush">
+        <li @click="goSavingDetail(best)" class="list-group-item item-hover" v-for="best in recommendProduct.saving">{{ best.saving_product__fin_prdt_nm }}</li>
+      </ul>
     </div>
   </div>
 </template>
@@ -24,7 +28,11 @@ const goSavingDetail = (best) => {
 </script>
 
 <style scoped>
-p.hover {
+.item-hover {
   cursor: pointer;
+  transition: background-color 0.3s;
+}
+.item-hover:hover {
+  background-color: #FFFFEF;
 }
 </style>

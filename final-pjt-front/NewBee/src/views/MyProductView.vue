@@ -1,13 +1,13 @@
 <template>
   <div class="text-center">
     <div v-for="(product, index) in userProduct" :key="product.id">
-      <h3>{{ index + 1 }}</h3>
-      <h4>상품 종류: {{ product.product_type }}</h4>
-      <h4>가입날짜: {{ product.join_date }}</h4>
+      <h4>{{ index + 1 }}</h4>
+      <h5>상품 종류: {{ product.product_type }}</h5>
+      <h5>가입날짜: {{ product.join_date }}</h5>
       <div>
         <canvas :id="'rateChart-' + index"></canvas>
       </div>
-      <button class="mb-5" v-if="(product.product_type === '적금') || (product.product_type === '정기예금')"
+      <button class="mb-5 btn btn-primary fw-bold" v-if="(product.product_type === '적금') || (product.product_type === '정기예금')"
         @click="getDetail(product, index)">상품 정보 그래프</button>
       <!-- <button class=" mb-3" @click="goDetail(product.deposit_product)">상세 페이지</button> -->
     </div>

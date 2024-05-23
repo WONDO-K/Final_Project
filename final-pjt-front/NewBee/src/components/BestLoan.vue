@@ -1,8 +1,13 @@
 <template>
   <div>
-    <h1>Best Pension</h1>
-    <div v-for="best in bestProduct.rent_loan">
-      <p @click="goLoanDetail(best)">{{ best.name }}</p>
+    <div class="card" style="width: 18rem;">
+      <div class="card-header fw-bold fs-5">
+        인기 대출 상품
+      </div>
+      <ul class="list-group list-group-flush">
+        <li @click="goLoanDetail(best)" class="list-group-item item-hover" v-for="best in bestProduct.rent_loan"
+          :key="best.id">{{ best.name }}</li>
+      </ul>
     </div>
   </div>
 </template>
@@ -23,7 +28,12 @@ const goLoanDetail = (best) => {
 </script>
 
 <style scoped>
-p.hover {
+.item-hover {
   cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.item-hover:hover {
+  background-color: #FFFFEF;
 }
 </style>

@@ -21,7 +21,7 @@
             <label for="new2">새 비밀번호 확인</label>
           </div>
 
-          <button type="submit" class="btn btn-primary">변경</button>
+          <button type="submit" class="btn btn-primary fw-bold">변경</button>
         </form>
       </div>
     </div>

@@ -7,7 +7,7 @@
         <div class="mb-3">
           <label for="userId" class="visually-hidden">아이디</label>
           <input type="text" id="userId" class="form-control text-center mb-2" placeholder="아이디" v-model="userId">
-          <button type="button" class="btn btn-primary" @click="checkId">중복 체크</button>
+          <button type="button" class="btn btn-primary fw-bold" @click="checkId">중복 체크</button>
         </div>
         <div class="mb-3">
           <label for="password" class="visually-hidden">비밀번호</label>
@@ -41,7 +41,7 @@
         <div class="mb-3">
           <label for="email" class="visually-hidden">이메일</label>
           <input type="email" id="email" class="form-control text-center mb-2" placeholder="이메일" v-model="email">
-          <button type="button" class="btn btn-primary" @click="checkEmail">중복 체크</button>
+          <button type="button" class="btn btn-primary fw-bold" @click="checkEmail">중복 체크</button>
         </div>
         <div class="mb-3">
           <label for="salary" class="form-label">연봉(단위: 만원)</label>
@@ -51,7 +51,7 @@
           <label for="wealth">자산(단위:만원)</label>
           <input type="number" id="wealth" class="form-control text-center" v-model="wealth">
         </div>
-        <button type="submit" class="btn btn-primary" @click="signUp">회원가입</button>
+        <button type="submit" class="btn btn-primary fw-bold" @click="signUp">회원가입</button>
       </form>
     </div>
   </div>

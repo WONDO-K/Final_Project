@@ -1,9 +1,11 @@
 <template>
-  <div>
-    <BestLoan />
-    <RecommendLoan />
-    <LoanList />
+  <div class="text-center container">
+    <div class="d-flex justify-content-between mb-4">
+      <BestLoan />
+      <RecommendLoan v-if="store.isLogin" />
+    </div>
   </div>
+  <LoanList />
 </template>
 
 <script setup>
@@ -17,6 +19,7 @@ const store = useCounterStore()
 
 onMounted(() => {
   store.getLoanList()
+  store.getBestProduct()
 })
 </script>
 

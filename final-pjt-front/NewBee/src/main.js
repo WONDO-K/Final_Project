@@ -14,8 +14,8 @@ const app = createApp(App)
 const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate)
 
-// Kakao Map API는 차후 환경변수로 관리할 예정
-useKakao('cff4f8a7ef45294fc4076aba8fc58f0d', ['clusterer', 'services', 'drawing'])
+const KakaoApiKey = import.meta.env.VITE_APP_KAKAO_API_KEY
+useKakao(KakaoApiKey, ['clusterer', 'services', 'drawing'])
 
 app.use(pinia)
 app.use(router)

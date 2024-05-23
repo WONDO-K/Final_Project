@@ -1,6 +1,5 @@
 <template>
-  <div class="container text-center">
-    <h1>예금</h1>
+  <div class="text-center">
     <table class="table table-hover" v-if="depositList && depositList.length">
       <thead class="table-warning">
         <tr>
@@ -22,12 +21,11 @@
     <div v-else>
       데이터가 없습니다.
     </div>
-    <button class="btn btn-primary" @click="prevPage"
+    <button class="btn btn-primary fw-bold" @click="prevPage"
       :disabled="currentPage === 0 || !depositList || !depositList.length">이전</button>
-    <button class="btn btn-primary" @click="nextPage"
+    <button class="btn btn-primary fw-bold" @click="nextPage"
       :disabled="currentPage >= maxPage || !depositList || !depositList.length">다음</button>
   </div>
-  <button @click="aaa">버튼</button>
 </template>
 
 <script setup>
@@ -35,7 +33,6 @@ import { useCounterStore } from '@/stores/counter'
 import { useRouter } from 'vue-router'
 import { ref, computed } from 'vue'
 import { onMounted } from 'vue'
-
 
 const store = useCounterStore()
 const router = useRouter()

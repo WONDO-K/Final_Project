@@ -1,12 +1,12 @@
 <template>
   <div>
     <div class="card text-center border-primary" style="width: 18rem;">
-      <div class="card-header">
+      <div class="card-header fw-bold fs-5">
         오늘의 뉴스
       </div>
       <div class="card-body">
-        <p v-for="item in news" :key="item.originallink">
-          <a :href="item.originallink" target="_blank">{{ cleanText(item.title) }}</a>
+        <p v-for="item in news" :key="item.originallink" >
+          <a :href="item.originallink" target="_blank" style="color: black; text-decoration: none;">{{ cleanText(item.title) }}</a>
         </p>
       </div>
     </div>

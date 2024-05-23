@@ -1,12 +1,14 @@
 <template>
-    <div>
-        <BestProductImage />
-      <div class="container d-flex justify-content-between">
-        <FinanceVoca />
-        <ExchangeRate />
-        <News />
-      </div>
+  <div class="text-center text-align-center">
+    <div class="mb-4">
+      <BestProductImage />
     </div>
+    <div class="container d-flex justify-content-between">
+      <FinanceVoca />
+      <ExchangeRate />
+      <News />
+    </div>
+  </div>
 </template>
 
 <script setup>
