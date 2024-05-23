@@ -1,6 +1,6 @@
 # Hello, guys! We are all NewBee!
 ## 삼성 청년 SW 아카데미 (SSAFY) 11기 부울경 2반 3조 1학기 관통 프로젝트 
-[메인 페이지 사진]
+<img src="홈 화면.PNG" alt="설명" width="2000px" height="800px">
 
 ## ✅서비스 개요
 🪙 서비스 명 : NewBee \
