@@ -1,0 +1,18 @@
+// @import url('https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap');
+// custom variables
+$font-family-sans-serif: "Gowun Dodum", sans-serif;
+
+$yellow: #FFFF85;
+$blue: #FFE8AA;
+$cyan: #8585FF; // text-info color
+
+$input-border-color: #FFE8AA;
+$input-focus-border-color: #FFFFEA;
+
+$table-hover-bg: #FFFFEF;
+$card-cap-bg: #FFFFEF; // card header bg color
+
+$carousel-control-color: #8585FF; // carousel control color
+
+// import bootstrap
+@import "../node_modules/bootstrap/scss/bootstrap";
