@@ -2,7 +2,7 @@
 
 ## 삼성 청년 SW 아카데미 (SSAFY) 11기 부울경 2반 3조 1학기 관통 프로젝트
 
-`<img src="홈 화면.PNG" alt="설명" width="2000px" height="800px">`
+<img src="홈 화면.PNG" alt="설명" width="2000px" height="800px">
 
 ## ✅서비스 개요
 
@@ -34,47 +34,47 @@
 
 ### Common
 
-🔸 Greate Teacher : 허범성 강사님, ![ChatGPT](https://img.shields.io/badge/chatGPT-74aa9c?style=for-the-badge&logo=openai&logoColor=white) `<br/>`
-🔸 형상 관리 : ![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white) ![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)  `<br/>`
+🔸 Greate Teacher : 허범성 강사님, ![ChatGPT](https://img.shields.io/badge/chatGPT-74aa9c?style=for-the-badge&logo=openai&logoColor=white) <br/>
+🔸 형상 관리 : ![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white) ![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)  <br/>
 🔸 협업 툴 : ![Notion](https://img.shields.io/badge/Notion-%23000000.svg?style=for-the-badge&logo=notion&logoColor=white)
 
 ### Back-End
 
-🔸 언어 : ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)  `<br/>`
-🔸 프레임워크 : ![Django](https://img.shields.io/badge/django-%23092E20.svg?style=for-the-badge&logo=django&logoColor=white) ![DjangoREST](https://img.shields.io/badge/DJANGO-REST-ff1709?style=for-the-badge&logo=django&logoColor=white&color=ff1709&labelColor=gray) ![Swagger](https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white) `<br/>`
-🔸 DB : ![SQLite](https://img.shields.io/badge/sqlite-%2307405e.svg?style=for-the-badge&logo=sqlite&logoColor=white)  `<br/>`
+🔸 언어 : ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)  <br/>
+🔸 프레임워크 : ![Django](https://img.shields.io/badge/django-%23092E20.svg?style=for-the-badge&logo=django&logoColor=white) ![DjangoREST](https://img.shields.io/badge/DJANGO-REST-ff1709?style=for-the-badge&logo=django&logoColor=white&color=ff1709&labelColor=gray) ![Swagger](https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white) <br/>
+🔸 DB : ![SQLite](https://img.shields.io/badge/sqlite-%2307405e.svg?style=for-the-badge&logo=sqlite&logoColor=white)  <br/>
 🔸 라이브러리 : ![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens)
 
 ### Front-End
 
-🔸 언어 : ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E) ![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white) ![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white) `<br/>`
-🔸 프레임워크 : ![Vue.js](https://img.shields.io/badge/vuejs-%2335495e.svg?style=for-the-badge&logo=vuedotjs&logoColor=%234FC08D) `<br/>`
+🔸 언어 : ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E) ![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white) ![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white) <br/>
+🔸 프레임워크 : ![Vue.js](https://img.shields.io/badge/vuejs-%2335495e.svg?style=for-the-badge&logo=vuedotjs&logoColor=%234FC08D) <br/>
 🔸 라이브러리 : ![Chart.js](https://img.shields.io/badge/chart.js-%23FF6384.svg?style=for-the-badge&logo=chartdotjs&logoColor=white) ![Axios](https://img.shields.io/badge/axios-%235A29E4.svg?style=for-the-badge&logo=axios&logoColor=white) ![vue3-kakao-maps](https://img.shields.io/badge/vue3--kakao--maps-%2300C5A9.svg?style=for-the-badge&logo=kakaotalk&logoColor=white)
 
 ## ✅ 주요 제공 기능
 
 ### 금융
 
-🔸 각 종 금융 상품 정보 제공 `<br/>`
-    &nbsp; &nbsp;🔹 정기 예금 정보 및 가입 `<br/>`
-    &nbsp; &nbsp;🔹 적금 정보 및 가입 `<br/>`
-    &nbsp; &nbsp;🔹 연금 저축 정보 및 가입 `<br/>`
-    &nbsp; &nbsp;🔹 전, 월세 대출 정보 및 가입 `<br/>`
-    &nbsp; &nbsp;🔹 적금, 연금 저축 예상 수령액 계산기 `<br/>`
+🔸 각 종 금융 상품 정보 제공 <br/>
+    &nbsp; &nbsp;🔹 정기 예금 정보 및 가입 <br/>
+    &nbsp; &nbsp;🔹 적금 정보 및 가입 <br/>
+    &nbsp; &nbsp;🔹 연금 저축 정보 및 가입 <br/>
+    &nbsp; &nbsp;🔹 전, 월세 대출 정보 및 가입 <br/>
+    &nbsp; &nbsp;🔹 적금, 연금 저축 예상 수령액 계산기 <br/>
 
-🔸  가입 상품의 이율 그래프 제공 `<br/>`
-🔸  각 종 금융 상품 정보 제공 `<br/>`
-🔸  각 카테고리 별 가입자 수 TOP 5 추천 리스트 제공 `<br/>`
-🔸  연령대, 자산, 연봉등 비슷한 조건의 유저들이 많이 가입한 카테고리별 상품 TOP 3 리스트 제공 `<br/>`
+🔸  가입 상품의 이율 그래프 제공 <br/>
+🔸  각 종 금융 상품 정보 제공 <br/>
+🔸  각 카테고리 별 가입자 수 TOP 5 추천 리스트 제공 <br/>
+🔸  연령대, 자산, 연봉등 비슷한 조건의 유저들이 많이 가입한 카테고리별 상품 TOP 3 리스트 제공 <br/>
 
 ### 사용자 편의 기능
 
-🔸  커뮤니티 `<br/>`
-🔸  환율 계산기 `<br/>`
-🔸  NewBee가 알려주는 랜덤 경제 용어 `<br/>`
-🔸  각 종 금융 상품 정보 제공 `<br/>`
-🔸  경제 뉴스 제공 `<br/>`
-🔸  근처 은행 위치 검색 `<br/>`
+🔸  커뮤니티 <br/>
+🔸  환율 계산기 <br/>
+🔸  NewBee가 알려주는 랜덤 경제 용어 <br/>
+🔸  각 종 금융 상품 정보 제공 <br/>
+🔸  경제 뉴스 제공 <br/>
+🔸  근처 은행 위치 검색 <br/>
 
 ## ✅ 개발 일지
 
